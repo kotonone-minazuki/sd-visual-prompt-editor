@@ -2,9 +2,17 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="title">SD Visual Prompt Editor</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/default.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
+
     <style>
       /* --- カラー変数の定義 --- */
       :root {
@@ -65,11 +73,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
       }
       .header-controls {
         display: flex;
         align-items: center;
         gap: 15px;
+        flex-wrap: wrap;
       }
       .help-link {
         color: var(--text-color);
@@ -144,7 +155,6 @@
         color: var(--text-color);
       }
 
-      /* --- 入力エリアの小型コピーボタン用スタイル --- */
       .mini-copy-btn {
         position: absolute;
         top: 35px;
@@ -165,7 +175,6 @@
         background-color: var(--hover-bg);
       }
 
-      /* --- ビジュアルエディタ用スタイル --- */
       .preview-area {
         width: 100%;
         min-height: 250px;
@@ -249,7 +258,6 @@
       button {
         padding: 12px 24px;
         cursor: pointer;
-        background-color: var(--accent-color);
         color: white;
         border: none;
         border-radius: 4px;
@@ -273,6 +281,7 @@
         font-size: 0.8em;
         align-items: center;
         margin-left: auto;
+        flex-wrap: wrap;
       }
       .legend-item {
         display: flex;
@@ -329,6 +338,35 @@
       .status-success {
         background-color: #27ae60;
         cursor: default;
+      }
+
+      /* --- スマホ対応 (レスポンシブデザイン) --- */
+      @media (max-width: 800px) {
+        .main-layout {
+          grid-template-columns: 1fr; /* 画面が狭いときは1列（縦積み）にする */
+          gap: 20px;
+        }
+        .search-sidebar {
+          position: static; /* 縦積み時はスクロール追従を解除 */
+          height: auto;
+        }
+        #searchResult {
+          max-height: 400px; /* スマホ画面での検索結果の高さを制限 */
+        }
+        .controls {
+          position: static; /* スマホでは画面上部の固定を解除 */
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .controls button {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+        .legend-container {
+          margin-left: 0;
+          margin-top: 10px;
+          justify-content: center;
+        }
       }
     </style>
   </head>
@@ -411,10 +449,7 @@
             >
               コピー
             </button>
-            <textarea
-              id="inputNormal"
-              placeholder="1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>..."
-            ></textarea>
+            <textarea id="inputNormal"></textarea>
           </div>
 
           <div id="areaSpreadsheet" style="display: none; position: relative">
@@ -428,10 +463,7 @@
             >
               コピー
             </button>
-            <textarea
-              id="inputSpreadsheet"
-              placeholder="カテゴリ名	タグ1	タグ2..."
-            ></textarea>
+            <textarea id="inputSpreadsheet"></textarea>
           </div>
         </div>
 
@@ -529,18 +561,19 @@
         >
           ※データソース: Danbooruタグデータセット
         </div>
-        <input
-          type="text"
-          id="tagSearch"
-          placeholder="キーワードを入力..."
-          oninput="searchTags()"
-          disabled
-        />
+        <input type="text" id="tagSearch" oninput="searchTags()" disabled />
         <div id="searchResult" onscroll="handleSearchScroll()"></div>
       </div>
     </div>
 
     <script>
+      // --- スマホ用ドラッグ＆ドロップ対応 (Polyfill) ---
+      MobileDragDrop.polyfill({
+        holdToDrag: 250, // スマホでは250ミリ秒長押しでドラッグ開始（スクロールとの誤爆防止）
+      });
+      // iOS Safariでの画面スクロール問題を回避するためのリスナー
+      window.addEventListener("touchmove", function () {}, { passive: false });
+
       let tagDatabase = [];
       let tagMap = new Map();
       let allThresholds = [];
@@ -639,7 +672,7 @@
         document.querySelectorAll("[data-i18n]").forEach((el) => {
           const key = el.getAttribute("data-i18n");
           if (i18n[currentLang][key]) {
-            el.innerHTML = i18n[currentLang][key]; // ここをinnerHTMLに変更
+            el.innerHTML = i18n[currentLang][key];
           }
         });
 
@@ -670,7 +703,6 @@
         if (!currentThresholds || currentThresholds.length === 0) return;
         document.getElementById("legendArea").innerHTML = currentThresholds
           .map((t) => {
-            // 新しい JSON (label_ja / label_en) と古い JSON (label) の両方に対応
             const labelText =
               currentLang === "en" && t.label_en
                 ? t.label_en
@@ -680,7 +712,6 @@
               currentLang === "en"
                 ? `${t.minCount.toLocaleString()}+`
                 : `${t.minCount.toLocaleString()} ～`;
-
             return `<div class="legend-item" title="${titleText}"><span class="color-dot" style="background-color: ${t.colorCode}"></span><span>${cleanText}</span></div>`;
           })
           .join("");
@@ -738,7 +769,7 @@
           allThresholds = data.thresholds;
           currentThresholds = allThresholds;
 
-          renderLegend(); // ←直接HTMLを書かず、関数を呼び出すように変更
+          renderLegend();
 
           btn.innerText =
             i18n[currentLang].loaded +
@@ -811,10 +842,7 @@
         }
         if (current.trim()) result.push(current.trim());
 
-        if (commentPart !== "") {
-          result.push(commentPart);
-        }
-
+        if (commentPart !== "") result.push(commentPart);
         return result.filter((t) => t !== "");
       }
 
@@ -824,7 +852,6 @@
 
         for (let p of commaParts) {
           if (!p) continue;
-
           if (p.includes(",")) {
             resultHtml += escapeHTML(p).replace(/ /g, "&nbsp;");
           } else {
@@ -844,12 +871,9 @@
               if (tagMap.has(cleanSub)) {
                 const count = tagMap.get(cleanSub);
                 const color = getColorByCount(count);
-                tagHtml = `<span style="color: ${color}">${escapeHTML(
-                  pureTag,
-                ).replace(/ /g, "&nbsp;")}</span>`;
-                if (weightStr) {
+                tagHtml = `<span style="color: ${color}">${escapeHTML(pureTag).replace(/ /g, "&nbsp;")}</span>`;
+                if (weightStr)
                   tagHtml += `<span style="color: #aaa">${weightStr}</span>`;
-                }
               } else {
                 const parts = pureTag.split(/([\s_]+)/);
                 let words = [];
@@ -883,12 +907,9 @@
                       }
                       let color = getColorByCount(count);
                       resultParts[startIndex] =
-                        `<span style="color: ${color}">${escapeHTML(
-                          originalStr,
-                        ).replace(/ /g, "&nbsp;")}</span>`;
-                      for (let j = startIndex + 1; j <= endIndex; j++) {
+                        `<span style="color: ${color}">${escapeHTML(originalStr).replace(/ /g, "&nbsp;")}</span>`;
+                      for (let j = startIndex + 1; j <= endIndex; j++)
                         resultParts[j] = "";
-                      }
                       i += len;
                       found = true;
                       break;
@@ -898,9 +919,7 @@
                     let startIndex = wordIndices[i];
                     let color = getColorByCount(0);
                     resultParts[startIndex] =
-                      `<span style="color: ${color}">${escapeHTML(
-                        parts[startIndex],
-                      ).replace(/ /g, "&nbsp;")}</span>`;
+                      `<span style="color: ${color}">${escapeHTML(parts[startIndex]).replace(/ /g, "&nbsp;")}</span>`;
                     i++;
                   }
                 }
@@ -912,9 +931,8 @@
                   })
                   .join("");
 
-                if (weightStr) {
+                if (weightStr)
                   tagHtml += `<span style="color: #aaa">${weightStr}</span>`;
-                }
               }
             }
             resultHtml +=
@@ -1039,24 +1057,19 @@
           const input = document
             .getElementById("inputSpreadsheet")
             .value.replace(/^[ \t]*[\r\n]+/gm, "");
-
           input.split(/\r?\n/).forEach((line) => {
             let match = line.match(/^([^\t\n]+)\t+(.+?)[\t ]*$/);
             if (match) {
               let cat = match[1].trim();
               let tagStr = match[2].trim().replace(/\t+/g, ", ");
-
               let tags = splitTagsSmart(tagStr);
               if (tags.length === 0) return;
-
-              // 常にカテゴリをコメントタグとして追加しておく（表示ON/OFFはtoggleCommentsで管理）
               posLines.push("# " + cat);
               posLines.push(tags.join(", "));
             }
           });
         } else {
           const input = document.getElementById("inputNormal").value;
-
           input.split(/\r?\n/).forEach((line) => {
             if (!line.trim()) return;
             let tags = splitTagsSmart(line);
@@ -1067,7 +1080,6 @@
               if (tags.length > 0 && tags[tags.length - 1].startsWith("#")) {
                 commentTag = tags.pop();
               }
-
               if (tags.length > 0) {
                 const lastRealTag = tags[tags.length - 1].toLowerCase();
                 if (
@@ -1083,20 +1095,16 @@
                   tags.push("BREAK");
                 }
               }
-
-              if (commentTag) {
-                tags.push(commentTag);
-              }
+              if (commentTag) tags.push(commentTag);
             }
             posLines.push(tags.join(", "));
           });
         }
 
         buildVisualPreview("outputPreview", posLines);
-        toggleComments(); // コメントの表示制御・同期を実行
+        toggleComments();
       }
 
-      // --- コメントタグの表示・非表示を切り替える ---
       function toggleComments() {
         const isChecked = document.getElementById("stripHeaders").checked;
         const container = document.getElementById("outputPreview");
@@ -1115,21 +1123,18 @@
             }
           });
 
-          // 表示できるタグが1つもない行は非表示にする
           row.style.display = isChecked && !hasVisibleTag ? "none" : "flex";
         });
 
         syncPreviewToData();
       }
 
-      // --- ↑プロンプトエディタへの反映 ---
       function reflectToNormal() {
         syncPreviewToData();
         document.getElementById("inputNormal").value =
           document.getElementById("outputRaw").value;
       }
 
-      // --- ↑スプレッドシートへの反映 (TSV形式) ---
       function reflectToSpreadsheet() {
         const container = document.getElementById("outputPreview");
         const strip = document.getElementById("stripHeaders").checked;
@@ -1137,27 +1142,21 @@
         let pendingCategory = "";
 
         container.querySelectorAll(".prompt-row").forEach((row) => {
-          // 非表示になっている行はスキップ
           if (row.style.display === "none") return;
 
           let tagsToOutput = [];
-
-          // 非表示のタグ（非表示中のコメント等）は無視して取得
           let rowTags = Array.from(row.querySelectorAll(".prompt-tag"))
             .filter((t) => t.style.display !== "none")
             .map((t) => t.dataset.raw);
 
           if (rowTags.length === 0) return;
-
           let commentIndex = rowTags.findIndex((t) => t.startsWith("#"));
 
           if (!strip) {
-            // OFF: コメントアウトをカテゴリとして抽出・保持する
             if (commentIndex !== -1) {
               pendingCategory = rowTags[commentIndex].substring(1).trim();
               rowTags.splice(commentIndex, 1);
             }
-
             if (rowTags.length > 0) {
               tagsToOutput.push(pendingCategory);
               tagsToOutput.push(...rowTags);
@@ -1166,10 +1165,7 @@
               return;
             }
           } else {
-            // ON: カテゴリ列を出力せずタグのみを反映する
-            if (commentIndex !== -1) {
-              rowTags.splice(commentIndex, 1);
-            }
+            if (commentIndex !== -1) rowTags.splice(commentIndex, 1);
             if (rowTags.length > 0) {
               tagsToOutput.push(...rowTags);
             } else {
@@ -1178,7 +1174,6 @@
           }
 
           tagsToOutput = tagsToOutput.map((t) => t.replace(/,+$/, "").trim());
-
           if (tagsToOutput.length > 0) {
             tsvLines.push(tagsToOutput.join("\t"));
           }
@@ -1227,13 +1222,11 @@
               }
             }
           } else {
-            if (targetTagRaw === "break") {
-              targetTagElement.remove();
-            }
+            if (targetTagRaw === "break") targetTagElement.remove();
           }
         });
 
-        toggleComments(); // Break付与後にも再計算と同期を呼ぶ
+        toggleComments();
       }
 
       let draggedElement = null;
@@ -1266,15 +1259,10 @@
         document.addEventListener("dragend", (e) => {
           if (dragSource === "internal" && draggedElement) {
             draggedElement.classList.remove("dragging");
-
-            if (!isDroppedInValidZone) {
-              draggedElement.remove();
-            }
-
+            if (!isDroppedInValidZone) draggedElement.remove();
             draggedElement = null;
-            toggleComments(); // syncPreviewToDataの代わりに呼び出し
+            toggleComments();
           }
-
           dragSource = null;
           dragTagText = "";
         });
@@ -1339,7 +1327,6 @@
                 handle.className = "row-handle";
                 handle.innerHTML = "≡";
                 newRow.appendChild(handle);
-
                 newRow.appendChild(newTag);
 
                 const afterRow = getDragAfterElement(area, e.clientY, true);
@@ -1349,7 +1336,7 @@
                   area.insertBefore(newRow, afterRow);
                 }
               }
-              toggleComments(); // syncPreviewToDataの代わりに呼び出し
+              toggleComments();
             }
           });
         });
@@ -1400,20 +1387,15 @@
 
           container.querySelectorAll(".prompt-row").forEach((row) => {
             const allTags = row.querySelectorAll(".prompt-tag");
-            // DOM上のタグ要素が完全にゼロになった場合のみ行を削除する
             if (allTags.length === 0) {
               row.remove();
               return;
             }
-
-            // 行自体が非表示になっている場合は出力テキストに含めない
             if (row.style.display === "none") return;
 
             let rowTags = [];
             allTags.forEach((tag) => {
-              if (tag.style.display !== "none") {
-                rowTags.push(tag.dataset.raw);
-              }
+              if (tag.style.display !== "none") rowTags.push(tag.dataset.raw);
             });
 
             if (rowTags.length > 0) {
@@ -1499,19 +1481,19 @@
             btn.style.backgroundColor = getComputedStyle(
               document.body,
             ).getPropertyValue("--copy-success-bg");
-            btn.innerText = i18n[currentLang].copySuccess;
+            btn.innerHTML = i18n[currentLang].copySuccess;
             setTimeout(() => {
               btn.style.backgroundColor = "";
-              btn.innerText = originalText;
+              btn.innerHTML = originalText;
             }, 800);
           })
           .catch((err) => {
             console.error(err);
-            btn.innerText = i18n[currentLang].copyFail;
+            btn.innerHTML = i18n[currentLang].copyFail;
             btn.style.backgroundColor = "#c0392b";
             setTimeout(() => {
               btn.style.backgroundColor = "";
-              btn.innerText = originalText;
+              btn.innerHTML = originalText;
             }, 1000);
           });
       }
@@ -1560,7 +1542,6 @@
 
       function renderNextSearchBatch() {
         if (currentSearchIndex >= currentSearchResults.length) return;
-
         const resultDiv = document.getElementById("searchResult");
         const nextBatch = currentSearchResults.slice(
           currentSearchIndex,
@@ -1569,18 +1550,12 @@
 
         const html = nextBatch
           .map(
-            (i) => `<div class="tag-item" draggable="true" data-tag="${
-              i.t
-            }" onclick="copyTag('${i.t}', this)">
-                  <span style="font-weight:bold; color:var(--text-color);">${
-                    i.t
-                  }</span> 
-                  <span style="background-color: var(--tag-bg); padding: 2px 8px; border-radius: 12px; color:${getColorByCount(
-                    i.c,
-                  )}; float:right; font-weight:bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${i.c.toLocaleString()}</span>
-                  <div style="color:#7f8c8d; font-size:0.85em; margin-top:4px;">${
-                    i.tr || ""
-                  }</div>
+            (
+              i,
+            ) => `<div class="tag-item" draggable="true" data-tag="${i.t}" onclick="copyTag('${i.t}', this)">
+                  <span style="font-weight:bold; color:var(--text-color);">${i.t}</span> 
+                  <span style="background-color: var(--tag-bg); padding: 2px 8px; border-radius: 12px; color:${getColorByCount(i.c)}; float:right; font-weight:bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${i.c.toLocaleString()}</span>
+                  <div style="color:#7f8c8d; font-size:0.85em; margin-top:4px;">${i.tr || ""}</div>
                 </div>`,
           )
           .join("");
