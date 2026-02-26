@@ -3,36 +3,42 @@
     "minCount": 1000000,
     "maxCount": 999999999,
     "colorCode": "#e74c3c",
-    "label": "100万～ (赤)"
+    "label_ja": "100万～",
+    "label_en": "1M+"
   },
   {
     "minCount": 100000,
     "maxCount": 999999,
     "colorCode": "#e67e22",
-    "label": "10万～ (橙)"
+    "label_ja": "10万～",
+    "label_en": "100K+"
   },
   {
     "minCount": 10000,
     "maxCount": 99999,
     "colorCode": "#f1c40f",
-    "label": "1万～ (黄)"
+    "label_ja": "1万～",
+    "label_en": "10K+"
   },
   {
     "minCount": 1000,
     "maxCount": 9999,
     "colorCode": "#024fff",
-    "label": "1000～ (青)"
+    "label_ja": "1000～",
+    "label_en": "1K+"
   },
   {
     "minCount": 1,
     "maxCount": 999,
     "colorCode": "#3498db",
-    "label": "1～999 (水色)"
+    "label_ja": "1～",
+    "label_en": "1+"
   },
   {
     "minCount": 0,
     "maxCount": 0,
     "colorCode": "#ffffff",
-    "label": "0 (白)"
+    "label_ja": "0",
+    "label_en": "0"
   }
 ]

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SD Visual Prompt Editor - ユーザーマニュアル</title>
+    <title id="pageTitle">SD Visual Prompt Editor - ユーザーマニュアル</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -24,12 +24,14 @@
         padding: 40px;
         border-radius: 8px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
       }
       h1 {
         color: #2c3e50;
         border-bottom: 3px solid #4a90e2;
         padding-bottom: 10px;
         margin-top: 0;
+        padding-right: 100px; /* ボタンと被らないように余白 */
       }
       h2 {
         color: #4a90e2;
@@ -118,39 +120,53 @@
         background-color: #eaf3fc;
         color: #333;
       }
-      .warning-text {
-        color: #d63031;
-        font-size: 0.9em;
+      .lang-btn {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        padding: 8px 16px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        background: #fff;
+        border-radius: 4px;
         font-weight: bold;
-        margin-top: 10px;
+        color: #333;
+        transition: background 0.2s;
+      }
+      .lang-btn:hover {
+        background: #f0f0f0;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>SD Visual Prompt Editor ユーザーマニュアル</h1>
-      <p>
+      <button class="lang-btn" onclick="toggleLanguage()">🌐 EN/JP</button>
+
+      <h1 data-i18n="title">SD Visual Prompt Editor ユーザーマニュアル</h1>
+      <p data-i18n="desc">
         SD Visual Prompt Editorは、Stable
         Diffusion向けのプロンプト（呪文）を、Danbooruのタグ出現頻度データに基づいて自動で評価・色分けし、直感的なビジュアルエディタ上でドラッグ＆ドロップによる追加・並び替え・削除ができるWebツールです。
       </p>
 
-      <h2>1. 基本的な使い方（2つの入力タブ）</h2>
-      <p>
+      <h2 data-i18n="h2_1">1. 基本的な使い方（2つの入力タブ）</h2>
+      <p data-i18n="p_1">
         ご自身のプロンプト管理方法に合わせて、上部のタブを切り替えて使用します。
       </p>
 
       <div class="step-box">
-        <h3>A. 「プロンプトエディタ」タブ（直接入力）</h3>
-        <p>
+        <h3 data-i18n="h3_1a">A. 「プロンプトエディタ」タブ（直接入力）</h3>
+        <p data-i18n="p_1a">
           テキストエディタやWebUIから、カンマ区切りのプロンプトをそのまま貼り付けるモードです。
         </p>
         <ol>
-          <li>「1. プロンプトエディタ」エリアにテキストを入力します。</li>
-          <li>
+          <li data-i18n="li_1a_1">
+            「1. プロンプトエディタ」エリアにテキストを入力します。
+          </li>
+          <li data-i18n="li_1a_2">
             <span class="highlight">↓ ビジュアルエディタに反映</span>
             ボタンをクリックすると、下の作業領域にタグが視覚化されます。
           </li>
-          <li>
+          <li data-i18n="li_1a_3">
             ビジュアルエディタで編集を行った後、<span class="btn-green"
               >↑ プロンプトエディタに反映</span
             >
@@ -160,90 +176,92 @@
       </div>
 
       <div class="step-box">
-        <h3>B. 「スプレッドシート」タブ（表計算データからの一括読込）</h3>
-        <p>
+        <h3 data-i18n="h3_1b">
+          B. 「スプレッドシート」タブ（表計算データからの一括読込）
+        </h3>
+        <p data-i18n="p_1b">
           ExcelやGoogleスプレッドシート等で「カテゴリ」ごとにタグを管理している方に最適なモードです。<br />
           以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。
         </p>
 
         <table>
           <tr>
-            <th>カテゴリ名 (※ここはコピーしない)</th>
-            <th>タグ1</th>
-            <th>タグ2</th>
+            <th data-i18n="th_1">カテゴリ名 (※ここはコピーしない)</th>
+            <th data-i18n="th_2">タグ1</th>
+            <th data-i18n="th_3">タグ2</th>
           </tr>
           <tr class="copy-target">
-            <td>髪型</td>
-            <td>long hair</td>
-            <td>blonde hair</td>
+            <td data-i18n="td_1">髪型</td>
+            <td data-i18n="td_2">long hair</td>
+            <td data-i18n="td_3">blonde hair</td>
           </tr>
           <tr class="copy-target">
-            <td>Negative</td>
-            <td>worst quality</td>
-            <td>low quality</td>
+            <td data-i18n="td_4">Negative</td>
+            <td data-i18n="td_5">worst quality</td>
+            <td data-i18n="td_6">low quality</td>
           </tr>
         </table>
 
         <ul>
-          <li>
+          <li data-i18n="li_1b_1">
             <strong>1画面への統合:</strong>
             「Negative」などのカテゴリ名もすべて1つのビジュアルエディタ上に読み込まれ、<code
               ># Negative</code
             >
             という緑色のコメントブロックとして区切られて表示されます。
           </li>
-          <li>
+          <li data-i18n="li_1b_2">
             <strong>↑ スプレッドシートに反映（TSV出力）:</strong>
             編集後、上向きの反映ボタンを押すと、再び表計算ソフトに貼り付けられるタブ区切り形式（TSV）に変換されます。
-            <br />※「コメントアウトを除去」が<strong>オフ</strong>の場合、緑色のコメントブロックが1列目の「カテゴリ名」として復元されます。
+            <br />※「コメントアウトを除去」が<strong>オフ</strong>の場合、緑色のコメントブロックが1列目の「カテゴリ名」として復元されます。<strong>オン</strong>にすると、コメント行はビジュアルエディタ上で非表示になり、出力時にも除外されます。
           </li>
         </ul>
       </div>
 
-      <h2>2. ビジュアルエディタの強力な機能</h2>
-      <p>
+      <h2 data-i18n="h2_2">2. ビジュアルエディタの強力な機能</h2>
+      <p data-i18n="p_2">
         下の「ビジュアルエディタ」エリアは、マウス操作だけでプロンプトを構築できるキャンバスです。
       </p>
 
       <ul>
-        <li>
+        <li data-i18n="li_2_1">
           <strong>パレットからの追加:</strong>
           右側の「タグ検索パレット」から、使いたいタグをドラッグしてエディタ内の好きな場所にドロップ（挿入）できます。何もない場所にドロップすると新しい行が作成されます。
         </li>
-        <li>
+        <li data-i18n="li_2_2">
           <strong>直感的な並び替え:</strong>
           タグ（ピル）を掴んで自由な位置へ移動できます。左端の「≡」マークを掴むと、行単位での順番入れ替えも可能です。
         </li>
-        <li>
+        <li data-i18n="li_2_3">
           <strong>枠外ドロップで削除 (ゴミ箱):</strong>
           不要になったタグや行は、掴んで<strong>ビジュアルエディタの枠外に放り投げる</strong>だけでサクッと削除できます。
         </li>
-        <li>
+        <li data-i18n="li_2_4">
           <strong>動的なBREAKトグル:</strong>
           「行末にBREAKを付加」のチェックボックスをオン/オフすると、エディタ上のすべての行末に一斉に
           <code>BREAK</code> タグが出現/消失します。
         </li>
       </ul>
 
-      <h2>3. Stable Diffusion特有の構文を安全に処理</h2>
+      <h2 data-i18n="h2_3">3. Stable Diffusion特有の構文を安全に処理</h2>
 
       <div class="step-box">
-        <h3>💡 括弧内のカンマを保護</h3>
-        <p>
+        <h3 data-i18n="h3_3a">💡 括弧内のカンマを保護</h3>
+        <p data-i18n="p_3a">
           <code>(red hair, blue eyes:1.2)</code>
           のように強調構文のカッコ内にカンマが含まれていても、分割されることなく1つのタグとして安全に扱われます。
         </p>
 
-        <h3>💡 制御タグとLoRAのスマート処理</h3>
-        <p>
+        <h3 data-i18n="h3_3b">💡 制御タグとLoRAのスマート処理</h3>
+        <p data-i18n="p_3b">
           <span class="tag-pill tag-control">BREAK</span>
           などのレイアウト制御タグ、および
           <span class="tag-pill tag-control">&lt;lora:my_lora:1.0&gt;</span>
           のようなタグは<strong>ピンク色の四角いピル</strong>で表示されます。連続するLoRAタグも正確に分割して管理でき、テキスト出力時は不要なカンマを付けずスマートに結合されます。
         </p>
 
-        <h3>💡 コメントアウト機能の柔軟な運用 (#)</h3>
-        <p>
+        <h3 data-i18n="h3_3c">💡 コメントアウト機能の柔軟な運用 (#)</h3>
+        <p data-i18n="p_3c">
           <code>#</code> 以降の文字列は<strong
             >緑色の四角いコメントブロック</strong
           >
@@ -253,16 +271,156 @@
         </p>
       </div>
 
-      <h2>4. タグ検索パレット（サイドバー）</h2>
-      <p>膨大なマスターデータからタグを素早く探し出せます。</p>
+      <h2 data-i18n="h2_4">4. タグ検索パレット（サイドバー）</h2>
+      <p data-i18n="p_4">膨大なマスターデータからタグを素早く探し出せます。</p>
       <ul>
-        <li>
+        <li data-i18n="li_4_1">
           英語だけでなく<strong>日本語の翻訳文</strong>からでも検索可能です。
         </li>
-        <li>
+        <li data-i18n="li_4_2">
           ドラッグ＆ドロップでエディタに追加できるほか、タグをクリックするだけでクリップボードに直接コピーすることもできます。
+        </li>
+        <li
+          data-i18n="li_4_3"
+          style="margin-top: 10px; font-size: 0.9em; color: #666"
+        >
+          <strong>※データソースについて:</strong>
+          本機能の検索候補およびタグの出現頻度データは、Danbooruのデータセットを基にしています。
         </li>
       </ul>
     </div>
+
+    <script>
+      const i18n = {
+        ja: {
+          title: "SD Visual Prompt Editor ユーザーマニュアル",
+          desc: "SD Visual Prompt Editorは、Stable Diffusion向けのプロンプト（呪文）を、Danbooruのタグ出現頻度データに基づいて自動で評価・色分けし、直感的なビジュアルエディタ上でドラッグ＆ドロップによる追加・並び替え・削除ができるWebツールです。",
+          h2_1: "1. 基本的な使い方（2つの入力タブ）",
+          p_1: "ご自身のプロンプト管理方法に合わせて、上部のタブを切り替えて使用します。",
+          h3_1a: "A. 「プロンプトエディタ」タブ（直接入力）",
+          p_1a: "テキストエディタやWebUIから、カンマ区切りのプロンプトをそのまま貼り付けるモードです。",
+          li_1a_1: "「1. プロンプトエディタ」エリアにテキストを入力します。",
+          li_1a_2:
+            '<span class="highlight">↓ ビジュアルエディタに反映</span> ボタンをクリックすると、下の作業領域にタグが視覚化されます。',
+          li_1a_3:
+            'ビジュアルエディタで編集を行った後、<span class="btn-green">↑ プロンプトエディタに反映</span> ボタンを押すと、編集結果が上のテキストボックスに上書きされます。',
+          h3_1b: "B. 「スプレッドシート」タブ（表計算データからの一括読込）",
+          p_1b: "ExcelやGoogleスプレッドシート等で「カテゴリ」ごとにタグを管理している方に最適なモードです。<br />以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。",
+          th_1: "カテゴリ名 (※ここはコピーしない)",
+          th_2: "タグ1",
+          th_3: "タグ2",
+          td_1: "髪型",
+          td_2: "long hair",
+          td_3: "blonde hair",
+          td_4: "Negative",
+          td_5: "worst quality",
+          td_6: "low quality",
+          li_1b_1:
+            "<strong>1画面への統合:</strong> 「Negative」などのカテゴリ名もすべて1つのビジュアルエディタ上に読み込まれ、<code># Negative</code> という緑色のコメントブロックとして区切られて表示されます。",
+          li_1b_2:
+            "<strong>↑ スプレッドシートに反映（TSV出力）:</strong> 編集後、上向きの反映ボタンを押すと、再び表計算ソフトに貼り付けられるタブ区切り形式（TSV）に変換されます。<br />※「コメントアウトを除去」が<strong>オフ</strong>の場合、緑色のコメントブロックが1列目の「カテゴリ名」として復元されます。<strong>オン</strong>にすると、コメント行はビジュアルエディタ上で非表示になり、出力時にも除外されます。",
+          h2_2: "2. ビジュアルエディタの強力な機能",
+          p_2: "下の「ビジュアルエディタ」エリアは、マウス操作だけでプロンプトを構築できるキャンバスです。",
+          li_2_1:
+            "<strong>パレットからの追加:</strong> 右側の「タグ検索パレット」から、使いたいタグをドラッグしてエディタ内の好きな場所にドロップ（挿入）できます。何もない場所にドロップすると新しい行が作成されます。",
+          li_2_2:
+            "<strong>直感的な並び替え:</strong> タグ（ピル）を掴んで自由な位置へ移動できます。左端の「≡」マークを掴むと、行単位での順番入れ替えも可能です。",
+          li_2_3:
+            "<strong>枠外ドロップで削除 (ゴミ箱):</strong> 不要になったタグや行は、掴んで<strong>ビジュアルエディタの枠外に放り投げる</strong>だけでサクッと削除できます。",
+          li_2_4:
+            "<strong>動的なBREAKトグル:</strong> 「行末にBREAKを付加」のチェックボックスをオン/オフすると、エディタ上のすべての行末に一斉に <code>BREAK</code> タグが出現/消失します。",
+          h2_3: "3. Stable Diffusion特有の構文を安全に処理",
+          h3_3a: "💡 括弧内のカンマを保護",
+          p_3a: "<code>(red hair, blue eyes:1.2)</code> のように強調構文のカッコ内にカンマが含まれていても、分割されることなく1つのタグとして安全に扱われます。",
+          h3_3b: "💡 制御タグとLoRAのスマート処理",
+          p_3b: '<span class="tag-pill tag-control">BREAK</span> などのレイアウト制御タグ、および <span class="tag-pill tag-control">&lt;lora:my_lora:1.0&gt;</span> のようなタグは<strong>ピンク色の四角いピル</strong>で表示されます。連続するLoRAタグも正確に分割して管理でき、テキスト出力時は不要なカンマを付けずスマートに結合されます。',
+          h3_3c: "💡 コメントアウト機能の柔軟な運用 (#)",
+          p_3c: '<code>#</code> 以降の文字列は<strong>緑色の四角いコメントブロック</strong> <span class="tag-pill tag-comment"># ここはメモ</span> として扱われます。<br />これを意図的に「行の途中」に配置することで、その後ろに続くタグを一時的にSDに無視させる（無効化する）といった柔軟なテスト運用が可能です。',
+          h2_4: "4. タグ検索パレット（サイドバー）",
+          p_4: "膨大なマスターデータからタグを素早く探し出せます。",
+          li_4_1:
+            "英語だけでなく<strong>日本語の翻訳文</strong>からでも検索可能です。",
+          li_4_2:
+            "ドラッグ＆ドロップでエディタに追加できるほか、タグをクリックするだけでクリップボードに直接コピーすることもできます。",
+          li_4_3:
+            "<strong>※データソースについて:</strong> 本機能の検索候補およびタグの出現頻度データは、Danbooruのデータセットを基にしています。",
+        },
+        en: {
+          title: "SD Visual Prompt Editor - User Manual",
+          desc: "SD Visual Prompt Editor is a web tool that automatically evaluates and color-codes Stable Diffusion prompts based on Danbooru tag frequency data. It features an intuitive visual editor where you can add, rearrange, and delete tags using drag-and-drop.",
+          h2_1: "1. Basic Usage (Two Input Tabs)",
+          p_1: "Switch between the top tabs depending on your preferred prompt management method.",
+          h3_1a: "A. 'Prompt Editor' Tab (Direct Input)",
+          p_1a: "This mode allows you to paste comma-separated prompts directly from your text editor or WebUI.",
+          li_1a_1: "Enter text into the '1. Prompt Editor' area.",
+          li_1a_2:
+            'Click the <span class="highlight">↓ Reflect to Visual Editor</span> button to visualize the tags in the workspace below.',
+          li_1a_3:
+            'After editing in the visual editor, click the <span class="btn-green">↑ Reflect to Prompt Editor</span> button to overwrite the text box above with your changes.',
+          h3_1b: "B. 'Spreadsheet' Tab (Batch Import from Tabular Data)",
+          p_1b: "This mode is ideal if you manage tags by 'Category' in Excel or Google Sheets.<br />Copy and paste <strong>only the data portion, excluding the header row</strong>, as shown in the table below.",
+          th_1: "Category Name (*Do not copy this)",
+          th_2: "Tag 1",
+          th_3: "Tag 2",
+          td_1: "Hairstyle",
+          td_2: "long hair",
+          td_3: "blonde hair",
+          td_4: "Negative",
+          td_5: "worst quality",
+          td_6: "low quality",
+          li_1b_1:
+            "<strong>Integration into a Single Screen:</strong> Category names like 'Negative' are also loaded into the single visual editor and displayed as green comment blocks like <code># Negative</code> to separate sections.",
+          li_1b_2:
+            "<strong>↑ Reflect to Spreadsheet (TSV Output):</strong> After editing, pressing the upward reflect button converts the data back into a tab-separated values (TSV) format ready to be pasted into your spreadsheet.<br />*If 'Hide Comments/Headers' is <strong>OFF</strong>, the green comment blocks are restored as the first column 'Category Name'. If turned <strong>ON</strong>, comment rows are hidden in the visual editor and excluded from the output.",
+          h2_2: "2. Powerful Features of the Visual Editor",
+          p_2: "The 'Visual Editor' area below is a canvas where you can build prompts using just your mouse.",
+          li_2_1:
+            "<strong>Add from Palette:</strong> Drag a tag you want to use from the 'Tag Search Palette' on the right and drop (insert) it anywhere in the editor. Dropping it in an empty space creates a new row.",
+          li_2_2:
+            "<strong>Intuitive Rearranging:</strong> Grab a tag (pill) and move it to any position. You can also reorder entire rows by grabbing the '≡' mark on the left edge.",
+          li_2_3:
+            "<strong>Delete by Dropping Outside (Trash):</strong> To quickly delete unwanted tags or rows, simply grab them and <strong>throw them outside the visual editor frame</strong>.",
+          li_2_4:
+            "<strong>Dynamic BREAK Toggle:</strong> Turning the 'Append BREAK to line ends' checkbox on/off will instantly add/remove <code>BREAK</code> tags at the end of all rows in the editor.",
+          h2_3: "3. Safe Handling of Stable Diffusion Specific Syntax",
+          h3_3a: "💡 Protection of Commas Inside Parentheses",
+          p_3a: "Even if a comma is included inside parentheses for emphasis syntax, like <code>(red hair, blue eyes:1.2)</code>, it is safely treated as a single tag without being split.",
+          h3_3b: "💡 Smart Processing of Control Tags and LoRAs",
+          p_3b: 'Layout control tags like <span class="tag-pill tag-control">BREAK</span> and tags like <span class="tag-pill tag-control">&lt;lora:my_lora:1.0&gt;</span> are displayed as <strong>pink square pills</strong>. Consecutive LoRA tags are accurately split and managed, and when output as text, they are smartly combined without unnecessary commas.',
+          h3_3c: "💡 Flexible Use of Commenting (#)",
+          p_3c: "Any string after <code>#</code> is treated as a <strong>green square comment block</strong> <span class=\"tag-pill tag-comment\"># This is a memo</span>.<br />By intentionally placing this in the 'middle of a row', you can temporarily force SD to ignore (disable) the tags that follow it, allowing for flexible testing.",
+          h2_4: "4. Tag Search Palette (Sidebar)",
+          p_4: "Quickly find tags from a massive master database.",
+          li_4_1:
+            "You can search not only in English but also using <strong>Japanese translated text</strong>.",
+          li_4_2:
+            "In addition to adding tags to the editor via drag-and-drop, you can also copy a tag directly to your clipboard simply by clicking it.",
+          li_4_3:
+            "<strong>*About Data Source:</strong> The search suggestions and tag frequency data in this feature are based on the Danbooru dataset.",
+        },
+      };
+
+      let currentLang = localStorage.getItem("lang") || "ja";
+
+      window.onload = () => {
+        applyLanguage();
+      };
+
+      function toggleLanguage() {
+        currentLang = currentLang === "ja" ? "en" : "ja";
+        localStorage.setItem("lang", currentLang);
+        applyLanguage();
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (i18n[currentLang][key]) {
+            el.innerHTML = i18n[currentLang][key];
+          }
+        });
+        document.title = i18n[currentLang].title;
+      }
+    </script>
   </body>
 </html>

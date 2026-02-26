@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>SD Visual Prompt Editor</title>
+    <title data-i18n="title">SD Visual Prompt Editor</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <style>
@@ -80,6 +80,7 @@
         border-radius: 4px;
         border: 1px solid var(--border-color);
         background-color: var(--box-bg);
+        cursor: pointer;
       }
 
       .main-layout {
@@ -146,7 +147,7 @@
       /* --- 入力エリアの小型コピーボタン用スタイル --- */
       .mini-copy-btn {
         position: absolute;
-        top: 35px; /* ラベルの下、テキストエリアの右上に配置 */
+        top: 35px;
         right: 10px;
         padding: 4px 8px;
         font-size: 11px;
@@ -157,7 +158,7 @@
         cursor: pointer;
         opacity: 0.7;
         transition: all 0.2s;
-        font-weight: normal; /* 既存のbuttonの太字を上書き */
+        font-weight: normal;
       }
       .mini-copy-btn:hover {
         opacity: 1;
@@ -333,19 +334,39 @@
   </head>
   <body>
     <h2>
-      SD Visual Prompt Editor
+      <span data-i18n="title">SD Visual Prompt Editor</span>
       <div class="header-controls">
-        <a href="readme.html" target="_blank" class="help-link">📘 使い方</a>
-        <a href="sd_syntax_guide.html" target="_blank" class="help-link"
+        <button
+          onclick="toggleLanguage()"
+          class="help-link"
+          style="border: 1px solid var(--border-color)"
+        >
+          🌐 EN/JP
+        </button>
+        <a
+          href="https://ko-fi.com/kotononeminazuki"
+          target="_blank"
+          class="help-link"
+          data-i18n="kofi"
+          >☕ 支援 (Ko-fi)</a
+        >
+        <a href="readme.html" target="_blank" class="help-link" data-i18n="help"
+          >📘 使い方</a
+        >
+        <a
+          href="sd_syntax_guide.html"
+          target="_blank"
+          class="help-link"
+          data-i18n="syntax"
           >📜 SD構文</a
         >
-        <label style="font-size: 0.85em; font-weight: bold">
+        <label style="font-size: 0.85em; font-weight: bold; cursor: pointer">
           <input
             type="checkbox"
             id="darkModeToggle"
             onchange="toggleDarkMode()"
           />
-          🌙 ダークモード
+          <span data-i18n="darkMode">🌙 ダークモード</span>
         </label>
         <button
           id="statusBtn"
@@ -360,13 +381,19 @@
     <div class="main-layout">
       <div class="converter-main">
         <div class="tab-container">
-          <div id="tabNormal" class="tab active" onclick="switchTab('normal')">
+          <div
+            id="tabNormal"
+            class="tab active"
+            onclick="switchTab('normal')"
+            data-i18n="tabNormal"
+          >
             プロンプトエディタ
           </div>
           <div
             id="tabSpreadsheet"
             class="tab"
             onclick="switchTab('spreadsheet')"
+            data-i18n="tabSpread"
           >
             スプレッドシート
           </div>
@@ -374,10 +401,13 @@
 
         <div class="input-box">
           <div id="areaNormal" style="position: relative">
-            <label class="box-label">1. プロンプトエディタ</label>
+            <label class="box-label" data-i18n="labelNormal"
+              >1. プロンプトエディタ</label
+            >
             <button
               class="mini-copy-btn"
               onclick="copyResult('inputNormal', this)"
+              data-i18n="copy"
             >
               コピー
             </button>
@@ -388,12 +418,13 @@
           </div>
 
           <div id="areaSpreadsheet" style="display: none; position: relative">
-            <label class="box-label"
+            <label class="box-label" data-i18n="labelSpread"
               >1. スプレッドシート/TSVデータ貼り付け</label
             >
             <button
               class="mini-copy-btn"
               onclick="copyResult('inputSpreadsheet', this)"
+              data-i18n="copy"
             >
               コピー
             </button>
@@ -408,54 +439,96 @@
           <button
             onclick="convert()"
             style="background-color: #fe66f1; font-size: 1.1em"
+            data-i18n="btnConvert"
           >
-            🔽 ビジュアルエディタに反映
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬇️</span
+            >
+            ビジュアルエディタに反映
           </button>
 
           <button
             id="btnUpNormal"
             onclick="reflectToNormal()"
             style="background-color: #3498db; font-size: 1.1em; display: block"
+            data-i18n="btnReflectN"
           >
-            🔼 プロンプトエディタに反映
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬆️</span
+            >
+            プロンプトエディタに反映
           </button>
 
           <button
             id="btnUpSpreadsheet"
             onclick="reflectToSpreadsheet()"
             style="background-color: #3498db; font-size: 1.1em; display: none"
+            data-i18n="btnReflectS"
           >
-            🔼 スプレッドシートに反映
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬆️</span
+            >
+            スプレッドシートに反映
           </button>
 
           <div style="padding-left: 15px; display: none" id="stripOption">
-            <input type="checkbox" id="stripHeaders" />
-            <label for="stripHeaders" style="font-size: 0.9em; cursor: pointer"
+            <input
+              type="checkbox"
+              id="stripHeaders"
+              onchange="toggleComments()"
+            />
+            <label
+              for="stripHeaders"
+              style="font-size: 0.9em; cursor: pointer"
+              data-i18n="stripLabels"
               >コメントアウトを除去</label
             >
           </div>
           <div style="padding-left: 15px; display: block" id="breakOption">
             <input type="checkbox" id="appendBreak" onchange="toggleBreaks()" />
-            <label for="appendBreak" style="font-size: 0.9em; cursor: pointer"
+            <label
+              for="appendBreak"
+              style="font-size: 0.9em; cursor: pointer"
+              data-i18n="breakLabels"
               >行末にBREAKを付加</label
             >
           </div>
           <div id="legendArea" class="legend-container"></div>
         </div>
 
-        <label class="box-label"
+        <label class="box-label" data-i18n="labelVisual"
           >2. ビジュアルエディタ
           (ドラッグ＆ドロップで追加・移動・枠外へ削除)</label
         >
         <div id="outputPreview" class="preview-area"></div>
-        <button class="copy-btn" onclick="copyResult('outputRaw', this)">
+        <button
+          class="copy-btn"
+          onclick="copyResult('outputRaw', this)"
+          data-i18n="copyPrompt"
+        >
           プロンプトとしてコピー
         </button>
         <textarea id="outputRaw" style="display: none"></textarea>
       </div>
 
       <div class="search-sidebar">
-        <label class="box-label">タグ検索パレット</label>
+        <label class="box-label" data-i18n="searchPalette"
+          >タグ検索パレット</label
+        >
+        <div
+          style="
+            font-size: 0.8em;
+            color: #888;
+            margin-top: -5px;
+            margin-bottom: 10px;
+          "
+          data-i18n="dataSource"
+        >
+          ※データソース: Danbooruタグデータセット
+        </div>
         <input
           type="text"
           id="tagSearch"
@@ -474,11 +547,144 @@
       let currentThresholds = [];
       let currentMode = "normal";
 
+      // --- i18n Dictionary ---
+      const i18n = {
+        ja: {
+          title: "SD Visual Prompt Editor",
+          help: "📘 使い方",
+          kofi: "☕ 支援 (Ko-fi)",
+          syntax: "📜 SD構文",
+          darkMode: "🌙 ダークモード",
+          loading: "🔄 データ取得中...",
+          loaded: "✅ 取得完了: ",
+          loadFail: "❌ 取得失敗",
+          tabNormal: "プロンプトエディタ",
+          tabSpread: "スプレッドシート",
+          labelNormal: "1. プロンプトエディタ",
+          labelSpread: "1. スプレッドシート/TSVデータ貼り付け",
+          copy: "コピー",
+          copySuccess: "✅ コピー完了！",
+          copyFail: "❌ 失敗",
+          btnConvert:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬇️</span> ビジュアルエディタに反映",
+          btnReflectN:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬆️</span> プロンプトエディタに反映",
+          btnReflectS:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬆️</span> スプレッドシートに反映",
+          stripLabels: "コメントアウトを除去",
+          breakLabels: "行末にBREAKを付加",
+          labelVisual:
+            "2. ビジュアルエディタ (ドラッグ＆ドロップで追加・移動・枠外へ削除)",
+          copyPrompt: "プロンプトとしてコピー",
+          searchPalette: "タグ検索パレット",
+          searchPlaceholder: "キーワードを入力...",
+          placeholderNormal:
+            "1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>...",
+          placeholderSpread: "カテゴリ名\tタグ1\tタグ2...",
+          dataSource: "※データソース: Danbooruタグデータセット",
+        },
+        en: {
+          title: "SD Visual Prompt Editor",
+          help: "📘 Guide",
+          kofi: "☕ Support (Ko-fi)",
+          syntax: "📜 SD Syntax",
+          darkMode: "🌙 Dark Mode",
+          loading: "🔄 Loading...",
+          loaded: "✅ Loaded: ",
+          loadFail: "❌ Failed",
+          tabNormal: "Prompt Editor",
+          tabSpread: "Spreadsheet",
+          labelNormal: "1. Prompt Editor",
+          labelSpread: "1. Paste Spreadsheet/TSV Data",
+          copy: "Copy",
+          copySuccess: "✅ Copied!",
+          copyFail: "❌ Failed",
+          btnConvert:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬇️</span> Reflect to Visual Editor",
+          btnReflectN:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬆️</span> Reflect to Prompt Editor",
+          btnReflectS:
+            "<span style='font-size: 1.5em; line-height: 1; vertical-align: middle;'>⬆️</span> Reflect to Spreadsheet",
+          stripLabels: "Hide Comments/Headers",
+          breakLabels: "Append BREAK to line ends",
+          labelVisual:
+            "2. Visual Editor (Drag & Drop to add/move, drop outside to delete)",
+          copyPrompt: "Copy as Prompt",
+          searchPalette: "Tag Search Palette",
+          searchPlaceholder: "Enter keyword...",
+          placeholderNormal:
+            "1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>...",
+          placeholderSpread: "Category\tTag1\tTag2...",
+          dataSource: "*Data source: Danbooru tag dataset",
+        },
+      };
+
+      let currentLang = localStorage.getItem("lang") || "ja";
+
       window.onload = () => {
         initTheme();
+        applyLanguage();
         fetchFromDB();
         initDragAndDrop();
       };
+
+      function toggleLanguage() {
+        currentLang = currentLang === "ja" ? "en" : "ja";
+        localStorage.setItem("lang", currentLang);
+        applyLanguage();
+        renderLegend();
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (i18n[currentLang][key]) {
+            el.innerHTML = i18n[currentLang][key]; // ここをinnerHTMLに変更
+          }
+        });
+
+        document.getElementById("tagSearch").placeholder =
+          i18n[currentLang].searchPlaceholder;
+        document.getElementById("inputSpreadsheet").placeholder =
+          i18n[currentLang].placeholderSpread;
+        document.getElementById("inputNormal").placeholder =
+          i18n[currentLang].placeholderNormal;
+
+        const btn = document.getElementById("statusBtn");
+        if (
+          btn.classList.contains("status-success") &&
+          tagDatabase.length > 0
+        ) {
+          btn.innerText =
+            i18n[currentLang].loaded +
+            tagDatabase.length.toLocaleString() +
+            (currentLang === "ja" ? "件" : " tags");
+        } else if (btn.classList.contains("status-loading")) {
+          btn.innerText = i18n[currentLang].loading;
+        } else {
+          btn.innerText = i18n[currentLang].loadFail;
+        }
+      }
+
+      function renderLegend() {
+        if (!currentThresholds || currentThresholds.length === 0) return;
+        document.getElementById("legendArea").innerHTML = currentThresholds
+          .map((t) => {
+            // 新しい JSON (label_ja / label_en) と古い JSON (label) の両方に対応
+            const labelText =
+              currentLang === "en" && t.label_en
+                ? t.label_en
+                : t.label_ja || t.label || "";
+            const cleanText = labelText.split("(")[0].trim();
+            const titleText =
+              currentLang === "en"
+                ? `${t.minCount.toLocaleString()}+`
+                : `${t.minCount.toLocaleString()} ～`;
+
+            return `<div class="legend-item" title="${titleText}"><span class="color-dot" style="background-color: ${t.colorCode}"></span><span>${cleanText}</span></div>`;
+          })
+          .join("");
+      }
 
       function initTheme() {
         if (localStorage.getItem("theme") === "dark") {
@@ -531,20 +737,18 @@
           );
           allThresholds = data.thresholds;
           currentThresholds = allThresholds;
-          document.getElementById("legendArea").innerHTML = currentThresholds
-            .map(
-              (t) =>
-                `<div class="legend-item" title="${t.minCount.toLocaleString()} ～"><span class="color-dot" style="background-color: ${
-                  t.colorCode
-                }"></span><span>${t.label.split("(")[0]}</span></div>`,
-            )
-            .join("");
-          btn.innerText = `✅ 取得完了: ${tagDatabase.length.toLocaleString()}件`;
+
+          renderLegend(); // ←直接HTMLを書かず、関数を呼び出すように変更
+
+          btn.innerText =
+            i18n[currentLang].loaded +
+            tagDatabase.length.toLocaleString() +
+            (currentLang === "ja" ? "件" : " tags");
           btn.className = "refresh-btn status-success";
           document.getElementById("tagSearch").disabled = false;
         } catch (err) {
           console.error(err);
-          btn.innerText = "❌ 取得失敗";
+          btn.innerText = i18n[currentLang].loadFail;
           btn.style.backgroundColor = "#e74c3c";
         }
       }
@@ -583,7 +787,6 @@
           line = line.substring(0, hashIndex);
         }
 
-        // 制御タグおよびLoRA等のタグ（<...>）を分離処理する
         let pLine = line
           .replace(
             /\b(BREAK|AND|ADDROW|ADDCOMM|ADDCOL|ADDBASE)\b/gi,
@@ -836,7 +1039,6 @@
           const input = document
             .getElementById("inputSpreadsheet")
             .value.replace(/^[ \t]*[\r\n]+/gm, "");
-          const strip = document.getElementById("stripHeaders").checked;
 
           input.split(/\r?\n/).forEach((line) => {
             let match = line.match(/^([^\t\n]+)\t+(.+?)[\t ]*$/);
@@ -847,7 +1049,8 @@
               let tags = splitTagsSmart(tagStr);
               if (tags.length === 0) return;
 
-              if (!strip) posLines.push("# " + cat);
+              // 常にカテゴリをコメントタグとして追加しておく（表示ON/OFFはtoggleCommentsで管理）
+              posLines.push("# " + cat);
               posLines.push(tags.join(", "));
             }
           });
@@ -890,6 +1093,32 @@
         }
 
         buildVisualPreview("outputPreview", posLines);
+        toggleComments(); // コメントの表示制御・同期を実行
+      }
+
+      // --- コメントタグの表示・非表示を切り替える ---
+      function toggleComments() {
+        const isChecked = document.getElementById("stripHeaders").checked;
+        const container = document.getElementById("outputPreview");
+        const rows = container.querySelectorAll(".prompt-row");
+
+        rows.forEach((row) => {
+          const tags = Array.from(row.querySelectorAll(".prompt-tag"));
+          let hasVisibleTag = false;
+
+          tags.forEach((tag) => {
+            if (tag.dataset.raw.startsWith("#")) {
+              tag.style.display = isChecked ? "none" : "";
+            }
+            if (tag.style.display !== "none") {
+              hasVisibleTag = true;
+            }
+          });
+
+          // 表示できるタグが1つもない行は非表示にする
+          row.style.display = isChecked && !hasVisibleTag ? "none" : "flex";
+        });
+
         syncPreviewToData();
       }
 
@@ -905,14 +1134,19 @@
         const container = document.getElementById("outputPreview");
         const strip = document.getElementById("stripHeaders").checked;
         let tsvLines = [];
-        let pendingCategory = ""; // ★行をまたいでカテゴリ名を保持する変数
+        let pendingCategory = "";
 
         container.querySelectorAll(".prompt-row").forEach((row) => {
+          // 非表示になっている行はスキップ
+          if (row.style.display === "none") return;
+
           let tagsToOutput = [];
 
-          let rowTags = Array.from(row.querySelectorAll(".prompt-tag")).map(
-            (t) => t.dataset.raw,
-          );
+          // 非表示のタグ（非表示中のコメント等）は無視して取得
+          let rowTags = Array.from(row.querySelectorAll(".prompt-tag"))
+            .filter((t) => t.style.display !== "none")
+            .map((t) => t.dataset.raw);
+
           if (rowTags.length === 0) return;
 
           let commentIndex = rowTags.findIndex((t) => t.startsWith("#"));
@@ -924,13 +1158,12 @@
               rowTags.splice(commentIndex, 1);
             }
 
-            // タグが残っていれば出力、なければ保留のまま次の行へ
             if (rowTags.length > 0) {
               tagsToOutput.push(pendingCategory);
               tagsToOutput.push(...rowTags);
-              pendingCategory = ""; // 出力したらクリア
+              pendingCategory = "";
             } else {
-              return; // コメントしかなかった行はここで終了
+              return;
             }
           } else {
             // ON: カテゴリ列を出力せずタグのみを反映する
@@ -944,7 +1177,6 @@
             }
           }
 
-          // 【修正箇所】末尾のカンマのみを削除し、括弧内のカンマは維持する
           tagsToOutput = tagsToOutput.map((t) => t.replace(/,+$/, "").trim());
 
           if (tagsToOutput.length > 0) {
@@ -954,6 +1186,7 @@
 
         document.getElementById("inputSpreadsheet").value = tsvLines.join("\n");
       }
+
       function toggleBreaks() {
         const isChecked = document.getElementById("appendBreak").checked;
         const container = document.getElementById("outputPreview");
@@ -1000,7 +1233,7 @@
           }
         });
 
-        syncPreviewToData();
+        toggleComments(); // Break付与後にも再計算と同期を呼ぶ
       }
 
       let draggedElement = null;
@@ -1039,7 +1272,7 @@
             }
 
             draggedElement = null;
-            syncPreviewToData();
+            toggleComments(); // syncPreviewToDataの代わりに呼び出し
           }
 
           dragSource = null;
@@ -1116,7 +1349,7 @@
                   area.insertBefore(newRow, afterRow);
                 }
               }
-              syncPreviewToData();
+              toggleComments(); // syncPreviewToDataの代わりに呼び出し
             }
           });
         });
@@ -1166,9 +1399,21 @@
           let newLines = [];
 
           container.querySelectorAll(".prompt-row").forEach((row) => {
+            const allTags = row.querySelectorAll(".prompt-tag");
+            // DOM上のタグ要素が完全にゼロになった場合のみ行を削除する
+            if (allTags.length === 0) {
+              row.remove();
+              return;
+            }
+
+            // 行自体が非表示になっている場合は出力テキストに含めない
+            if (row.style.display === "none") return;
+
             let rowTags = [];
-            row.querySelectorAll(".prompt-tag").forEach((tag) => {
-              rowTags.push(tag.dataset.raw);
+            allTags.forEach((tag) => {
+              if (tag.style.display !== "none") {
+                rowTags.push(tag.dataset.raw);
+              }
             });
 
             if (rowTags.length > 0) {
@@ -1213,8 +1458,6 @@
                 lineStr += ",";
               }
               newLines.push(lineStr);
-            } else {
-              row.remove();
             }
           });
           return newLines.join("\n");
@@ -1256,7 +1499,7 @@
             btn.style.backgroundColor = getComputedStyle(
               document.body,
             ).getPropertyValue("--copy-success-bg");
-            btn.innerText = "✅ コピー完了！";
+            btn.innerText = i18n[currentLang].copySuccess;
             setTimeout(() => {
               btn.style.backgroundColor = "";
               btn.innerText = originalText;
@@ -1264,7 +1507,7 @@
           })
           .catch((err) => {
             console.error(err);
-            btn.innerText = "❌ 失敗";
+            btn.innerText = i18n[currentLang].copyFail;
             btn.style.backgroundColor = "#c0392b";
             setTimeout(() => {
               btn.style.backgroundColor = "";
