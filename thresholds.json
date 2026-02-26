@@ -1,0 +1,38 @@
+[
+  {
+    "minCount": 1000000,
+    "maxCount": 999999999,
+    "colorCode": "#e74c3c",
+    "label": "100万～ (赤)"
+  },
+  {
+    "minCount": 100000,
+    "maxCount": 999999,
+    "colorCode": "#e67e22",
+    "label": "10万～ (橙)"
+  },
+  {
+    "minCount": 10000,
+    "maxCount": 99999,
+    "colorCode": "#f1c40f",
+    "label": "1万～ (黄)"
+  },
+  {
+    "minCount": 1000,
+    "maxCount": 9999,
+    "colorCode": "#024fff",
+    "label": "1000～ (青)"
+  },
+  {
+    "minCount": 1,
+    "maxCount": 999,
+    "colorCode": "#3498db",
+    "label": "1～999 (水色)"
+  },
+  {
+    "minCount": 0,
+    "maxCount": 0,
+    "colorCode": "#ffffff",
+    "label": "0 (白)"
+  }
+]

@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SD Visual Prompt Editor</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <style>
+      /* --- カラー変数の定義 --- */
+      :root {
+        --bg-color: #f4f4f9;
+        --text-color: #333;
+        --accent-color: #4a90e2;
+        --box-bg: #ffffff;
+        --border-color: #ccc;
+        --input-border: #ddd;
+        --label-color: #2c3e50;
+        --tab-bg: #ddd;
+        --tab-active-bg: #ffffff;
+        --sidebar-bg: #ffffff;
+        --search-border: #4a90e2;
+        --item-border: #eee;
+        --legend-bg: #2c3e50;
+        --legend-text: #fff;
+        --copy-success-bg: #1e6031;
+        --hover-bg: #e2e2e2;
+        --tag-bg: #2b2b2b;
+      }
+
+      body.dark-mode {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --accent-color: #bb86fc;
+        --box-bg: #1e1e1e;
+        --border-color: #333;
+        --input-border: #444;
+        --label-color: #bb86fc;
+        --tab-bg: #333;
+        --tab-active-bg: #1e1e1e;
+        --sidebar-bg: #1e1e1e;
+        --search-border: #bb86fc;
+        --item-border: #2c2c2c;
+        --legend-bg: #333;
+        --legend-text: #e0e0e0;
+        --copy-success-bg: #0d3a1d;
+        --hover-bg: #2a2a2a;
+        --tag-bg: #252525;
+      }
+
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        max-width: 1400px;
+        margin: auto;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      h2 {
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .help-link {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 0.85em;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        background-color: var(--box-bg);
+      }
+
+      .main-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 40px;
+      }
+      .converter-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .box-label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+        color: var(--label-color);
+      }
+
+      .tab-container {
+        display: flex;
+        gap: 5px;
+        margin-bottom: -1px;
+      }
+      .tab {
+        padding: 10px 25px;
+        cursor: pointer;
+        background: var(--tab-bg);
+        border: 1px solid var(--border-color);
+        border-bottom: none;
+        border-radius: 6px 6px 0 0;
+        font-weight: bold;
+        font-size: 0.9em;
+        color: var(--text-color);
+      }
+      .tab.active {
+        background: var(--tab-active-bg);
+        border-bottom: 2px solid var(--tab-active-bg);
+        color: var(--accent-color);
+      }
+
+      .input-box {
+        background: var(--box-bg);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 0 6px 6px 6px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      textarea {
+        width: 100%;
+        height: 180px;
+        font-family: "Consolas", monospace;
+        font-size: 14px;
+        padding: 12px;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+        background-color: var(--box-bg);
+        color: var(--text-color);
+      }
+
+      /* --- 入力エリアの小型コピーボタン用スタイル --- */
+      .mini-copy-btn {
+        position: absolute;
+        top: 35px; /* ラベルの下、テキストエリアの右上に配置 */
+        right: 10px;
+        padding: 4px 8px;
+        font-size: 11px;
+        background-color: var(--box-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.2s;
+        font-weight: normal; /* 既存のbuttonの太字を上書き */
+      }
+      .mini-copy-btn:hover {
+        opacity: 1;
+        background-color: var(--hover-bg);
+      }
+
+      /* --- ビジュアルエディタ用スタイル --- */
+      .preview-area {
+        width: 100%;
+        min-height: 250px;
+        height: max-content;
+        padding: 15px;
+        background-color: var(--box-bg);
+        color: var(--text-color);
+        font-family: "Consolas", monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 20px;
+        box-sizing: border-box;
+      }
+
+      .prompt-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px dashed transparent;
+        border-radius: 4px;
+        min-height: 40px;
+      }
+      .prompt-row:hover {
+        border-color: var(--border-color);
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+      .prompt-row.dragging {
+        opacity: 0.4;
+        background-color: var(--hover-bg);
+      }
+
+      .row-handle {
+        cursor: grab;
+        color: #aaa;
+        font-size: 18px;
+        padding: 0 5px;
+        user-select: none;
+      }
+
+      .prompt-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 10px;
+        background-color: var(--tag-bg);
+        border: 2px solid;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: grab;
+        user-select: none;
+        transition: transform 0.1s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .prompt-tag:active {
+        cursor: grabbing;
+        transform: scale(0.95);
+      }
+      .prompt-tag.dragging {
+        opacity: 0.5;
+        transform: scale(1.05);
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+        background: var(--box-bg);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        padding: 12px 24px;
+        cursor: pointer;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+        transition: background-color 0.2s, transform 0.1s;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      .copy-btn {
+        background-color: #34a853;
+        margin-bottom: 40px;
+      }
+
+      .legend-container {
+        display: flex;
+        gap: 8px;
+        font-size: 0.8em;
+        align-items: center;
+        margin-left: auto;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: var(--legend-bg);
+        color: var(--legend-text);
+      }
+      .color-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .search-sidebar {
+        background: var(--sidebar-bg);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+        align-self: start;
+      }
+      #tagSearch {
+        width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+        margin-bottom: 12px;
+        border: 2px solid var(--search-border);
+        border-radius: 4px;
+        background-color: var(--box-bg);
+        color: var(--text-color);
+      }
+      #searchResult {
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+      }
+      .tag-item {
+        padding: 10px;
+        border-bottom: 1px solid var(--item-border);
+        cursor: grab;
+      }
+      .tag-item:active {
+        cursor: grabbing;
+      }
+      .refresh-btn {
+        font-size: 0.8em;
+        padding: 8px 15px;
+      }
+      .status-success {
+        background-color: #27ae60;
+        cursor: default;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>
+      SD Visual Prompt Editor
+      <div class="header-controls">
+        <a href="readme.html" target="_blank" class="help-link">📘 使い方</a>
+        <a href="sd_syntax_guide.html" target="_blank" class="help-link"
+          >📜 SD構文</a
+        >
+        <label style="font-size: 0.85em; font-weight: bold">
+          <input
+            type="checkbox"
+            id="darkModeToggle"
+            onchange="toggleDarkMode()"
+          />
+          🌙 ダークモード
+        </label>
+        <button
+          id="statusBtn"
+          class="refresh-btn status-loading"
+          onclick="fetchFromDB()"
+        >
+          🔄 データ取得中...
+        </button>
+      </div>
+    </h2>
+
+    <div class="main-layout">
+      <div class="converter-main">
+        <div class="tab-container">
+          <div id="tabNormal" class="tab active" onclick="switchTab('normal')">
+            プロンプトエディタ
+          </div>
+          <div
+            id="tabSpreadsheet"
+            class="tab"
+            onclick="switchTab('spreadsheet')"
+          >
+            スプレッドシート
+          </div>
+        </div>
+
+        <div class="input-box">
+          <div id="areaNormal" style="position: relative">
+            <label class="box-label">1. プロンプトエディタ</label>
+            <button
+              class="mini-copy-btn"
+              onclick="copyResult('inputNormal', this)"
+            >
+              コピー
+            </button>
+            <textarea
+              id="inputNormal"
+              placeholder="1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>..."
+            ></textarea>
+          </div>
+
+          <div id="areaSpreadsheet" style="display: none; position: relative">
+            <label class="box-label"
+              >1. スプレッドシート/TSVデータ貼り付け</label
+            >
+            <button
+              class="mini-copy-btn"
+              onclick="copyResult('inputSpreadsheet', this)"
+            >
+              コピー
+            </button>
+            <textarea
+              id="inputSpreadsheet"
+              placeholder="カテゴリ名	タグ1	タグ2..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button
+            onclick="convert()"
+            style="background-color: #fe66f1; font-size: 1.1em"
+          >
+            🔽 ビジュアルエディタに反映
+          </button>
+
+          <button
+            id="btnUpNormal"
+            onclick="reflectToNormal()"
+            style="background-color: #3498db; font-size: 1.1em; display: block"
+          >
+            🔼 プロンプトエディタに反映
+          </button>
+
+          <button
+            id="btnUpSpreadsheet"
+            onclick="reflectToSpreadsheet()"
+            style="background-color: #3498db; font-size: 1.1em; display: none"
+          >
+            🔼 スプレッドシートに反映
+          </button>
+
+          <div style="padding-left: 15px; display: none" id="stripOption">
+            <input type="checkbox" id="stripHeaders" />
+            <label for="stripHeaders" style="font-size: 0.9em; cursor: pointer"
+              >コメントアウトを除去</label
+            >
+          </div>
+          <div style="padding-left: 15px; display: block" id="breakOption">
+            <input type="checkbox" id="appendBreak" onchange="toggleBreaks()" />
+            <label for="appendBreak" style="font-size: 0.9em; cursor: pointer"
+              >行末にBREAKを付加</label
+            >
+          </div>
+          <div id="legendArea" class="legend-container"></div>
+        </div>
+
+        <label class="box-label"
+          >2. ビジュアルエディタ
+          (ドラッグ＆ドロップで追加・移動・枠外へ削除)</label
+        >
+        <div id="outputPreview" class="preview-area"></div>
+        <button class="copy-btn" onclick="copyResult('outputRaw', this)">
+          プロンプトとしてコピー
+        </button>
+        <textarea id="outputRaw" style="display: none"></textarea>
+      </div>
+
+      <div class="search-sidebar">
+        <label class="box-label">タグ検索パレット</label>
+        <input
+          type="text"
+          id="tagSearch"
+          placeholder="キーワードを入力..."
+          oninput="searchTags()"
+          disabled
+        />
+        <div id="searchResult" onscroll="handleSearchScroll()"></div>
+      </div>
+    </div>
+
+    <script>
+      let tagDatabase = [];
+      let tagMap = new Map();
+      let allThresholds = [];
+      let currentThresholds = [];
+      let currentMode = "normal";
+
+      window.onload = () => {
+        initTheme();
+        fetchFromDB();
+        initDragAndDrop();
+      };
+
+      function initTheme() {
+        if (localStorage.getItem("theme") === "dark") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("darkModeToggle").checked = true;
+        }
+      }
+
+      function toggleDarkMode() {
+        const isDark = document.getElementById("darkModeToggle").checked;
+        document.body.classList.toggle("dark-mode", isDark);
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      }
+
+      function switchTab(mode) {
+        currentMode = mode;
+        document
+          .getElementById("tabSpreadsheet")
+          .classList.toggle("active", mode === "spreadsheet");
+        document
+          .getElementById("tabNormal")
+          .classList.toggle("active", mode === "normal");
+        document.getElementById("areaSpreadsheet").style.display =
+          mode === "spreadsheet" ? "block" : "none";
+        document.getElementById("areaNormal").style.display =
+          mode === "normal" ? "block" : "none";
+        document.getElementById("stripOption").style.display =
+          mode === "spreadsheet" ? "block" : "none";
+        document.getElementById("breakOption").style.display =
+          mode === "normal" ? "block" : "none";
+
+        document.getElementById("btnUpNormal").style.display =
+          mode === "normal" ? "block" : "none";
+        document.getElementById("btnUpSpreadsheet").style.display =
+          mode === "spreadsheet" ? "block" : "none";
+      }
+
+      async function fetchFromDB() {
+        const btn = document.getElementById("statusBtn");
+        try {
+          const response = await fetch("danboru_dictionary.json");
+          if (!response.ok) throw new Error("データの読み込みに失敗しました");
+          const data = await response.json();
+          tagDatabase = data.tags;
+          tagMap = new Map(
+            tagDatabase.map((i) => [
+              i.t.trim().toLowerCase().replace(/_/g, " "),
+              i.c,
+            ])
+          );
+          allThresholds = data.thresholds;
+          currentThresholds = allThresholds;
+          document.getElementById("legendArea").innerHTML = currentThresholds
+            .map(
+              (t) =>
+                `<div class="legend-item" title="${t.minCount.toLocaleString()} ～"><span class="color-dot" style="background-color: ${
+                  t.colorCode
+                }"></span><span>${t.label.split("(")[0]}</span></div>`
+            )
+            .join("");
+          btn.innerText = `✅ 取得完了: ${tagDatabase.length.toLocaleString()}件`;
+          btn.className = "refresh-btn status-success";
+          document.getElementById("tagSearch").disabled = false;
+        } catch (err) {
+          console.error(err);
+          btn.innerText = "❌ 取得失敗";
+          btn.style.backgroundColor = "#e74c3c";
+        }
+      }
+
+      function getColorByCount(count) {
+        for (let t of currentThresholds) {
+          if (count >= t.minCount && count < t.maxCount) return t.colorCode;
+        }
+        return (
+          currentThresholds.find((t) => t.minCount === 0)?.colorCode ||
+          "#e74c3c"
+        );
+      }
+
+      function escapeHTML(str) {
+        if (!str) return "";
+        return str
+          .toString()
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function splitTagsSmart(line) {
+        let result = [];
+        let current = "";
+        let depth = 0;
+        let angle = 0;
+
+        let commentPart = "";
+        const hashIndex = line.indexOf("#");
+        if (hashIndex !== -1) {
+          commentPart = line.substring(hashIndex).trim();
+          line = line.substring(0, hashIndex);
+        }
+
+        // 制御タグおよびLoRA等のタグ（<...>）を分離処理する
+        let pLine = line
+          .replace(
+            /\b(BREAK|AND|ADDROW|ADDCOMM|ADDCOL|ADDBASE)\b/gi,
+            " , $1 , "
+          )
+          .replace(/(<[^>]+>)/g, " , $1 , ");
+
+        for (let i = 0; i < pLine.length; i++) {
+          let char = pLine[i];
+          if (char === "(" || char === "[" || char === "{") depth++;
+          else if (char === ")" || char === "]" || char === "}")
+            depth = Math.max(0, depth - 1);
+          else if (char === "<") angle++;
+          else if (char === ">") angle = Math.max(0, angle - 1);
+
+          if (char === "," && depth === 0 && angle === 0) {
+            if (current.trim()) result.push(current.trim());
+            current = "";
+          } else {
+            current += char;
+          }
+        }
+        if (current.trim()) result.push(current.trim());
+
+        if (commentPart !== "") {
+          result.push(commentPart);
+        }
+
+        return result.filter((t) => t !== "");
+      }
+
+      function evaluateInternalParts(coreTag) {
+        const commaParts = coreTag.split(/([^,]+)/);
+        let resultHtml = "";
+
+        for (let p of commaParts) {
+          if (!p) continue;
+
+          if (p.includes(",")) {
+            resultHtml += escapeHTML(p).replace(/ /g, "&nbsp;");
+          } else {
+            const match = p.match(/^(\s*)(.*?)(\s*)$/);
+            const prefixSpace = match[1] || "";
+            const actualTag = match[2] || "";
+            const suffixSpace = match[3] || "";
+
+            let tagHtml = "";
+            if (actualTag) {
+              const subMatch = actualTag.match(/^(.*?)(:[\d.]+)?$/);
+              const pureTag = subMatch[1];
+              const weightStr = subMatch[2] || "";
+
+              const cleanSub = pureTag.trim().toLowerCase().replace(/_/g, " ");
+
+              if (tagMap.has(cleanSub)) {
+                const count = tagMap.get(cleanSub);
+                const color = getColorByCount(count);
+                tagHtml = `<span style="color: ${color}">${escapeHTML(
+                  pureTag
+                ).replace(/ /g, "&nbsp;")}</span>`;
+                if (weightStr) {
+                  tagHtml += `<span style="color: #aaa">${weightStr}</span>`;
+                }
+              } else {
+                const parts = pureTag.split(/([\s_]+)/);
+                let words = [];
+                let wordIndices = [];
+
+                for (let i = 0; i < parts.length; i++) {
+                  if (i % 2 === 0 && parts[i].length > 0) {
+                    words.push(parts[i]);
+                    wordIndices.push(i);
+                  }
+                }
+
+                let i = 0;
+                let resultParts = [...parts];
+
+                while (i < words.length) {
+                  let found = false;
+                  for (let len = words.length - i; len > 0; len--) {
+                    let phrase = words
+                      .slice(i, i + len)
+                      .join(" ")
+                      .toLowerCase();
+                    let count = tagMap.get(phrase);
+
+                    if (count !== undefined) {
+                      let startIndex = wordIndices[i];
+                      let endIndex = wordIndices[i + len - 1];
+                      let originalStr = "";
+                      for (let j = startIndex; j <= endIndex; j++) {
+                        originalStr += parts[j];
+                      }
+                      let color = getColorByCount(count);
+                      resultParts[
+                        startIndex
+                      ] = `<span style="color: ${color}">${escapeHTML(
+                        originalStr
+                      ).replace(/ /g, "&nbsp;")}</span>`;
+                      for (let j = startIndex + 1; j <= endIndex; j++) {
+                        resultParts[j] = "";
+                      }
+                      i += len;
+                      found = true;
+                      break;
+                    }
+                  }
+                  if (!found) {
+                    let startIndex = wordIndices[i];
+                    let color = getColorByCount(0);
+                    resultParts[
+                      startIndex
+                    ] = `<span style="color: ${color}">${escapeHTML(
+                      parts[startIndex]
+                    ).replace(/ /g, "&nbsp;")}</span>`;
+                    i++;
+                  }
+                }
+
+                tagHtml = resultParts
+                  .map((rp) => {
+                    if (rp.startsWith("<span")) return rp;
+                    return escapeHTML(rp).replace(/ /g, "&nbsp;");
+                  })
+                  .join("");
+
+                if (weightStr) {
+                  tagHtml += `<span style="color: #aaa">${weightStr}</span>`;
+                }
+              }
+            }
+            resultHtml +=
+              escapeHTML(prefixSpace).replace(/ /g, "&nbsp;") +
+              tagHtml +
+              escapeHTML(suffixSpace).replace(/ /g, "&nbsp;");
+          }
+        }
+        return resultHtml;
+      }
+
+      function createTagElement(rawTag) {
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "prompt-tag";
+        tagSpan.draggable = true;
+        tagSpan.dataset.raw = rawTag;
+
+        tagSpan.addEventListener("click", function () {
+          copyTag(this.dataset.raw, this);
+        });
+
+        if (rawTag.startsWith("#")) {
+          tagSpan.style.borderColor = "#27ae60";
+          tagSpan.style.color = "#27ae60";
+          tagSpan.style.borderRadius = "4px";
+          tagSpan.textContent = rawTag;
+          return tagSpan;
+        }
+
+        if (rawTag.startsWith("<") && rawTag.endsWith(">")) {
+          tagSpan.style.borderColor = "#e84393";
+          tagSpan.style.color = "#e84393";
+          tagSpan.style.borderRadius = "4px";
+          tagSpan.textContent = rawTag;
+          return tagSpan;
+        }
+
+        const lowerRaw = rawTag.toLowerCase();
+        const controlTags = [
+          "break",
+          "and",
+          "addrow",
+          "addcomm",
+          "addcol",
+          "addbase",
+        ];
+        if (controlTags.includes(lowerRaw)) {
+          tagSpan.style.borderColor = "#e84393";
+          tagSpan.style.color = "#e84393";
+          tagSpan.style.borderRadius = "4px";
+          tagSpan.textContent = rawTag;
+          return tagSpan;
+        }
+
+        const match = rawTag.match(/^([({\[]*)(.+?)([:\d.]*[)}\]]*)$/);
+        const prefix = match ? match[1] : "";
+        const coreTag = match ? match[2] : rawTag;
+        const suffix = match ? match[3] : "";
+
+        const cleanCore = coreTag.trim().toLowerCase().replace(/_/g, " ");
+
+        if (tagMap.has(cleanCore)) {
+          const exactCount = tagMap.get(cleanCore);
+          const evalColor = getColorByCount(exactCount);
+          tagSpan.style.borderColor = evalColor;
+          tagSpan.style.color = evalColor;
+          tagSpan.textContent = rawTag;
+        } else {
+          const words = cleanCore.split(/\s+/).filter((w) => w.length > 0);
+
+          if (words.length > 1 || coreTag.includes(",")) {
+            tagSpan.style.borderColor = "#6c757d";
+            tagSpan.style.color = "#aaa";
+
+            const prefixHtml = escapeHTML(prefix).replace(/ /g, "&nbsp;");
+            const coreHtml = evaluateInternalParts(coreTag);
+            const suffixHtml = escapeHTML(suffix).replace(/ /g, "&nbsp;");
+
+            tagSpan.innerHTML = prefixHtml + coreHtml + suffixHtml;
+          } else {
+            const evalColor = getColorByCount(0);
+            tagSpan.style.borderColor = evalColor;
+            tagSpan.style.color = evalColor;
+            tagSpan.textContent = rawTag;
+          }
+        }
+
+        return tagSpan;
+      }
+
+      function buildVisualPreview(containerId, textLines) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+
+        textLines.forEach((lineText) => {
+          if (!lineText.trim()) return;
+          const rowDiv = document.createElement("div");
+          rowDiv.className = "prompt-row";
+          rowDiv.draggable = true;
+
+          const handle = document.createElement("div");
+          handle.className = "row-handle";
+          handle.innerHTML = "≡";
+          rowDiv.appendChild(handle);
+
+          const tags = splitTagsSmart(lineText);
+          tags.forEach((tag) => {
+            rowDiv.appendChild(createTagElement(tag));
+          });
+
+          container.appendChild(rowDiv);
+        });
+      }
+
+      function convert() {
+        let posLines = [];
+        const doAppendBreak = document.getElementById("appendBreak")
+          ? document.getElementById("appendBreak").checked
+          : false;
+
+        if (currentMode === "spreadsheet") {
+          const input = document
+            .getElementById("inputSpreadsheet")
+            .value.replace(/^[ \t]*[\r\n]+/gm, "");
+          const strip = document.getElementById("stripHeaders").checked;
+
+          input.split(/\r?\n/).forEach((line) => {
+            let match = line.match(/^([^\t\n]+)\t+(.+?)[\t ]*$/);
+            if (match) {
+              let cat = match[1].trim();
+              let tagStr = match[2].trim().replace(/\t+/g, ", ");
+
+              let tags = splitTagsSmart(tagStr);
+              if (tags.length === 0) return;
+
+              if (!strip) posLines.push("# " + cat);
+              posLines.push(tags.join(", "));
+            }
+          });
+        } else {
+          const input = document.getElementById("inputNormal").value;
+
+          input.split(/\r?\n/).forEach((line) => {
+            if (!line.trim()) return;
+            let tags = splitTagsSmart(line);
+            if (tags.length === 0) return;
+
+            if (doAppendBreak) {
+              let commentTag = null;
+              if (tags.length > 0 && tags[tags.length - 1].startsWith("#")) {
+                commentTag = tags.pop();
+              }
+
+              if (tags.length > 0) {
+                const lastRealTag = tags[tags.length - 1].toLowerCase();
+                if (
+                  ![
+                    "break",
+                    "and",
+                    "addrow",
+                    "addcomm",
+                    "addcol",
+                    "addbase",
+                  ].includes(lastRealTag)
+                ) {
+                  tags.push("BREAK");
+                }
+              }
+
+              if (commentTag) {
+                tags.push(commentTag);
+              }
+            }
+            posLines.push(tags.join(", "));
+          });
+        }
+
+        buildVisualPreview("outputPreview", posLines);
+        syncPreviewToData();
+      }
+
+      // --- ↑プロンプトエディタへの反映 ---
+      function reflectToNormal() {
+        syncPreviewToData();
+        document.getElementById("inputNormal").value =
+          document.getElementById("outputRaw").value;
+      }
+
+      // --- ↑スプレッドシートへの反映 (TSV形式) ---
+      function reflectToSpreadsheet() {
+        const container = document.getElementById("outputPreview");
+        const strip = document.getElementById("stripHeaders").checked;
+        let tsvLines = [];
+        let pendingCategory = ""; // ★行をまたいでカテゴリ名を保持する変数
+
+        container.querySelectorAll(".prompt-row").forEach((row) => {
+          let tagsToOutput = [];
+
+          let rowTags = Array.from(row.querySelectorAll(".prompt-tag")).map(
+            (t) => t.dataset.raw
+          );
+          if (rowTags.length === 0) return;
+
+          let commentIndex = rowTags.findIndex((t) => t.startsWith("#"));
+
+          if (!strip) {
+            // OFF: コメントアウトをカテゴリとして抽出・保持する
+            if (commentIndex !== -1) {
+              pendingCategory = rowTags[commentIndex].substring(1).trim();
+              rowTags.splice(commentIndex, 1);
+            }
+
+            // タグが残っていれば出力、なければ保留のまま次の行へ
+            if (rowTags.length > 0) {
+              tagsToOutput.push(pendingCategory);
+              tagsToOutput.push(...rowTags);
+              pendingCategory = ""; // 出力したらクリア
+            } else {
+              return; // コメントしかなかった行はここで終了
+            }
+          } else {
+            // ON: カテゴリ列を出力せずタグのみを反映する
+            if (commentIndex !== -1) {
+              rowTags.splice(commentIndex, 1);
+            }
+            if (rowTags.length > 0) {
+              tagsToOutput.push(...rowTags);
+            } else {
+              return;
+            }
+          }
+
+          // 【修正箇所】末尾のカンマのみを削除し、括弧内のカンマは維持する
+          tagsToOutput = tagsToOutput.map((t) => t.replace(/,+$/, "").trim());
+
+          if (tagsToOutput.length > 0) {
+            tsvLines.push(tagsToOutput.join("\t"));
+          }
+        });
+
+        document.getElementById("inputSpreadsheet").value = tsvLines.join("\n");
+      }
+      function toggleBreaks() {
+        const isChecked = document.getElementById("appendBreak").checked;
+        const container = document.getElementById("outputPreview");
+        const rows = container.querySelectorAll(".prompt-row");
+        const controlTags = [
+          "break",
+          "and",
+          "addrow",
+          "addcomm",
+          "addcol",
+          "addbase",
+        ];
+
+        rows.forEach((row) => {
+          const tags = Array.from(row.querySelectorAll(".prompt-tag"));
+          if (tags.length === 0) return;
+
+          let targetIndex = tags.length - 1;
+          let commentTag = null;
+
+          if (tags[targetIndex].dataset.raw.startsWith("#")) {
+            commentTag = tags[targetIndex];
+            targetIndex--;
+          }
+
+          if (targetIndex < 0) return;
+
+          const targetTagElement = tags[targetIndex];
+          const targetTagRaw = targetTagElement.dataset.raw.toLowerCase();
+
+          if (isChecked) {
+            if (!controlTags.includes(targetTagRaw)) {
+              const breakTag = createTagElement("BREAK");
+              if (commentTag) {
+                row.insertBefore(breakTag, commentTag);
+              } else {
+                row.appendChild(breakTag);
+              }
+            }
+          } else {
+            if (targetTagRaw === "break") {
+              targetTagElement.remove();
+            }
+          }
+        });
+
+        syncPreviewToData();
+      }
+
+      let draggedElement = null;
+      let dragSource = null;
+      let dragTagText = "";
+      let isDroppedInValidZone = false;
+
+      function initDragAndDrop() {
+        document.addEventListener("dragstart", (e) => {
+          isDroppedInValidZone = false;
+
+          if (
+            e.target.classList.contains("prompt-tag") ||
+            e.target.classList.contains("prompt-row")
+          ) {
+            draggedElement = e.target;
+            dragSource = "internal";
+            setTimeout(() => e.target.classList.add("dragging"), 0);
+          } else if (
+            e.target.classList.contains("tag-item") ||
+            e.target.closest(".tag-item")
+          ) {
+            dragSource = "search";
+            const item = e.target.closest(".tag-item");
+            dragTagText = item.dataset.tag;
+            e.dataTransfer.setData("text/plain", dragTagText);
+          }
+        });
+
+        document.addEventListener("dragend", (e) => {
+          if (dragSource === "internal" && draggedElement) {
+            draggedElement.classList.remove("dragging");
+
+            if (!isDroppedInValidZone) {
+              draggedElement.remove();
+            }
+
+            draggedElement = null;
+            syncPreviewToData();
+          }
+
+          dragSource = null;
+          dragTagText = "";
+        });
+
+        document.querySelectorAll(".preview-area").forEach((area) => {
+          area.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect =
+              dragSource === "search" ? "copy" : "move";
+
+            if (dragSource === "internal" && draggedElement) {
+              if (draggedElement.classList.contains("prompt-row")) {
+                const afterElement = getDragAfterElement(area, e.clientY, true);
+                if (afterElement == null) {
+                  area.appendChild(draggedElement);
+                } else {
+                  area.insertBefore(draggedElement, afterElement);
+                }
+              } else if (draggedElement.classList.contains("prompt-tag")) {
+                const dropzoneRow = e.target.closest(".prompt-row");
+                if (dropzoneRow) {
+                  const afterElement = getDragAfterElement(
+                    dropzoneRow,
+                    e.clientX,
+                    false
+                  );
+                  if (afterElement == null) {
+                    dropzoneRow.appendChild(draggedElement);
+                  } else {
+                    dropzoneRow.insertBefore(draggedElement, afterElement);
+                  }
+                }
+              }
+            }
+          });
+
+          area.addEventListener("drop", (e) => {
+            e.preventDefault();
+            isDroppedInValidZone = true;
+
+            if (dragSource === "search" && dragTagText) {
+              const newTag = createTagElement(dragTagText);
+              const dropzoneRow = e.target.closest(".prompt-row");
+
+              if (dropzoneRow) {
+                const afterElement = getDragAfterElement(
+                  dropzoneRow,
+                  e.clientX,
+                  false
+                );
+                if (afterElement == null) {
+                  dropzoneRow.appendChild(newTag);
+                } else {
+                  dropzoneRow.insertBefore(newTag, afterElement);
+                }
+              } else {
+                const newRow = document.createElement("div");
+                newRow.className = "prompt-row";
+                newRow.draggable = true;
+
+                const handle = document.createElement("div");
+                handle.className = "row-handle";
+                handle.innerHTML = "≡";
+                newRow.appendChild(handle);
+
+                newRow.appendChild(newTag);
+
+                const afterRow = getDragAfterElement(area, e.clientY, true);
+                if (afterRow == null) {
+                  area.appendChild(newRow);
+                } else {
+                  area.insertBefore(newRow, afterRow);
+                }
+              }
+              syncPreviewToData();
+            }
+          });
+        });
+      }
+
+      function getDragAfterElement(container, position, isRow) {
+        const draggableElements = [
+          ...container.querySelectorAll(
+            isRow ? ".prompt-row:not(.dragging)" : ".prompt-tag:not(.dragging)"
+          ),
+        ];
+        return draggableElements.reduce(
+          (closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = isRow
+              ? position - box.top - box.height / 2
+              : position - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) {
+              return { offset: offset, element: child };
+            } else {
+              return closest;
+            }
+          },
+          { offset: Number.NEGATIVE_INFINITY }
+        ).element;
+      }
+
+      function syncPreviewToData() {
+        const spaceBeforeTags = [
+          "and",
+          "addrow",
+          "addcomm",
+          "addcol",
+          "addbase",
+        ];
+        const spaceAfterTags = [
+          "break",
+          "and",
+          "addrow",
+          "addcomm",
+          "addcol",
+          "addbase",
+        ];
+
+        function reconstructText(containerId) {
+          const container = document.getElementById(containerId);
+          let newLines = [];
+
+          container.querySelectorAll(".prompt-row").forEach((row) => {
+            let rowTags = [];
+            row.querySelectorAll(".prompt-tag").forEach((tag) => {
+              rowTags.push(tag.dataset.raw);
+            });
+
+            if (rowTags.length > 0) {
+              let lineStr = "";
+              for (let i = 0; i < rowTags.length; i++) {
+                let currentTag = rowTags[i];
+                let currentLower = currentTag.toLowerCase();
+                let currentIsLora =
+                  currentTag.startsWith("<") && currentTag.endsWith(">");
+
+                if (i === 0) {
+                  lineStr += currentTag;
+                } else {
+                  let prevLower = rowTags[i - 1].toLowerCase();
+                  let prevIsLora =
+                    rowTags[i - 1].startsWith("<") &&
+                    rowTags[i - 1].endsWith(">");
+
+                  if (
+                    spaceAfterTags.includes(prevLower) ||
+                    spaceBeforeTags.includes(currentLower) ||
+                    prevIsLora ||
+                    currentIsLora
+                  ) {
+                    lineStr += " " + currentTag;
+                  } else {
+                    lineStr += ", " + currentTag;
+                  }
+                }
+              }
+
+              let lastTag = rowTags[rowTags.length - 1];
+              let lastTagLower = lastTag.toLowerCase();
+              let lastIsLora = lastTag.startsWith("<") && lastTag.endsWith(">");
+              let isLastComment = lastTag.startsWith("#");
+
+              if (
+                !spaceAfterTags.includes(lastTagLower) &&
+                !lastIsLora &&
+                !isLastComment
+              ) {
+                lineStr += ",";
+              }
+              newLines.push(lineStr);
+            } else {
+              row.remove();
+            }
+          });
+          return newLines.join("\n");
+        }
+
+        const posText = reconstructText("outputPreview");
+        document.getElementById("outputRaw").value = posText;
+      }
+
+      function universalCopy(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        } else {
+          return new Promise((resolve, reject) => {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+              document.execCommand("copy") ? resolve() : reject();
+            } catch (err) {
+              reject(err);
+            } finally {
+              document.body.removeChild(textArea);
+            }
+          });
+        }
+      }
+
+      function copyResult(id, btn) {
+        const text = document.getElementById(id).value;
+        const originalText = btn.innerText;
+        universalCopy(text)
+          .then(() => {
+            btn.style.backgroundColor = getComputedStyle(
+              document.body
+            ).getPropertyValue("--copy-success-bg");
+            btn.innerText = "✅ コピー完了！";
+            setTimeout(() => {
+              btn.style.backgroundColor = "";
+              btn.innerText = originalText;
+            }, 800);
+          })
+          .catch((err) => {
+            console.error(err);
+            btn.innerText = "❌ 失敗";
+            btn.style.backgroundColor = "#c0392b";
+            setTimeout(() => {
+              btn.style.backgroundColor = "";
+              btn.innerText = originalText;
+            }, 1000);
+          });
+      }
+
+      function copyTag(tag, element) {
+        universalCopy(tag).then(() => {
+          const originalBg = element.style.backgroundColor;
+          element.style.backgroundColor = "rgba(40, 167, 69, 0.2)";
+          element.style.transition = "background-color 0.2s";
+          setTimeout(() => {
+            element.style.backgroundColor = originalBg;
+            setTimeout(() => (element.style.transition = ""), 200);
+          }, 300);
+        });
+      }
+
+      let currentSearchResults = [];
+      let currentSearchIndex = 0;
+      const SEARCH_BATCH_SIZE = 50;
+
+      function searchTags() {
+        const query = document
+          .getElementById("tagSearch")
+          .value.toLowerCase()
+          .replace(/_/g, " ");
+        const resultDiv = document.getElementById("searchResult");
+
+        if (!query) {
+          resultDiv.innerHTML = "";
+          currentSearchResults = [];
+          return;
+        }
+
+        currentSearchResults = tagDatabase
+          .filter(
+            (i) =>
+              i.t.toLowerCase().replace(/_/g, " ").includes(query) ||
+              (i.tr && i.tr.toLowerCase().includes(query))
+          )
+          .sort((a, b) => b.c - a.c);
+
+        currentSearchIndex = 0;
+        resultDiv.innerHTML = "";
+        renderNextSearchBatch();
+      }
+
+      function renderNextSearchBatch() {
+        if (currentSearchIndex >= currentSearchResults.length) return;
+
+        const resultDiv = document.getElementById("searchResult");
+        const nextBatch = currentSearchResults.slice(
+          currentSearchIndex,
+          currentSearchIndex + SEARCH_BATCH_SIZE
+        );
+
+        const html = nextBatch
+          .map(
+            (i) => `<div class="tag-item" draggable="true" data-tag="${
+              i.t
+            }" onclick="copyTag('${i.t}', this)">
+                  <span style="font-weight:bold; color:var(--text-color);">${
+                    i.t
+                  }</span> 
+                  <span style="background-color: var(--tag-bg); padding: 2px 8px; border-radius: 12px; color:${getColorByCount(
+                    i.c
+                  )}; float:right; font-weight:bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${i.c.toLocaleString()}</span>
+                  <div style="color:#7f8c8d; font-size:0.85em; margin-top:4px;">${
+                    i.tr || ""
+                  }</div>
+                </div>`
+          )
+          .join("");
+
+        resultDiv.insertAdjacentHTML("beforeend", html);
+        currentSearchIndex += SEARCH_BATCH_SIZE;
+      }
+
+      function handleSearchScroll() {
+        const resultDiv = document.getElementById("searchResult");
+        if (
+          resultDiv.scrollTop + resultDiv.clientHeight >=
+          resultDiv.scrollHeight - 50
+        ) {
+          renderNextSearchBatch();
+        }
+      }
+    </script>
+  </body>
+</html>

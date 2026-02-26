@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SD Visual Prompt Editor - ユーザーマニュアル</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <style>
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      h1 {
+        color: #2c3e50;
+        border-bottom: 3px solid #4a90e2;
+        padding-bottom: 10px;
+        margin-top: 0;
+      }
+      h2 {
+        color: #4a90e2;
+        margin-top: 30px;
+        border-left: 5px solid #4a90e2;
+        padding-left: 10px;
+      }
+      h3 {
+        color: #2c3e50;
+      }
+      p,
+      ul,
+      ol {
+        font-size: 15px;
+        color: #555;
+      }
+      .step-box {
+        background: #fdfdfd;
+        border: 1px solid #eee;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+      .highlight {
+        background-color: #e8f0fe;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #1a73e8;
+        font-weight: bold;
+      }
+      .btn-green {
+        background-color: #e6f4ea;
+        color: #27ae60;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Consolas", monospace;
+        color: #d63031;
+      }
+      .tag-pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 2px solid;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9em;
+        margin: 0 2px;
+      }
+      .tag-control {
+        border-radius: 4px;
+        border-color: #e84393;
+        color: #e84393;
+      }
+      .tag-comment {
+        border-radius: 4px;
+        border-color: #27ae60;
+        color: #27ae60;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9em;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f9;
+        color: #888;
+      }
+      .copy-target td {
+        border: 2px solid #4a90e2;
+        background-color: #eaf3fc;
+        color: #333;
+      }
+      .warning-text {
+        color: #d63031;
+        font-size: 0.9em;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SD Visual Prompt Editor ユーザーマニュアル</h1>
+      <p>
+        SD Visual Prompt Editorは、Stable
+        Diffusion向けのプロンプト（呪文）を、Danbooruのタグ出現頻度データに基づいて自動で評価・色分けし、直感的なビジュアルエディタ上でドラッグ＆ドロップによる追加・並び替え・削除ができるWebツールです。
+      </p>
+
+      <h2>1. 基本的な使い方（2つの入力タブ）</h2>
+      <p>
+        ご自身のプロンプト管理方法に合わせて、上部のタブを切り替えて使用します。
+      </p>
+
+      <div class="step-box">
+        <h3>A. 「プロンプトエディタ」タブ（直接入力）</h3>
+        <p>
+          テキストエディタやWebUIから、カンマ区切りのプロンプトをそのまま貼り付けるモードです。
+        </p>
+        <ol>
+          <li>「1. プロンプトエディタ」エリアにテキストを入力します。</li>
+          <li>
+            <span class="highlight">↓ ビジュアルエディタに反映</span>
+            ボタンをクリックすると、下の作業領域にタグが視覚化されます。
+          </li>
+          <li>
+            ビジュアルエディタで編集を行った後、<span class="btn-green"
+              >↑ プロンプトエディタに反映</span
+            >
+            ボタンを押すと、編集結果が上のテキストボックスに上書きされます。
+          </li>
+        </ol>
+      </div>
+
+      <div class="step-box">
+        <h3>B. 「スプレッドシート」タブ（表計算データからの一括読込）</h3>
+        <p>
+          ExcelやGoogleスプレッドシート等で「カテゴリ」ごとにタグを管理している方に最適なモードです。<br />
+          以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。
+        </p>
+
+        <table>
+          <tr>
+            <th>カテゴリ名 (※ここはコピーしない)</th>
+            <th>タグ1</th>
+            <th>タグ2</th>
+          </tr>
+          <tr class="copy-target">
+            <td>髪型</td>
+            <td>long hair</td>
+            <td>blonde hair</td>
+          </tr>
+          <tr class="copy-target">
+            <td>Negative</td>
+            <td>worst quality</td>
+            <td>low quality</td>
+          </tr>
+        </table>
+
+        <ul>
+          <li>
+            <strong>1画面への統合:</strong>
+            「Negative」などのカテゴリ名もすべて1つのビジュアルエディタ上に読み込まれ、<code
+              ># Negative</code
+            >
+            という緑色のコメントブロックとして区切られて表示されます。
+          </li>
+          <li>
+            <strong>↑ スプレッドシートに反映（TSV出力）:</strong>
+            編集後、上向きの反映ボタンを押すと、再び表計算ソフトに貼り付けられるタブ区切り形式（TSV）に変換されます。
+            <br />※「コメントアウトを除去」が<strong>オフ</strong>の場合、緑色のコメントブロックが1列目の「カテゴリ名」として復元されます。
+          </li>
+        </ul>
+      </div>
+
+      <h2>2. ビジュアルエディタの強力な機能</h2>
+      <p>
+        下の「ビジュアルエディタ」エリアは、マウス操作だけでプロンプトを構築できるキャンバスです。
+      </p>
+
+      <ul>
+        <li>
+          <strong>パレットからの追加:</strong>
+          右側の「タグ検索パレット」から、使いたいタグをドラッグしてエディタ内の好きな場所にドロップ（挿入）できます。何もない場所にドロップすると新しい行が作成されます。
+        </li>
+        <li>
+          <strong>直感的な並び替え:</strong>
+          タグ（ピル）を掴んで自由な位置へ移動できます。左端の「≡」マークを掴むと、行単位での順番入れ替えも可能です。
+        </li>
+        <li>
+          <strong>枠外ドロップで削除 (ゴミ箱):</strong>
+          不要になったタグや行は、掴んで<strong>ビジュアルエディタの枠外に放り投げる</strong>だけでサクッと削除できます。
+        </li>
+        <li>
+          <strong>動的なBREAKトグル:</strong>
+          「行末にBREAKを付加」のチェックボックスをオン/オフすると、エディタ上のすべての行末に一斉に
+          <code>BREAK</code> タグが出現/消失します。
+        </li>
+      </ul>
+
+      <h2>3. Stable Diffusion特有の構文を安全に処理</h2>
+
+      <div class="step-box">
+        <h3>💡 括弧内のカンマを保護</h3>
+        <p>
+          <code>(red hair, blue eyes:1.2)</code>
+          のように強調構文のカッコ内にカンマが含まれていても、分割されることなく1つのタグとして安全に扱われます。
+        </p>
+
+        <h3>💡 制御タグとLoRAのスマート処理</h3>
+        <p>
+          <span class="tag-pill tag-control">BREAK</span>
+          などのレイアウト制御タグ、および
+          <span class="tag-pill tag-control">&lt;lora:my_lora:1.0&gt;</span>
+          のようなタグは<strong>ピンク色の四角いピル</strong>で表示されます。連続するLoRAタグも正確に分割して管理でき、テキスト出力時は不要なカンマを付けずスマートに結合されます。
+        </p>
+
+        <h3>💡 コメントアウト機能の柔軟な運用 (#)</h3>
+        <p>
+          <code>#</code> 以降の文字列は<strong
+            >緑色の四角いコメントブロック</strong
+          >
+          <span class="tag-pill tag-comment"># ここはメモ</span>
+          として扱われます。<br />
+          これを意図的に「行の途中」に配置することで、その後ろに続くタグを一時的にSDに無視させる（無効化する）といった柔軟なテスト運用が可能です。
+        </p>
+      </div>
+
+      <h2>4. タグ検索パレット（サイドバー）</h2>
+      <p>膨大なマスターデータからタグを素早く探し出せます。</p>
+      <ul>
+        <li>
+          英語だけでなく<strong>日本語の翻訳文</strong>からでも検索可能です。
+        </li>
+        <li>
+          ドラッグ＆ドロップでエディタに追加できるほか、タグをクリックするだけでクリップボードに直接コピーすることもできます。
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
