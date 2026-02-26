@@ -21,6 +21,10 @@ SD 構文の保護 (Smart Split)
 
 Excel などで管理している「カテゴリ ＋ タグ」のリストをそのまま貼り付けて一括編集し、再び TSV として書き戻すことが可能です。
 
+クリップボード連携 (コピー機能)
+
+入力エリア（プロンプトエディタ、スプレッドシートデータ）の右上に配置されたコピーボタンから、テキストをワンクリックで即座にクリップボードへ保存できます。
+
 外部ライブラリ非依存の軽量フロントエンド
 
 React や Vue などのフレームワークに依存せず、HTML / CSS / Vanilla JavaScript のみで構成された高速でポータブルな SPA (Single Page Application) です。
@@ -39,16 +43,23 @@ Database: SQL Server (タグデータの管理・更新用)
 
 プロジェクトの主要なファイル構成と役割は以下の通りです。
 
-.
-├── index.html # アプリケーションのメインUIおよびフロントエンドロジック
-├── server.py # SQL Server連携用のFlask APIサーバー
-├── start_server.bat # 簡易ローカルサーバー(http.server)の起動スクリプト
-├── update_data.py # データベースからJSONデータを更新・エクスポートするスクリプト
-├── danboru_dictionary.json # タグの出現頻度や翻訳データを含む辞書(マスターデータ)
-├── thresholds.json # タグの色分けルール(しきい値)設定ファイル
-├── data.tsv # TSV連携用のサンプル/インポートデータ
-├── readme.html # ユーザー向け操作マニュアル(エンドユーザー用)
-└── sd_syntax_guide.html # Stable Diffusion 構文および特殊タグの解説書
+index.html : アプリケーションのメインUIおよびフロントエンドロジック
+
+server.py : SQL Server連携用のFlask APIサーバー
+
+start_server.bat : 簡易ローカルサーバー(http.server)の起動スクリプト
+
+update_data.py : データベースからJSONデータを更新・エクスポートするスクリプト
+
+danboru_dictionary.json : タグの出現頻度や翻訳データを含む辞書(マスターデータ)
+
+thresholds.json : タグの色分けルール(しきい値)設定ファイル
+
+data.tsv : TSV連携用のサンプル/インポートデータ
+
+readme.html : ユーザー向け操作マニュアル(エンドユーザー用)
+
+sd_syntax_guide.html : Stable Diffusion 構文および特殊タグの解説書
 
 ⚙️ Architecture (システム構成)
 
@@ -86,11 +97,11 @@ start_server.bat をダブルクリックして実行します。
 
 手動で起動する場合 (Pythonがインストールされている環境):
 
-# プロジェクトのディレクトリに移動
+プロジェクトのディレクトリに移動
 
 cd sd-visual-prompt-editor
 
-# HTTPサーバーを起動
+HTTPサーバーを起動
 
 python -m http.server 8000
 
@@ -103,11 +114,9 @@ SQL Server と連携して動作させる場合は、以下の手順でセット
 config.json を作成し、データベースの接続情報を記述します。
 
 必要な Python パッケージをインストールします。
-
 pip install flask pyodbc flask-cors
 
 server.py を実行します。
-
 python server.py
 
 📝 License
