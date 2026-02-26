@@ -26,35 +26,36 @@ Stable Diffusion のプロンプト構築を直感的な操作で行うための
 ## 🛠 Technologies (技術スタック)
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Backend (API)**: Python (Flask), `pyodbc`
+- **Data Processing**: Python (JSON生成スクリプト)
 - **Backend (Static)**: Python (`http.server`)
-- **Database**: SQL Server (タグデータの管理・更新用)
 
 ## 📁 Directory Structure (ディレクトリ構成)
 
 プロジェクトの主要なファイル構成と役割は以下の通りです。
 
 - `index.html` : アプリケーションのメインUIおよびフロントエンドロジック
-- `server.py` : SQL Server連携用のFlask APIサーバー
+- `update_data.py` : `data.tsv` と `thresholds.json` から `danboru_dictionary.json` を生成するデータビルド用スクリプト
+- `data.tsv` : Danbooru タグの統計情報や翻訳を含む元データ (TSV形式)
+- `thresholds.json` : タグの色分けルール (しきい値) の設定ファイル
+- `danboru_dictionary.json` : フロントエンドが直接読み込むマスターデータ (自動生成)
 - `start_server.bat` : 簡易ローカルサーバー(http.server)の起動スクリプト
-- `update_data.py` : データベースからJSONデータを更新・エクスポートするスクリプト
-- `danboru_dictionary.json` : タグの出現頻度や翻訳データを含む辞書(マスターデータ)
-- `thresholds.json` : タグの色分けルール(しきい値)設定ファイル
-- `data.tsv` : TSV連携用のサンプル/インポートデータ
+- `server.py` : (※オプション) SQL Server連携用のFlask APIサーバー
 - `readme.html` : ユーザー向け操作マニュアル(エンドユーザー用)
 - `sd_syntax_guide.html` : Stable Diffusion 構文および特殊タグの解説書
 
 ## ⚙️ Architecture (システム構成)
 
-本システムは、用途に応じて2つの動作モードをサポートしています。
+本システムは、ローカル環境で完結する**静的ファイルモード**で動作します。
 
-1. **静的ファイルモード (推奨 / デフォルト)**
-   - `danboru_dictionary.json` などの静的ファイルを `index.html` が直接 `fetch` して動作します。
-   - データベースやサーバー構築が不要で、ポータビリティに優れています。
+- `danboru_dictionary.json` を `index.html` が直接 `fetch` して動作します。
+- データベースや複雑なサーバー構築が不要で、ポータビリティに優れています。
 
-2. **API連携モード**
-   - `server.py` を経由して SQL Server から最新のタグデータを動的に取得します。
-   - マスターデータを頻繁に更新・管理する開発環境での利用を想定しています。
+### マスターデータの更新フロー
+
+タグの追加や出現頻度の更新を行う場合は、以下の手順で JSON を再生成します。
+
+1. `data.tsv` または `thresholds.json` を編集して保存します。
+2. `update_data.py` を実行し、最新の `danboru_dictionary.json` を生成します。
 
 ### パースロジックの仕様について
 
@@ -81,24 +82,9 @@ cd sd-visual-prompt-editor
 
 # HTTPサーバーを起動
 python -m http.server 8000
-```
 
-その後、ブラウザで `http://localhost:8000/index.html` にアクセスします。
+その後、ブラウザで http://localhost:8000/index.html にアクセスします。
 
-### APIサーバーを利用する場合 (上級者向け)
-
-SQL Server と連携して動作させる場合は、以下の手順でセットアップします。
-
-1. `config.json` を作成し、データベースの接続情報を記述します。
-2. 必要な Python パッケージをインストールします。
-   ```bash
-   pip install flask pyodbc flask-cors
-   ```
-3. `server.py` を実行します。
-   ```bash
-   python server.py
-   ```
-
-## 📝 License
-
+📝 License
 This project is licensed under the MIT License.
+```
