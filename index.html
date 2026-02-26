@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
@@ -54,7 +54,9 @@
         color: var(--text-color);
         max-width: 1400px;
         margin: auto;
-        transition: background-color 0.3s, color 0.3s;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
       }
 
       h2 {
@@ -78,6 +80,29 @@
         border-radius: 4px;
         border: 1px solid var(--border-color);
         background-color: var(--box-bg);
+      }
+
+      /* --- 寄付ボタン用のスタイル --- */
+      .donate-btn {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.85em;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: none;
+        background-color: #ff5e5b; /* 暖色系で少しだけ目立たせる */
+        transition:
+          background-color 0.2s,
+          transform 0.1s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .donate-btn:hover {
+        background-color: #e04845;
+        transform: translateY(-1px);
+      }
+      body.dark-mode .donate-btn {
+        background-color: #d64542;
       }
 
       .main-layout {
@@ -141,10 +166,9 @@
         color: var(--text-color);
       }
 
-      /* --- 入力エリアの小型コピーボタン用スタイル --- */
       .mini-copy-btn {
         position: absolute;
-        top: 35px; /* ラベルの下、テキストエリアの右上に配置 */
+        top: 35px;
         right: 10px;
         padding: 4px 8px;
         font-size: 11px;
@@ -155,14 +179,13 @@
         cursor: pointer;
         opacity: 0.7;
         transition: all 0.2s;
-        font-weight: normal; /* 既存のbuttonの太字を上書き */
+        font-weight: normal;
       }
       .mini-copy-btn:hover {
         opacity: 1;
         background-color: var(--hover-bg);
       }
 
-      /* --- ビジュアルエディタ用スタイル --- */
       .preview-area {
         width: 100%;
         min-height: 250px;
@@ -252,7 +275,9 @@
         border-radius: 4px;
         font-weight: bold;
         font-size: 14px;
-        transition: background-color 0.2s, transform 0.1s;
+        transition:
+          background-color 0.2s,
+          transform 0.1s;
       }
       button:active {
         transform: scale(0.98);
@@ -331,6 +356,14 @@
     <h2>
       SD Visual Prompt Editor
       <div class="header-controls">
+        <!-- 寄付ボタンを追加 -->
+        <a
+          href="https://ko-fi.com/kotononeminazuki"
+          target="_blank"
+          class="donate-btn"
+          title="開発を支援する"
+          >☕ 支援する</a
+        >
         <a href="readme.html" target="_blank" class="help-link">📘 使い方</a>
         <a href="sd_syntax_guide.html" target="_blank" class="help-link"
           >📜 SD構文</a
@@ -523,7 +556,7 @@
             tagDatabase.map((i) => [
               i.t.trim().toLowerCase().replace(/_/g, " "),
               i.c,
-            ])
+            ]),
           );
           allThresholds = data.thresholds;
           currentThresholds = allThresholds;
@@ -532,7 +565,7 @@
               (t) =>
                 `<div class="legend-item" title="${t.minCount.toLocaleString()} ～"><span class="color-dot" style="background-color: ${
                   t.colorCode
-                }"></span><span>${t.label.split("(")[0]}</span></div>`
+                }"></span><span>${t.label.split("(")[0]}</span></div>`,
             )
             .join("");
           btn.innerText = `✅ 取得完了: ${tagDatabase.length.toLocaleString()}件`;
@@ -579,11 +612,10 @@
           line = line.substring(0, hashIndex);
         }
 
-        // 制御タグおよびLoRA等のタグ（<...>）を分離処理する
         let pLine = line
           .replace(
             /\b(BREAK|AND|ADDROW|ADDCOMM|ADDCOL|ADDBASE)\b/gi,
-            " , $1 , "
+            " , $1 , ",
           )
           .replace(/(<[^>]+>)/g, " , $1 , ");
 
@@ -638,7 +670,7 @@
                 const count = tagMap.get(cleanSub);
                 const color = getColorByCount(count);
                 tagHtml = `<span style="color: ${color}">${escapeHTML(
-                  pureTag
+                  pureTag,
                 ).replace(/ /g, "&nbsp;")}</span>`;
                 if (weightStr) {
                   tagHtml += `<span style="color: #aaa">${weightStr}</span>`;
@@ -675,11 +707,10 @@
                         originalStr += parts[j];
                       }
                       let color = getColorByCount(count);
-                      resultParts[
-                        startIndex
-                      ] = `<span style="color: ${color}">${escapeHTML(
-                        originalStr
-                      ).replace(/ /g, "&nbsp;")}</span>`;
+                      resultParts[startIndex] =
+                        `<span style="color: ${color}">${escapeHTML(
+                          originalStr,
+                        ).replace(/ /g, "&nbsp;")}</span>`;
                       for (let j = startIndex + 1; j <= endIndex; j++) {
                         resultParts[j] = "";
                       }
@@ -691,11 +722,10 @@
                   if (!found) {
                     let startIndex = wordIndices[i];
                     let color = getColorByCount(0);
-                    resultParts[
-                      startIndex
-                    ] = `<span style="color: ${color}">${escapeHTML(
-                      parts[startIndex]
-                    ).replace(/ /g, "&nbsp;")}</span>`;
+                    resultParts[startIndex] =
+                      `<span style="color: ${color}">${escapeHTML(
+                        parts[startIndex],
+                      ).replace(/ /g, "&nbsp;")}</span>`;
                     i++;
                   }
                 }
@@ -891,47 +921,42 @@
         syncPreviewToData();
       }
 
-      // --- ↑プロンプトエディタへの反映 ---
       function reflectToNormal() {
         syncPreviewToData();
         document.getElementById("inputNormal").value =
           document.getElementById("outputRaw").value;
       }
 
-      // --- ↑スプレッドシートへの反映 (TSV形式) ---
       function reflectToSpreadsheet() {
         const container = document.getElementById("outputPreview");
         const strip = document.getElementById("stripHeaders").checked;
         let tsvLines = [];
-        let pendingCategory = ""; // ★行をまたいでカテゴリ名を保持する変数
+        let pendingCategory = "";
 
         container.querySelectorAll(".prompt-row").forEach((row) => {
           let tagsToOutput = [];
 
           let rowTags = Array.from(row.querySelectorAll(".prompt-tag")).map(
-            (t) => t.dataset.raw
+            (t) => t.dataset.raw,
           );
           if (rowTags.length === 0) return;
 
           let commentIndex = rowTags.findIndex((t) => t.startsWith("#"));
 
           if (!strip) {
-            // OFF: コメントアウトをカテゴリとして抽出・保持する
             if (commentIndex !== -1) {
               pendingCategory = rowTags[commentIndex].substring(1).trim();
               rowTags.splice(commentIndex, 1);
             }
 
-            // タグが残っていれば出力、なければ保留のまま次の行へ
             if (rowTags.length > 0) {
               tagsToOutput.push(pendingCategory);
               tagsToOutput.push(...rowTags);
-              pendingCategory = ""; // 出力したらクリア
+              pendingCategory = "";
             } else {
-              return; // コメントしかなかった行はここで終了
+              return;
             }
           } else {
-            // ON: カテゴリ列を出力せずタグのみを反映する
             if (commentIndex !== -1) {
               rowTags.splice(commentIndex, 1);
             }
@@ -942,7 +967,6 @@
             }
           }
 
-          // 【修正箇所】末尾のカンマのみを削除し、括弧内のカンマは維持する
           tagsToOutput = tagsToOutput.map((t) => t.replace(/,+$/, "").trim());
 
           if (tagsToOutput.length > 0) {
@@ -1064,7 +1088,7 @@
                   const afterElement = getDragAfterElement(
                     dropzoneRow,
                     e.clientX,
-                    false
+                    false,
                   );
                   if (afterElement == null) {
                     dropzoneRow.appendChild(draggedElement);
@@ -1088,7 +1112,7 @@
                 const afterElement = getDragAfterElement(
                   dropzoneRow,
                   e.clientX,
-                  false
+                  false,
                 );
                 if (afterElement == null) {
                   dropzoneRow.appendChild(newTag);
@@ -1123,7 +1147,7 @@
       function getDragAfterElement(container, position, isRow) {
         const draggableElements = [
           ...container.querySelectorAll(
-            isRow ? ".prompt-row:not(.dragging)" : ".prompt-tag:not(.dragging)"
+            isRow ? ".prompt-row:not(.dragging)" : ".prompt-tag:not(.dragging)",
           ),
         ];
         return draggableElements.reduce(
@@ -1138,7 +1162,7 @@
               return closest;
             }
           },
-          { offset: Number.NEGATIVE_INFINITY }
+          { offset: Number.NEGATIVE_INFINITY },
         ).element;
       }
 
@@ -1252,7 +1276,7 @@
         universalCopy(text)
           .then(() => {
             btn.style.backgroundColor = getComputedStyle(
-              document.body
+              document.body,
             ).getPropertyValue("--copy-success-bg");
             btn.innerText = "✅ コピー完了！";
             setTimeout(() => {
@@ -1304,7 +1328,7 @@
           .filter(
             (i) =>
               i.t.toLowerCase().replace(/_/g, " ").includes(query) ||
-              (i.tr && i.tr.toLowerCase().includes(query))
+              (i.tr && i.tr.toLowerCase().includes(query)),
           )
           .sort((a, b) => b.c - a.c);
 
@@ -1319,7 +1343,7 @@
         const resultDiv = document.getElementById("searchResult");
         const nextBatch = currentSearchResults.slice(
           currentSearchIndex,
-          currentSearchIndex + SEARCH_BATCH_SIZE
+          currentSearchIndex + SEARCH_BATCH_SIZE,
         );
 
         const html = nextBatch
@@ -1331,12 +1355,12 @@
                     i.t
                   }</span> 
                   <span style="background-color: var(--tag-bg); padding: 2px 8px; border-radius: 12px; color:${getColorByCount(
-                    i.c
+                    i.c,
                   )}; float:right; font-weight:bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${i.c.toLocaleString()}</span>
                   <div style="color:#7f8c8d; font-size:0.85em; margin-top:4px;">${
                     i.tr || ""
                   }</div>
-                </div>`
+                </div>`,
           )
           .join("");
 
