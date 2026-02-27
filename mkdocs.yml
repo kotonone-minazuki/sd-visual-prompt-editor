@@ -1,0 +1,22 @@
+site_name: SD Visual Prompt Editor Docs
+theme:
+  name: material # 美麗なUIを提供するMaterialテーマ
+  language: ja
+
+plugins:
+  - search
+  - mkdocstrings: # ソースコードからドキュメントを自動抽出するプラグイン
+      default_handler: python
+      handlers:
+        python:
+          setup_commands:
+            - import sys
+            - sys.path.append(".") # カレントディレクトリのPythonファイルを読み込めるようにする
+
+nav:
+  - ホーム: index.md
+  - システム解説:
+      - アーキテクチャ: architecture.md
+      - デザインシステム: design.md
+  - 開発ツール:
+      - データ更新ツール (API): api_python.md

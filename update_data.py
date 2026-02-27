@@ -14,6 +14,21 @@ THRESHOLDS_FILE = 'thresholds.json'
 OUTPUT_FILE = 'danboru_dictionary.json'
 
 def update_data():
+    """
+    TSVファイルと閾値設定を読み込み、検索用辞書データ(JSON)を生成・更新します。
+
+    `data.tsv` からタグ情報を読み込み、`thresholds.json` の色設定と結合して
+    フロントエンド用の `danboru_dictionary.json` を出力します。
+    タグデータは出現数(`c`列)の降順でソートされ、ファイルサイズ削減のために
+    JSONの空白除去が行われます。
+
+    Raises:
+        SystemExit: 必須ファイルが存在しない場合、またはファイル入出力エラーが発生した場合に、
+            ステータスコード 1 でプログラムを終了します。
+    
+    Note:
+        この関数はスクリプト実行時に `if __name__ == "__main__":` ブロックから直接呼び出されます。
+    """
     # 1. しきい値設定の読み込み
     if not os.path.exists(THRESHOLDS_FILE):
         print(f"エラー: {THRESHOLDS_FILE} が見つかりません。同じフォルダに作成してください。")

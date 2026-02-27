@@ -1,19 +1,44 @@
 /**
  * @fileoverview SD Visual Prompt Editor のメインアプリケーションロジック。
+ * UIイベントのハンドリング、タブ切り替え、データの同期、クリップボード操作などを担当します。
  */
 
 // --- グローバル変数 ---
+
+/**
+ * 読み込まれたタグデータの配列。
+ * @type {Array<{t: string, c: number, tr?: string}>}
+ */
 let tagDatabase = [];
+
+/**
+ * タグ名をキーとして検索を高速化するためのMap。
+ * @type {Map<string, number>} key: タグ名(小文字), value: 出現回数
+ */
 let tagMap = new Map();
+
+/** * 現在適用されている閾値（色分けルール）の設定。
+ * @type {Array<Object>}
+ */
 let allThresholds = [];
 let currentThresholds = [];
+
+/**
+ * 現在のアクティブなモード。
+ * @type {'normal' | 'spreadsheet'}
+ */
 let currentMode = "normal";
 
 // CodeMirror インスタンス
 let editorNormal, editorSpreadsheet;
 
 // --- i18n Dictionary ---
+/**
+ * 言語リソース辞書。
+ * @const {Object}
+ */
 const i18n = {
+  // ... (省略: データ内容は変更なし) ...
   ja: {
     title: "SD Visual Prompt Editor",
     help: "📘 使い方",
@@ -89,17 +114,16 @@ let currentLang = localStorage.getItem("lang") || "ja";
 // --- 初期化処理 ---
 
 /**
- * 超軽量CodeMirrorモード "sd-prompt-mode" の定義
+ * 超軽量CodeMirrorモード "sd-prompt-mode" の定義。
  * 行頭が '#' で始まる場合のみ、行全体を "comment" スタイル(緑色)にする。
  */
 if (typeof CodeMirror !== "undefined") {
   CodeMirror.defineMode("sd-prompt-mode", function () {
     return {
       token: function (stream) {
-        // 行頭(sol)かつ '#' で始まる場合
         if (stream.sol() && stream.match("#")) {
           stream.skipToEnd();
-          return "comment"; // styles.css の .cm-comment が適用される
+          return "comment";
         }
         stream.next();
         return null;
@@ -108,6 +132,10 @@ if (typeof CodeMirror !== "undefined") {
   });
 }
 
+/**
+ * ウィンドウロード時の初期化処理。
+ * ライブラリのポリフィル適用、CodeMirrorの生成、データフェッチ、イベントリスナーの登録を行います。
+ */
 window.onload = () => {
   if (typeof MobileDragDrop !== "undefined") {
     MobileDragDrop.polyfill({ holdToDrag: 250 });
@@ -116,13 +144,12 @@ window.onload = () => {
 
   initTheme();
 
-  // CodeMirror の初期化 (定義した sd-prompt-mode を使用)
   editorNormal = CodeMirror.fromTextArea(
     document.getElementById("inputNormal"),
     {
       lineNumbers: true,
       lineWrapping: true,
-      mode: "sd-prompt-mode", // カスタムモード適用
+      mode: "sd-prompt-mode",
       tabSize: 4,
     },
   );
@@ -132,7 +159,7 @@ window.onload = () => {
     {
       lineNumbers: true,
       lineWrapping: false,
-      mode: "sd-prompt-mode", // カスタムモード適用
+      mode: "sd-prompt-mode",
       tabSize: 4,
     },
   );
@@ -148,6 +175,9 @@ window.onload = () => {
 
 // --- テーマ・言語設定 ---
 
+/**
+ * ローカルストレージからテーマ設定を読み込み、適用します。
+ */
 function initTheme() {
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark-mode");
@@ -155,12 +185,18 @@ function initTheme() {
   }
 }
 
+/**
+ * ダークモードのON/OFFを切り替えます。
+ */
 function toggleDarkMode() {
   const isDark = document.getElementById("darkModeToggle").checked;
   document.body.classList.toggle("dark-mode", isDark);
   localStorage.setItem("theme", isDark ? "dark" : "light");
 }
 
+/**
+ * 言語設定(日本語/英語)を切り替えます。
+ */
 function toggleLanguage() {
   currentLang = currentLang === "ja" ? "en" : "ja";
   localStorage.setItem("lang", currentLang);
@@ -168,6 +204,9 @@ function toggleLanguage() {
   renderLegend();
 }
 
+/**
+ * 現在の言語設定に基づいて、UIのテキストを更新します。
+ */
 function applyLanguage() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
@@ -199,6 +238,10 @@ function applyLanguage() {
 
 // --- UI操作・ロジック ---
 
+/**
+ * タブを切り替え、各モードに対応したUIの表示/非表示を制御します。
+ * @param {'normal'|'spreadsheet'} mode - 切り替え先のモード
+ */
 function switchTab(mode) {
   currentMode = mode;
   document
@@ -228,6 +271,9 @@ function switchTab(mode) {
   }, 10);
 }
 
+/**
+ * `danboru_dictionary.json` からタグデータと閾値情報を非同期で取得します。
+ */
 async function fetchFromDB() {
   const btn = document.getElementById("statusBtn");
   try {
@@ -259,6 +305,9 @@ async function fetchFromDB() {
   }
 }
 
+/**
+ * 閾値情報に基づいて凡例（レジェンド）を描画します。
+ */
 function renderLegend() {
   if (!currentThresholds || currentThresholds.length === 0) return;
   document.getElementById("legendArea").innerHTML = currentThresholds
@@ -279,6 +328,9 @@ function renderLegend() {
 
 /**
  * 生のタグ文字列からDOM要素(span)を作成し、色付けなどの装飾を行います。
+ * `parser.js` の `detectTagType` や `evaluateSequence` を利用します。
+ * * @param {string} rawTag - タグの文字列
+ * @returns {HTMLElement} 生成されたタグ要素 (span.prompt-tag)
  */
 function createTagElement(rawTag) {
   const tagSpan = document.createElement("span");
@@ -290,7 +342,6 @@ function createTagElement(rawTag) {
     copyTag(this.dataset.raw, this);
   });
 
-  // コメントタグ
   if (rawTag.startsWith("#")) {
     tagSpan.style.borderColor = "#27ae60";
     tagSpan.style.color = "#27ae60";
@@ -299,10 +350,8 @@ function createTagElement(rawTag) {
     return tagSpan;
   }
 
-  // タグタイプの判定 (parser.js の関数を使用)
   const type = window.detectTagType ? window.detectTagType(rawTag) : "normal";
 
-  // 共通のグレー枠スタイルを適用するヘルパー
   const applyGrayStyle = () => {
     tagSpan.style.borderColor = "#6c757d";
     tagSpan.style.color = "#aaa";
@@ -318,17 +367,13 @@ function createTagElement(rawTag) {
       return tagSpan;
 
     case "wildcard":
-      // Wildcardはグレー枠で表示（中身はそのまま）
       applyGrayStyle();
       tagSpan.textContent = rawTag;
       return tagSpan;
 
     case "scheduling":
-      // [from:to:step] -> 中身を分割して個別色付け
       applyGrayStyle();
-      // 外側の [ ] を除去して解析
       const contentSch = rawTag.slice(1, -1);
-      // parser.js の evaluateSequence で分割・色付け
       const htmlSch = window.evaluateSequence
         ? window.evaluateSequence(contentSch, ":")
         : contentSch;
@@ -336,7 +381,6 @@ function createTagElement(rawTag) {
       return tagSpan;
 
     case "alternating":
-      // [a|b] -> 中身を分割して個別色付け
       applyGrayStyle();
       const contentAlt = rawTag.slice(1, -1);
       const htmlAlt = window.evaluateSequence
@@ -354,13 +398,11 @@ function createTagElement(rawTag) {
 
     case "normal":
     default:
-      // 通常タグの処理（括弧の解析や辞書マッチング）
       const match = rawTag.match(/^([({\[]*)(.+?)([:\d.]*[)}\]]*)$/);
       let prefix = match ? match[1] : "";
       let coreTag = match ? match[2] : rawTag;
       let suffix = match ? match[3] : "";
 
-      // 括弧のバランス調整
       const fixBrackets = (openCh, closeCh) => {
         let oCount = coreTag.split(openCh).length - 1;
         let cCount = coreTag.split(closeCh).length - 1;
@@ -386,12 +428,10 @@ function createTagElement(rawTag) {
         const words = cleanCore.split(/\s+/).filter((w) => w.length > 0);
 
         if (words.length > 1 || coreTag.includes(",")) {
-          applyGrayStyle(); // 複合タグはグレー
-
+          applyGrayStyle();
           const prefixHtml = escapeHTML(prefix).replace(/ /g, "&nbsp;");
-          const coreHtml = evaluateInternalParts(coreTag); // parser.js
+          const coreHtml = evaluateInternalParts(coreTag);
           const suffixHtml = escapeHTML(suffix).replace(/ /g, "&nbsp;");
-
           tagSpan.innerHTML = prefixHtml + coreHtml + suffixHtml;
         } else {
           const evalColor = getColorByCount(0);
@@ -404,6 +444,11 @@ function createTagElement(rawTag) {
   }
 }
 
+/**
+ * 解析済みのタグリストからビジュアルエディタ（プレビューエリア）を構築します。
+ * @param {string} containerId - プレビューコンテナのDOM ID
+ * @param {string[]} textLines - プロンプトの行ごとの文字列配列
+ */
 function buildVisualPreview(containerId, textLines) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -419,7 +464,7 @@ function buildVisualPreview(containerId, textLines) {
     handle.innerHTML = "≡";
     rowDiv.appendChild(handle);
 
-    const tags = splitTagsSmart(lineText); // parser.js
+    const tags = splitTagsSmart(lineText);
     tags.forEach((tag) => {
       rowDiv.appendChild(createTagElement(tag));
     });
@@ -428,6 +473,10 @@ function buildVisualPreview(containerId, textLines) {
   });
 }
 
+/**
+ * エディタ（NormalまたはSpreadsheet）の内容をビジュアルエディタに反映させます。
+ * ボタン操作「⬇️ ビジュアルエディタに反映」で呼び出されます。
+ */
 function convert() {
   let posLines = [];
   const doAppendBreak = document.getElementById("appendBreak")
@@ -484,6 +533,9 @@ function convert() {
   toggleComments();
 }
 
+/**
+ * コメントタグ（#で始まるタグ）の表示/非表示を切り替えます。
+ */
 function toggleComments() {
   const isChecked = document.getElementById("stripHeaders").checked;
   const container = document.getElementById("outputPreview");
@@ -508,11 +560,19 @@ function toggleComments() {
   syncPreviewToData();
 }
 
+/**
+ * ビジュアルエディタの内容をプロンプトエディタ(Normal)に反映します。
+ * 「⬆️ プロンプトエディタに反映」ボタンに対応。
+ */
 function reflectToNormal() {
   syncPreviewToData();
   editorNormal.setValue(document.getElementById("outputRaw").value);
 }
 
+/**
+ * ビジュアルエディタの内容をスプレッドシート形式に変換してエディタに反映します。
+ * 「⬆️ スプレッドシートに反映」ボタンに対応。
+ */
 function reflectToSpreadsheet() {
   const container = document.getElementById("outputPreview");
   const strip = document.getElementById("stripHeaders").checked;
@@ -560,6 +620,9 @@ function reflectToSpreadsheet() {
   editorSpreadsheet.setValue(tsvLines.join("\n"));
 }
 
+/**
+ * 「行末にBREAKを付加」オプションに応じて、ビジュアルエディタ内のBREAKタグを挿入または削除します。
+ */
 function toggleBreaks() {
   const isChecked = document.getElementById("appendBreak").checked;
   const container = document.getElementById("outputPreview");
@@ -614,6 +677,13 @@ let dragSource = null;
 let dragTagText = "";
 let isDroppedInValidZone = false;
 
+/**
+ * ドラッグ＆ドロップイベントの初期化。
+ * - 内部タグの並べ替え
+ * - 検索パレットからのドロップ
+ * - 枠外ドロップによる削除
+ * を処理します。
+ */
 function initDragAndDrop() {
   document.addEventListener("dragstart", (e) => {
     isDroppedInValidZone = false;
@@ -725,6 +795,13 @@ function initDragAndDrop() {
   });
 }
 
+/**
+ * ドラッグ中の要素が、コンテナ内のどの要素の直後に挿入されるべきかを計算します。
+ * @param {HTMLElement} container - ドロップ対象のコンテナ
+ * @param {number} position - マウスカーソルの位置 (Y座標またはX座標)
+ * @param {boolean} isRow - 行（縦並び）の計算か、タグ（横並び）の計算か
+ * @returns {HTMLElement|null} 挿入位置の直後の要素。末尾ならnull。
+ */
 function getDragAfterElement(container, position, isRow) {
   const draggableElements = [
     ...container.querySelectorAll(
@@ -749,6 +826,10 @@ function getDragAfterElement(container, position, isRow) {
 
 // --- データ同期・コピー関連 ---
 
+/**
+ * ビジュアルエディタのタグ配置を解析し、テキスト形式に再構築して `#outputRaw` に同期します。
+ * カンマ区切りの制御ロジックを含みます。
+ */
 function syncPreviewToData() {
   const spaceBeforeTags = ["and", "addrow", "addcomm", "addcol", "addbase"];
   const spaceAfterTags = [
@@ -827,6 +908,12 @@ function syncPreviewToData() {
   document.getElementById("outputRaw").value = posText;
 }
 
+/**
+ * テキストをクリップボードにコピーします。
+ * Secure Context以外でも動作するようにフォールバック処理を含みます。
+ * @param {string} text - コピーするテキスト
+ * @returns {Promise<void>}
+ */
 function universalCopy(text) {
   if (navigator.clipboard && window.isSecureContext) {
     return navigator.clipboard.writeText(text);
@@ -851,6 +938,11 @@ function universalCopy(text) {
   }
 }
 
+/**
+ * UI上のボタンクリックでエディタの内容をコピーし、ボタンの表示を一時的に変更してフィードバックします。
+ * @param {string} id - 対象要素のID
+ * @param {HTMLElement} btn - クリックされたボタン要素
+ */
 function copyResult(id, btn) {
   let text = "";
   if (id === "inputNormal") {
@@ -884,6 +976,11 @@ function copyResult(id, btn) {
     });
 }
 
+/**
+ * 特定のタグをクリックした際に、そのタグ名だけをコピーします。
+ * @param {string} tag - タグ名
+ * @param {HTMLElement} element - クリックされたタグ要素
+ */
 function copyTag(tag, element) {
   universalCopy(tag).then(() => {
     const originalBg = element.style.backgroundColor;
@@ -902,6 +999,9 @@ let currentSearchResults = [];
 let currentSearchIndex = 0;
 const SEARCH_BATCH_SIZE = 50;
 
+/**
+ * 検索ボックスへの入力に基づいてタグを検索し、結果エリアを更新します。
+ */
 function searchTags() {
   const query = document
     .getElementById("tagSearch")
@@ -928,6 +1028,9 @@ function searchTags() {
   renderNextSearchBatch();
 }
 
+/**
+ * 検索結果をバッチサイズごとに分割して描画します（無限スクロール用）。
+ */
 function renderNextSearchBatch() {
   if (currentSearchIndex >= currentSearchResults.length) return;
   const resultDiv = document.getElementById("searchResult");
@@ -952,6 +1055,9 @@ function renderNextSearchBatch() {
   currentSearchIndex += SEARCH_BATCH_SIZE;
 }
 
+/**
+ * 検索結果エリアのスクロールイベントを処理し、必要に応じて追加の結果を描画します。
+ */
 function handleSearchScroll() {
   const resultDiv = document.getElementById("searchResult");
   if (

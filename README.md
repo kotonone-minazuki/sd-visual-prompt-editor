@@ -1,90 +1,64 @@
-# SD Visual Prompt Editor (SD Tag Converter Pro)
+# **SD Visual Prompt Editor**
 
-Stable Diffusion のプロンプト構築を直感的な操作で行うためのビジュアルエディタです。
-プロンプトのテキスト表現と視覚的なブロック（ピル）表現を双方向に変換し、Danbooru のタグ統計データに基づく色分け表示や、スプレッドシートとの連携機能を備えています。
+Stable Diffusion向けのプロンプト（呪文）を、**Danbooruタグの出現頻度に基づいて色分け**し、ドラッグ＆ドロップで直感的に編集・管理できるビジュアルエディタです。
 
-## ✨ Features (主な特徴)
+\<p align="center"\>
 
-- **ドラッグ＆ドロップによる直感的なプロンプト構築**
-  - テキストで入力したプロンプトを即座にブロック化し、ドラッグ＆ドロップで並び替えや削除が可能です。
+\<img src="ogp-image.png" alt="SD Visual Prompt Editor Screenshot" width="800"\>
 
-- **タグの統計データに基づく視覚化**
-  - Danbooru の出現頻度データに基づき、タグの重要度や種類に応じて自動的に色分け表示を行います。
+\</p\>
 
-- **SD 構文の保護 (Smart Split)**
-  - 強調構文 `(red hair, blue eyes:1.2)` 内のカンマや、LoRA `<lora:name:1.0>` などを正確に解析し、意図しないタグの分割を防ぎます。
+## **✨ 主な機能**
 
-- **スプレッドシート (TSV) 連携**
-  - Excel などで管理している「カテゴリ ＋ タグ」のリストをそのまま貼り付けて一括編集し、再び TSV として書き戻すことが可能です。
+- **🎨 ビジュアル編集**: プロンプトを「タグの塊」として可視化。ドラッグ＆ドロップで並べ替え、削除が可能。
+- **📊 頻度ベースの色分け**: Danbooruデータセットに基づき、メジャーなタグ（赤/橙）からマイナーなタグ（青）まで枠線の色で識別。AIへの伝わりやすさを視覚的に確認できます。
+- **📋 スプレッドシート連携**: ExcelやGoogle Sheetsの表データ（TSV）をそのまま貼り付けて、カンマ区切りのプロンプト形式に相互変換・編集可能。
+- **🛠 強力な構文サポート**: (emphasized:1.2), \<lora:name:1.0\>, BREAK, \[a|b\] などのSD特有構文を正しく認識・保護します。
+- **🌍 多言語対応**: 日本語/英語のUI切り替えに対応。
 
-- **クリップボード連携 (コピー機能)**
-  - 入力エリア（プロンプトエディタ、スプレッドシートデータ）の右上に配置されたコピーボタンから、テキストをワンクリックで即座にクリップボードへ保存できます。
+## **🚀 クイックスタート**
 
-- **外部ライブラリ非依存の軽量フロントエンド**
-  - React や Vue などのフレームワークに依存せず、HTML / CSS / Vanilla JavaScript のみで構成された高速でポータブルな SPA (Single Page Application) です。
+本アプリはクライアントサイド（ブラウザのみ）で動作する静的Webアプリです。
 
-## 🛠 Technologies (技術スタック)
+### **ローカルで実行する場合**
 
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Data Processing**: Python (JSON生成スクリプト)
-- **Backend (Static)**: Python (`http.server`)
+1. リポジトリをクローンまたはダウンロードします。  
+   git clone \[https://github.com/your-name/sd-visual-prompt-editor.git\](https://github.com/your-name/sd-visual-prompt-editor.git)
 
-## 📁 Directory Structure (ディレクトリ構成)
+2. フォルダ内の **index.html** をブラウザ（Chrome, Edge, Firefoxなど）で開くだけで使用可能です。
+3. _(オプション)_ ローカルサーバーを使用する場合は、付属の start_server.bat (Windows用) を実行してください。
 
-プロジェクトの主要なファイル構成と役割は以下の通りです。
+## **📚 ドキュメント**
 
-- `index.html` : アプリケーションのメインUIおよびフロントエンドロジック
-- `update_data.py` : `data.tsv` と `thresholds.json` から `danboru_dictionary.json` を生成するデータビルド用スクリプト
-- `data.tsv` : Danbooru タグの統計情報や翻訳を含む元データ (TSV形式)
-- `thresholds.json` : タグの色分けルール (しきい値) の設定ファイル
-- `danboru_dictionary.json` : フロントエンドが直接読み込むマスターデータ (自動生成)
-- `start_server.bat` : 簡易ローカルサーバー(http.server)の起動スクリプト
-- `server.py` : (※オプション) SQL Server連携用のFlask APIサーバー
-- `readme.html` : ユーザー向け操作マニュアル(エンドユーザー用)
-- `sd_syntax_guide.html` : Stable Diffusion 構文および特殊タグの解説書
+利用方法や開発に関する詳細は、以下のドキュメントを参照してください。
 
-## ⚙️ Architecture (システム構成)
+### **📖 ユーザーガイド**
 
-本システムは、ローカル環境で完結する**静的ファイルモード**で動作します。
+ツールの詳細な使い方は、同梱の [**ユーザーマニュアル (readme.html)**](https://www.google.com/search?q=readme.html) をご覧ください。
 
-- `danboru_dictionary.json` を `index.html` が直接 `fetch` して動作します。
-- データベースや複雑なサーバー構築が不要で、ポータビリティに優れています。
+- 基本的な操作方法
+- スプレッドシート（TSV）モードの仕様
+- タグ検索パレットの使い方
 
-### マスターデータの更新フロー
+### **🛠 開発者ドキュメント (MkDocs)**
 
-タグの追加や出現頻度の更新を行う場合は、以下の手順で JSON を再生成します。
+内部構造やカスタマイズについては、docs/ 以下の技術ドキュメントを参照してください。
 
-1. `data.tsv` または `thresholds.json` を編集して保存します。
-2. `update_data.py` を実行し、最新の `danboru_dictionary.json` を生成します。
+（MkDocsを導入している場合、mkdocs serve で閲覧可能です）
 
-### パースロジックの仕様について
+- [**アーキテクチャ (Architecture)**](https://www.google.com/search?q=docs/architecture.md): DOM構造、データフロー図
+- [**デザインシステム (Design)**](https://www.google.com/search?q=docs/design.md): カラーパレット、タグ色分けの定義
+- [**データ更新ツール**](https://www.google.com/search?q=docs/api_python.md): update_data.py の仕様
 
-テキストからビジュアルブロックへの変換は、`index.html` 内の `splitTagsSmart` 関数が担っています。
-括弧 `()`, `[]`, `{}` や `<>` のネスト深度（depth / angle）を計算しながら文字列を走査することで、最上位レベルのカンマのみを区切り文字として判定する安全な設計となっています。
+## **🔧 データセットの更新**
 
-## 🚀 Setup & Usage (導入方法と使い方)
+タグ辞書データ (danboru_dictionary.json) を最新化したい場合は、Pythonスクリプトを使用します。
 
-### ローカルでの起動方法 (簡易ホスティング)
+\# data.tsv (Danbooruタグデータ) を配置して実行  
+python update_data.py
 
-CORS エラーを回避するため、ローカルサーバーを立ち上げてアクセスする必要があります。
+## **🤝 ライセンス**
 
-**Windows環境の場合:**
-同封されているバッチファイルを実行するだけで起動します。
+[MIT License](https://www.google.com/search?q=LICENSE)
 
-1. `start_server.bat` をダブルクリックして実行します。
-2. ブラウザが自動的に開かない場合は、コマンドプロンプトに表示されたURL (例: `http://localhost:8000/index.html`) にアクセスしてください。
-
-**手動で起動する場合 (Pythonがインストールされている環境):**
-
-```bash
-# プロジェクトのディレクトリに移動
-cd sd-visual-prompt-editor
-
-# HTTPサーバーを起動
-python -m http.server 8000
-
-その後、ブラウザで http://localhost:8000/index.html にアクセスします。
-
-📝 License
-This project is licensed under the MIT License.
-```
+_Created by Kotonone Minazuki_
