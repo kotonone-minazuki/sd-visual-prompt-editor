@@ -1,6 +1,6 @@
 /**
  * @fileoverview Stable Diffusionプロンプトの解析・変換ロジックを提供するコアモジュール。
- * * タグの分割、色分けのためのHTML生成、プロンプト編集構文（Alternating Words等）の
+ * タグの分割、色分けのためのHTML生成、プロンプト編集構文（Alternating Words等）の
  * 解析を行います。
  */
 
@@ -46,19 +46,14 @@ function escapeHTML(str) {
  *
  * @param {string} line - 分割対象のプロンプト行（1行分）。
  * @returns {string[]} 分割されたタグ文字列の配列。コメント部分は配列の最後に含まれます。
- * * @example
- * splitTagsSmart("1girl, (cat_ears:1.2), white shirt");
- * // returns ["1girl", "(cat_ears:1.2)", "white shirt"]
  */
 function splitTagsSmart(line) {
-  // ... (中略: ロジックは変更なし) ...
   let result = [];
   let current = "";
   let depth = 0;
   let angle = 0;
-  // ... (実装詳細) ...
-  // ※実装コードは元のまま使用
 
+  // コメント部分の抽出
   let commentPart = "";
   const hashIndex = line.indexOf("#");
   if (hashIndex !== -1) {
@@ -66,6 +61,7 @@ function splitTagsSmart(line) {
     line = line.substring(0, hashIndex);
   }
 
+  // 特殊タグをカンマで囲んで分割しやすくする処理
   let pLine = line
     .replace(/\b(BREAK|AND|ADDROW|ADDCOMM|ADDCOL|ADDBASE)\b/gi, " , $1 , ")
     .replace(/(<[^>]+>)/g, " , $1 , ");
@@ -98,7 +94,6 @@ function splitTagsSmart(line) {
  * @returns {('lora'|'wildcard'|'control'|'scheduling'|'alternating'|'normal')} 判定されたタグの種類。
  */
 function detectTagType(rawTag) {
-  // ... (実装詳細) ...
   const lower = rawTag.toLowerCase();
 
   if (rawTag.startsWith("<") && rawTag.endsWith(">")) return "lora";
@@ -107,14 +102,47 @@ function detectTagType(rawTag) {
   const controls = ["break", "and", "addrow", "addcomm", "addcol", "addbase"];
   if (controls.includes(lower)) return "control";
 
+  // Scheduling: [from:to:when] or [from::when]
   if (rawTag.startsWith("[") && rawTag.endsWith("]") && rawTag.includes(":")) {
     return "scheduling";
   }
 
+  // Alternating: [word1|word2]
   if (rawTag.startsWith("[") && rawTag.endsWith("]") && rawTag.includes("|")) {
     return "alternating";
   }
 
   return "normal";
 }
-// ... (以下略) ...
+
+/**
+ * Scheduling構文やAlternating構文の中身を解析し、HTMLとして装飾します。
+ *
+ * @param {string} content - ブラケット[]の中身の文字列
+ * @param {string} separator - 区切り文字 (":" または "|")
+ * @returns {string} 装飾されたHTML文字列
+ */
+function evaluateSequence(content, separator) {
+  const parts = content.split(separator);
+  return parts
+    .map((part) => `<span class="seq-part">${escapeHTML(part)}</span>`)
+    .join(`<span class="seq-sep">${separator}</span>`);
+}
+
+/**
+ * 通常タグの内部構造（強調構文など）を解析し、HTMLとして装飾します。
+ * 例: (cat:1.2) -> <span class="p">d(</span>cat<span class="w">:1.2</span><span class="p">)</span>
+ *
+ * @param {string} tag - タグ文字列
+ * @returns {string} 装飾されたHTML文字列
+ */
+function evaluateInternalParts(tag) {
+  // 簡易的な実装: そのままエスケープして返す（必要に応じて拡張可能）
+  // app.js側で括弧や重みの処理を行っている場合もありますが、
+  // ここで最低限エラーにならないよう文字列を返します。
+
+  // 括弧と重みを簡易的に色分けする場合の例:
+  // ( ) [ ] { } : などの記号を薄く表示する処理などを入れることができます。
+
+  return escapeHTML(tag);
+}
