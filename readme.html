@@ -218,6 +218,13 @@
         </ul>
       </div>
 
+      <div class="step-box">
+        <h3 data-i18n="h3_1c">💡 高機能テキストエディタ</h3>
+        <p data-i18n="p_1c">
+          入力エリアは開発用エディタのように、<strong>行番号</strong>の表示、<strong>タブ文字</strong>（→）や<strong>改行マーク</strong>（↵）の可視化に対応しています。プロンプトエディタでは文章が見やすいよう「折り返しあり」に、スプレッドシートでは表データが崩れないよう「折り返しなし（横スクロール）」に自動で最適化されます。
+        </p>
+      </div>
+
       <h2 data-i18n="h2_2">2. ビジュアルエディタの強力な機能</h2>
       <p data-i18n="p_2">
         下の「ビジュアルエディタ」エリアは、マウス操作だけでプロンプトを構築できるキャンバスです。
@@ -240,6 +247,10 @@
           <strong>動的なBREAKトグル:</strong>
           「行末にBREAKを付加」のチェックボックスをオン/オフすると、エディタ上のすべての行末に一斉に
           <code>BREAK</code> タグが出現/消失します。
+        </li>
+        <li data-i18n="li_2_5">
+          <strong>スマホ・タブレット対応:</strong>
+          スマートフォン等のタッチ操作でもドラッグ＆ドロップが可能です。スクロールとの誤動作を防ぐため、タグや行を<strong>少し長押し（約0.25秒）</strong>してから移動させてください。
         </li>
       </ul>
 
@@ -319,6 +330,8 @@
             "<strong>1画面への統合:</strong> 「Negative」などのカテゴリ名もすべて1つのビジュアルエディタ上に読み込まれ、<code># Negative</code> という緑色のコメントブロックとして区切られて表示されます。",
           li_1b_2:
             "<strong>↑ スプレッドシートに反映（TSV出力）:</strong> 編集後、上向きの反映ボタンを押すと、再び表計算ソフトに貼り付けられるタブ区切り形式（TSV）に変換されます。<br />※「コメントアウトを除去」が<strong>オフ</strong>の場合、緑色のコメントブロックが1列目の「カテゴリ名」として復元されます。<strong>オン</strong>にすると、コメント行はビジュアルエディタ上で非表示になり、出力時にも除外されます。",
+          h3_1c: "💡 高機能テキストエディタ",
+          p_1c: "入力エリアは開発用エディタのように、<strong>行番号</strong>の表示、<strong>タブ文字</strong>（→）や<strong>改行マーク</strong>（↵）の可視化に対応しています。プロンプトエディタでは文章が見やすいよう「折り返しあり」に、スプレッドシートでは表データが崩れないよう「折り返しなし（横スクロール）」に自動で最適化されます。",
           h2_2: "2. ビジュアルエディタの強力な機能",
           p_2: "下の「ビジュアルエディタ」エリアは、マウス操作だけでプロンプトを構築できるキャンバスです。",
           li_2_1:
@@ -329,6 +342,8 @@
             "<strong>枠外ドロップで削除 (ゴミ箱):</strong> 不要になったタグや行は、掴んで<strong>ビジュアルエディタの枠外に放り投げる</strong>だけでサクッと削除できます。",
           li_2_4:
             "<strong>動的なBREAKトグル:</strong> 「行末にBREAKを付加」のチェックボックスをオン/オフすると、エディタ上のすべての行末に一斉に <code>BREAK</code> タグが出現/消失します。",
+          li_2_5:
+            "<strong>スマホ・タブレット対応:</strong> スマートフォン等のタッチ操作でもドラッグ＆ドロップが可能です。スクロールとの誤動作を防ぐため、タグや行を<strong>少し長押し（約0.25秒）</strong>してから移動させてください。",
           h2_3: "3. Stable Diffusion特有の構文を安全に処理",
           h3_3a: "💡 括弧内のカンマを保護",
           p_3a: "<code>(red hair, blue eyes:1.2)</code> のように強調構文のカッコ内にカンマが含まれていても、分割されることなく1つのタグとして安全に扱われます。",
@@ -372,6 +387,8 @@
             "<strong>Integration into a Single Screen:</strong> Category names like 'Negative' are also loaded into the single visual editor and displayed as green comment blocks like <code># Negative</code> to separate sections.",
           li_1b_2:
             "<strong>↑ Reflect to Spreadsheet (TSV Output):</strong> After editing, pressing the upward reflect button converts the data back into a tab-separated values (TSV) format ready to be pasted into your spreadsheet.<br />*If 'Hide Comments/Headers' is <strong>OFF</strong>, the green comment blocks are restored as the first column 'Category Name'. If turned <strong>ON</strong>, comment rows are hidden in the visual editor and excluded from the output.",
+          h3_1c: "💡 Advanced Text Editor",
+          p_1c: "The input areas function like advanced text editors, displaying <strong>line numbers</strong> and visualizing <strong>tabs</strong> (→) and <strong>newlines</strong> (↵). Word-wrapping is automatically optimized: enabled for the Prompt Editor, and disabled (horizontal scroll) for the Spreadsheet to keep tabular data neat.",
           h2_2: "2. Powerful Features of the Visual Editor",
           p_2: "The 'Visual Editor' area below is a canvas where you can build prompts using just your mouse.",
           li_2_1:
@@ -382,6 +399,8 @@
             "<strong>Delete by Dropping Outside (Trash):</strong> To quickly delete unwanted tags or rows, simply grab them and <strong>throw them outside the visual editor frame</strong>.",
           li_2_4:
             "<strong>Dynamic BREAK Toggle:</strong> Turning the 'Append BREAK to line ends' checkbox on/off will instantly add/remove <code>BREAK</code> tags at the end of all rows in the editor.",
+          li_2_5:
+            "<strong>Mobile & Tablet Support:</strong> Drag-and-drop is fully supported on touch devices. To prevent accidental dragging while scrolling, please <strong>long-press (about 0.25 seconds)</strong> a tag or row before moving it.",
           h2_3: "3. Safe Handling of Stable Diffusion Specific Syntax",
           h3_3a: "💡 Protection of Commas Inside Parentheses",
           p_3a: "Even if a comma is included inside parentheses for emphasis syntax, like <code>(red hair, blue eyes:1.2)</code>, it is safely treated as a single tag without being split.",

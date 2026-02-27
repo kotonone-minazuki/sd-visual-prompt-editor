@@ -3,28 +3,28 @@
     "minCount": 1000000,
     "maxCount": 999999999,
     "colorCode": "#e74c3c",
-    "label_ja": "100万～",
+    "label_ja": "1M～",
     "label_en": "1M+"
   },
   {
     "minCount": 100000,
     "maxCount": 999999,
     "colorCode": "#e67e22",
-    "label_ja": "10万～",
+    "label_ja": "100K～",
     "label_en": "100K+"
   },
   {
     "minCount": 10000,
     "maxCount": 99999,
     "colorCode": "#f1c40f",
-    "label_ja": "1万～",
+    "label_ja": "10K～",
     "label_en": "10K+"
   },
   {
     "minCount": 1000,
     "maxCount": 9999,
     "colorCode": "#024fff",
-    "label_ja": "1000～",
+    "label_ja": "1K～",
     "label_en": "1K+"
   },
   {
