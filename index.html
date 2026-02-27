@@ -136,16 +136,17 @@
 
           <div id="areaSpreadsheet" style="display: none; position: relative">
             <label class="box-label" data-i18n="labelSpread"
-              >1. スプレッドシート/TSVデータ貼り付け</label
+              >1. スプレッドシート (Excel/Sheetsからコピペ可能)</label
             >
-            <button
-              class="mini-copy-btn"
-              onclick="copyResult('inputSpreadsheet', this)"
-              data-i18n="copy"
-            >
-              コピー
-            </button>
-            <textarea id="inputSpreadsheet"></textarea>
+            <div class="spreadsheet-toolbar">
+              <button onclick="addRow()" class="mini-tool-btn">+ 行追加</button>
+              <button onclick="addCol()" class="mini-tool-btn">+ 列追加</button>
+              <button onclick="clearSpreadsheet()" class="mini-tool-btn danger">
+                クリア
+              </button>
+            </div>
+
+            <div id="spreadsheetContainer" class="spreadsheet-container"></div>
           </div>
         </div>
 
