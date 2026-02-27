@@ -1,0 +1,384 @@
+/* --- カラー変数の定義 --- */
+:root {
+  --bg-color: #f4f4f9;
+  --text-color: #333;
+  --accent-color: #4a90e2;
+  --box-bg: #ffffff;
+  --border-color: #ccc;
+  --input-border: #ddd;
+  --label-color: #2c3e50;
+  --tab-bg: #ddd;
+  --tab-active-bg: #ffffff;
+  --sidebar-bg: #ffffff;
+  --search-border: #4a90e2;
+  --item-border: #eee;
+  --legend-bg: #2c3e50;
+  --legend-text: #fff;
+  --copy-success-bg: #1e6031;
+  --hover-bg: #e2e2e2;
+  --tag-bg: #2b2b2b;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --accent-color: #bb86fc;
+  --box-bg: #1e1e1e;
+  --border-color: #333;
+  --input-border: #444;
+  --label-color: #bb86fc;
+  --tab-bg: #333;
+  --tab-active-bg: #1e1e1e;
+  --sidebar-bg: #1e1e1e;
+  --search-border: #bb86fc;
+  --item-border: #2c2c2c;
+  --legend-bg: #333;
+  --legend-text: #e0e0e0;
+  --copy-success-bg: #0d3a1d;
+  --hover-bg: #2a2a2a;
+  --tag-bg: #252525;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  max-width: 1400px;
+  margin: auto;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+h2 {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.help-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.85em;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--box-bg);
+  cursor: pointer;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 40px;
+}
+.converter-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.box-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+  color: var(--label-color);
+}
+
+.tab-container {
+  display: flex;
+  gap: 5px;
+  margin-bottom: -1px;
+}
+.tab {
+  padding: 10px 25px;
+  cursor: pointer;
+  background: var(--tab-bg);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  font-weight: bold;
+  font-size: 0.9em;
+  color: var(--text-color);
+}
+.tab.active {
+  background: var(--tab-active-bg);
+  border-bottom: 2px solid var(--tab-active-bg);
+  color: var(--accent-color);
+}
+
+.input-box {
+  background: var(--box-bg);
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 0 6px 6px 6px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* --- CodeMirror 用のスタイル調整 --- */
+.CodeMirror {
+  height: 180px;
+  font-family: "Consolas", monospace;
+  font-size: 14px;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background-color: var(--box-bg);
+  color: var(--text-color);
+}
+.CodeMirror-gutters {
+  background-color: var(--tab-bg);
+  border-right: 1px solid var(--border-color);
+}
+.CodeMirror-linenumber {
+  color: #888;
+}
+
+/* 改行マーク (↵) の表示 */
+.CodeMirror-line::after {
+  content: "↵";
+  color: #b0bec5;
+  margin-left: 4px;
+  font-family: sans-serif;
+  user-select: none;
+  pointer-events: none;
+}
+body.dark-mode .CodeMirror-line::after {
+  color: #555;
+}
+
+/* タブ文字の可視化 (右矢印の背景) */
+.cm-tab {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M1 6 h8 m-3 -3 l3 3 l-3 3" stroke="%23999999" fill="none"/></svg>')
+    no-repeat center right;
+  border-bottom: 1px solid #ddd;
+}
+body.dark-mode .cm-tab {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M1 6 h8 m-3 -3 l3 3 l-3 3" stroke="%23555555" fill="none"/></svg>')
+    no-repeat center right;
+  border-bottom: 1px solid #444;
+}
+
+.mini-copy-btn {
+  position: absolute;
+  top: 35px;
+  right: 25px;
+  padding: 4px 8px;
+  font-size: 11px;
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.2s;
+  font-weight: normal;
+  z-index: 10;
+}
+.mini-copy-btn:hover {
+  opacity: 1;
+  background-color: var(--hover-bg);
+}
+
+.preview-area {
+  width: 100%;
+  min-height: 250px;
+  height: max-content;
+  padding: 15px;
+  background-color: var(--box-bg);
+  color: var(--text-color);
+  font-family: "Consolas", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.prompt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px dashed transparent;
+  border-radius: 4px;
+  min-height: 40px;
+}
+.prompt-row:hover {
+  border-color: var(--border-color);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+.prompt-row.dragging {
+  opacity: 0.4;
+  background-color: var(--hover-bg);
+}
+
+.row-handle {
+  cursor: grab;
+  color: #aaa;
+  font-size: 18px;
+  padding: 0 5px;
+  user-select: none;
+}
+
+.prompt-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background-color: var(--tag-bg);
+  border: 2px solid;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.1s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.prompt-tag:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+.prompt-tag.dragging {
+  opacity: 0.5;
+  transform: scale(1.05);
+}
+
+.controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  background: var(--box-bg);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+button {
+  padding: 12px 24px;
+  cursor: pointer;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+button:active {
+  transform: scale(0.98);
+}
+.copy-btn {
+  background-color: #34a853;
+  margin-bottom: 40px;
+}
+
+.legend-container {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8em;
+  align-items: center;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--legend-bg);
+  color: var(--legend-text);
+}
+.color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.search-sidebar {
+  background: var(--sidebar-bg);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  align-self: start;
+}
+#tagSearch {
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  border: 2px solid var(--search-border);
+  border-radius: 4px;
+  background-color: var(--box-bg);
+  color: var(--text-color);
+}
+#searchResult {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+.tag-item {
+  padding: 10px;
+  border-bottom: 1px solid var(--item-border);
+  cursor: grab;
+}
+.tag-item:active {
+  cursor: grabbing;
+}
+.refresh-btn {
+  font-size: 0.8em;
+  padding: 8px 15px;
+}
+.status-success {
+  background-color: #27ae60;
+  cursor: default;
+}
+
+@media (max-width: 800px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .search-sidebar {
+    position: static;
+    height: auto;
+  }
+  #searchResult {
+    max-height: 400px;
+  }
+  .controls {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .controls button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .legend-container {
+    margin-left: 0;
+    margin-top: 10px;
+    justify-content: center;
+  }
+}
