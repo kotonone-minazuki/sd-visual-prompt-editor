@@ -17,6 +17,9 @@
   --copy-success-bg: #1e6031;
   --hover-bg: #e2e2e2;
   --tag-bg: #2b2b2b;
+  /* エディタ用変数 */
+  --cm-cursor: #000;
+  --cm-selection: #d9d9d9;
 }
 
 body.dark-mode {
@@ -37,6 +40,9 @@ body.dark-mode {
   --copy-success-bg: #0d3a1d;
   --hover-bg: #2a2a2a;
   --tag-bg: #252525;
+  /* エディタ用変数（ダークモード） */
+  --cm-cursor: #f8f8f2;
+  --cm-selection: #44475a;
 }
 
 body {
@@ -142,6 +148,34 @@ h2 {
 }
 .CodeMirror-linenumber {
   color: #888;
+}
+
+/* --- CodeMirror ダークモード/選択範囲/カーソル修正 --- */
+
+/* カーソル (色は変数で制御) */
+.CodeMirror-cursor {
+  border-left: 1px solid var(--cm-cursor) !important;
+  border-right: none !important;
+  width: 0 !important;
+}
+
+/* 選択範囲の背景色 (色は変数で制御) */
+.CodeMirror-selected {
+  background-color: var(--cm-selection) !important;
+}
+.CodeMirror-focused .CodeMirror-selected {
+  background-color: var(--cm-selection) !important;
+}
+.CodeMirror-line::selection,
+.CodeMirror-line > span::selection,
+.CodeMirror-line > span > span::selection {
+  background: var(--cm-selection) !important;
+}
+
+/* コメント行のハイライト (シンプルモード用) */
+.cm-comment {
+  color: #27ae60 !important; /* 見やすいグリーン */
+  font-weight: bold;
 }
 
 /* 改行マーク (↵) の表示 */
@@ -381,4 +415,11 @@ button:active {
     margin-top: 10px;
     justify-content: center;
   }
+}
+
+/* Embedding */
+.tag-embedding {
+  border-color: #2c3e50 !important;
+  color: #2c3e50 !important;
+  background-color: #ebedef !important;
 }

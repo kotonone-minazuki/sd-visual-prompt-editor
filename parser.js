@@ -1,6 +1,5 @@
 /**
  * @fileoverview Stable Diffusionプロンプトの解析・変換ロジックを提供するモジュール。
- * MkDocs + mkdocstrings によるドキュメント生成に対応しています。
  */
 
 /**
@@ -23,13 +22,9 @@ function getColorByCount(count) {
 
 /**
  * HTML特殊文字をエスケープします。
- * XSS対策として、ユーザー入力をHTMLに埋め込む前に使用してください。
  *
  * @param {string} str - エスケープ対象の文字列
- * @returns {string} エスケープ済みの文字列 (null/undefinedの場合は空文字)
- *
- * @example
- * escapeHTML('<lora:test>'); // "&lt;lora:test&gt;"
+ * @returns {string} エスケープ済みの文字列
  */
 function escapeHTML(str) {
   if (!str) return "";
@@ -44,15 +39,9 @@ function escapeHTML(str) {
 
 /**
  * プロンプト文字列をタグ単位に分割します。
- * 括弧 `()` `[]` `{}` や山括弧 `<>` のネスト深度を考慮し、
- * 最上位レベルのカンマのみを区切り文字として判定します。
  *
  * @param {string} line - 分割対象のプロンプト行
  * @returns {string[]} 分割されたタグの配列
- *
- * @example
- * splitTagsSmart("1girl, (blue eyes, short hair:1.2)");
- * // Returns: ["1girl", "(blue eyes, short hair:1.2)"]
  */
 function splitTagsSmart(line) {
   let result = [];
@@ -94,12 +83,35 @@ function splitTagsSmart(line) {
 }
 
 /**
- * 複合タグ（複数の単語を含むタグや重み付きタグ）の内部構造を解析し、
- * 単語ごとに色分けされたHTML文字列を生成します。
- *
- * @global 依存: `tagMap` (グローバルMapオブジェクト)
- * @param {string} coreTag - 解析対象のタグ文字列（括弧などを除いたコア部分）
- * @returns {string} 色分けされたHTML文字列
+ * タグの種類を判定します。
+ * @param {string} rawTag - 解析対象のタグ文字列
+ * @returns {string} タグのタイプ ('lora', 'wildcard', 'scheduling', 'alternating', 'control', 'normal')
+ */
+function detectTagType(rawTag) {
+  const lower = rawTag.toLowerCase();
+
+  if (rawTag.startsWith("<") && rawTag.endsWith(">")) return "lora";
+  if (rawTag.startsWith("__") && rawTag.endsWith("__")) return "wildcard";
+
+  // 制御キーワード
+  const controls = ["break", "and", "addrow", "addcomm", "addcol", "addbase"];
+  if (controls.includes(lower)) return "control";
+
+  // プロンプトエディティング [from:to:step] 判定
+  if (rawTag.startsWith("[") && rawTag.endsWith("]") && rawTag.includes(":")) {
+    return "scheduling";
+  }
+
+  // 交互生成 [a|b]
+  if (rawTag.startsWith("[") && rawTag.endsWith("]") && rawTag.includes("|")) {
+    return "alternating";
+  }
+
+  return "normal";
+}
+
+/**
+ * 複合タグの内部構造を解析し、単語ごとに色分けされたHTML文字列を生成します。
  */
 function evaluateInternalParts(coreTag) {
   const commaParts = coreTag.split(/([^,]+)/);
@@ -205,3 +217,26 @@ function evaluateInternalParts(coreTag) {
   }
   return resultHtml;
 }
+
+/**
+ * 区切り文字を含む特殊構文（[a|b] や [a:b:1]）の内部を個別に評価・色付けして返します。
+ * @param {string} content - 括弧を除いた内部文字列 (例: "red:blue:10")
+ * @param {string} separator - 区切り文字 (例: ":" または "|")
+ * @returns {string} HTML文字列
+ */
+function evaluateSequence(content, separator) {
+  const parts = content.split(separator);
+  const coloredParts = parts.map((part) => {
+    // 数値のみの場合はグレーのまま（ステップ数など）
+    if (/^[\d.]+$/.test(part.trim())) {
+      return escapeHTML(part);
+    }
+    // タグとして評価して色付け
+    return evaluateInternalParts(part);
+  });
+  return coloredParts.join(escapeHTML(separator));
+}
+
+// エクスポート用に detectTagType, evaluateSequence をグローバルに公開
+window.detectTagType = detectTagType;
+window.evaluateSequence = evaluateSequence;

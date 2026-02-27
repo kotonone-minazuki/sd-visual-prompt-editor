@@ -1,6 +1,5 @@
 /**
  * @fileoverview SD Visual Prompt Editor のメインアプリケーションロジック。
- * DOM操作、イベントハンドラ、初期化処理を担当します。
  */
 
 // --- グローバル変数 ---
@@ -90,11 +89,26 @@ let currentLang = localStorage.getItem("lang") || "ja";
 // --- 初期化処理 ---
 
 /**
- * アプリケーションの初期化を行います。
- * テーマ設定、CodeMirrorの生成、データフェッチ、ドラッグ＆ドロップの初期化を実行します。
+ * 超軽量CodeMirrorモード "sd-prompt-mode" の定義
+ * 行頭が '#' で始まる場合のみ、行全体を "comment" スタイル(緑色)にする。
  */
+if (typeof CodeMirror !== "undefined") {
+  CodeMirror.defineMode("sd-prompt-mode", function () {
+    return {
+      token: function (stream) {
+        // 行頭(sol)かつ '#' で始まる場合
+        if (stream.sol() && stream.match("#")) {
+          stream.skipToEnd();
+          return "comment"; // styles.css の .cm-comment が適用される
+        }
+        stream.next();
+        return null;
+      },
+    };
+  });
+}
+
 window.onload = () => {
-  // スマホ用ドラッグ＆ドロップpolyfillの初期化
   if (typeof MobileDragDrop !== "undefined") {
     MobileDragDrop.polyfill({ holdToDrag: 250 });
     window.addEventListener("touchmove", function () {}, { passive: false });
@@ -102,13 +116,13 @@ window.onload = () => {
 
   initTheme();
 
-  // CodeMirror の初期化
+  // CodeMirror の初期化 (定義した sd-prompt-mode を使用)
   editorNormal = CodeMirror.fromTextArea(
     document.getElementById("inputNormal"),
     {
       lineNumbers: true,
       lineWrapping: true,
-      mode: "text/plain",
+      mode: "sd-prompt-mode", // カスタムモード適用
       tabSize: 4,
     },
   );
@@ -118,7 +132,7 @@ window.onload = () => {
     {
       lineNumbers: true,
       lineWrapping: false,
-      mode: "text/plain",
+      mode: "sd-prompt-mode", // カスタムモード適用
       tabSize: 4,
     },
   );
@@ -185,10 +199,6 @@ function applyLanguage() {
 
 // --- UI操作・ロジック ---
 
-/**
- * Normalモード（プロンプトエディタ）とSpreadsheetモードを切り替えます。
- * @param {string} mode - 'normal' または 'spreadsheet'
- */
 function switchTab(mode) {
   currentMode = mode;
   document
@@ -218,9 +228,6 @@ function switchTab(mode) {
   }, 10);
 }
 
-/**
- * JSONファイルからタグ辞書データと閾値データを非同期で取得します。
- */
 async function fetchFromDB() {
   const btn = document.getElementById("statusBtn");
   try {
@@ -272,8 +279,6 @@ function renderLegend() {
 
 /**
  * 生のタグ文字列からDOM要素(span)を作成し、色付けなどの装飾を行います。
- * @param {string} rawTag - タグ文字列
- * @returns {HTMLElement} 生成されたspan要素
  */
 function createTagElement(rawTag) {
   const tagSpan = document.createElement("span");
@@ -285,6 +290,7 @@ function createTagElement(rawTag) {
     copyTag(this.dataset.raw, this);
   });
 
+  // コメントタグ
   if (rawTag.startsWith("#")) {
     tagSpan.style.borderColor = "#27ae60";
     tagSpan.style.color = "#27ae60";
@@ -293,86 +299,111 @@ function createTagElement(rawTag) {
     return tagSpan;
   }
 
-  if (rawTag.startsWith("<") && rawTag.endsWith(">")) {
-    tagSpan.style.borderColor = "#e84393";
-    tagSpan.style.color = "#e84393";
-    tagSpan.style.borderRadius = "4px";
-    tagSpan.textContent = rawTag;
-    return tagSpan;
-  }
+  // タグタイプの判定 (parser.js の関数を使用)
+  const type = window.detectTagType ? window.detectTagType(rawTag) : "normal";
 
-  const lowerRaw = rawTag.toLowerCase();
-  const controlTags = [
-    "break",
-    "and",
-    "addrow",
-    "addcomm",
-    "addcol",
-    "addbase",
-  ];
-  if (controlTags.includes(lowerRaw)) {
-    tagSpan.style.borderColor = "#e84393";
-    tagSpan.style.color = "#e84393";
-    tagSpan.style.borderRadius = "4px";
-    tagSpan.textContent = rawTag;
-    return tagSpan;
-  }
-
-  const match = rawTag.match(/^([({\[]*)(.+?)([:\d.]*[)}\]]*)$/);
-  let prefix = match ? match[1] : "";
-  let coreTag = match ? match[2] : rawTag;
-  let suffix = match ? match[3] : "";
-
-  // 括弧のバランス調整
-  const fixBrackets = (openCh, closeCh) => {
-    let oCount = coreTag.split(openCh).length - 1;
-    let cCount = coreTag.split(closeCh).length - 1;
-    while (oCount > cCount && suffix.startsWith(closeCh)) {
-      coreTag += closeCh;
-      suffix = suffix.substring(1);
-      cCount++;
-    }
+  // 共通のグレー枠スタイルを適用するヘルパー
+  const applyGrayStyle = () => {
+    tagSpan.style.borderColor = "#6c757d";
+    tagSpan.style.color = "#aaa";
+    tagSpan.style.borderRadius = "20px";
   };
-  fixBrackets("(", ")");
-  fixBrackets("[", "]");
-  fixBrackets("{", "}");
 
-  const cleanCore = coreTag.trim().toLowerCase().replace(/_/g, " ");
-
-  if (tagMap.has(cleanCore)) {
-    const exactCount = tagMap.get(cleanCore);
-    const evalColor = getColorByCount(exactCount);
-    tagSpan.style.borderColor = evalColor;
-    tagSpan.style.color = evalColor;
-    tagSpan.textContent = rawTag;
-  } else {
-    const words = cleanCore.split(/\s+/).filter((w) => w.length > 0);
-
-    if (words.length > 1 || coreTag.includes(",")) {
-      tagSpan.style.borderColor = "#6c757d";
-      tagSpan.style.color = "#aaa";
-
-      const prefixHtml = escapeHTML(prefix).replace(/ /g, "&nbsp;");
-      const coreHtml = evaluateInternalParts(coreTag); // parser.js
-      const suffixHtml = escapeHTML(suffix).replace(/ /g, "&nbsp;");
-
-      tagSpan.innerHTML = prefixHtml + coreHtml + suffixHtml;
-    } else {
-      const evalColor = getColorByCount(0);
-      tagSpan.style.borderColor = evalColor;
-      tagSpan.style.color = evalColor;
+  switch (type) {
+    case "lora":
+      tagSpan.style.borderColor = "#e84393";
+      tagSpan.style.color = "#e84393";
+      tagSpan.style.borderRadius = "4px";
       tagSpan.textContent = rawTag;
-    }
-  }
+      return tagSpan;
 
-  return tagSpan;
+    case "wildcard":
+      // Wildcardはグレー枠で表示（中身はそのまま）
+      applyGrayStyle();
+      tagSpan.textContent = rawTag;
+      return tagSpan;
+
+    case "scheduling":
+      // [from:to:step] -> 中身を分割して個別色付け
+      applyGrayStyle();
+      // 外側の [ ] を除去して解析
+      const contentSch = rawTag.slice(1, -1);
+      // parser.js の evaluateSequence で分割・色付け
+      const htmlSch = window.evaluateSequence
+        ? window.evaluateSequence(contentSch, ":")
+        : contentSch;
+      tagSpan.innerHTML = `[${htmlSch}]`;
+      return tagSpan;
+
+    case "alternating":
+      // [a|b] -> 中身を分割して個別色付け
+      applyGrayStyle();
+      const contentAlt = rawTag.slice(1, -1);
+      const htmlAlt = window.evaluateSequence
+        ? window.evaluateSequence(contentAlt, "|")
+        : contentAlt;
+      tagSpan.innerHTML = `[${htmlAlt}]`;
+      return tagSpan;
+
+    case "control":
+      tagSpan.style.borderColor = "#e84393";
+      tagSpan.style.color = "#e84393";
+      tagSpan.style.borderRadius = "4px";
+      tagSpan.textContent = rawTag;
+      return tagSpan;
+
+    case "normal":
+    default:
+      // 通常タグの処理（括弧の解析や辞書マッチング）
+      const match = rawTag.match(/^([({\[]*)(.+?)([:\d.]*[)}\]]*)$/);
+      let prefix = match ? match[1] : "";
+      let coreTag = match ? match[2] : rawTag;
+      let suffix = match ? match[3] : "";
+
+      // 括弧のバランス調整
+      const fixBrackets = (openCh, closeCh) => {
+        let oCount = coreTag.split(openCh).length - 1;
+        let cCount = coreTag.split(closeCh).length - 1;
+        while (oCount > cCount && suffix.startsWith(closeCh)) {
+          coreTag += closeCh;
+          suffix = suffix.substring(1);
+          cCount++;
+        }
+      };
+      fixBrackets("(", ")");
+      fixBrackets("[", "]");
+      fixBrackets("{", "}");
+
+      const cleanCore = coreTag.trim().toLowerCase().replace(/_/g, " ");
+
+      if (tagMap.has(cleanCore)) {
+        const exactCount = tagMap.get(cleanCore);
+        const evalColor = getColorByCount(exactCount);
+        tagSpan.style.borderColor = evalColor;
+        tagSpan.style.color = evalColor;
+        tagSpan.textContent = rawTag;
+      } else {
+        const words = cleanCore.split(/\s+/).filter((w) => w.length > 0);
+
+        if (words.length > 1 || coreTag.includes(",")) {
+          applyGrayStyle(); // 複合タグはグレー
+
+          const prefixHtml = escapeHTML(prefix).replace(/ /g, "&nbsp;");
+          const coreHtml = evaluateInternalParts(coreTag); // parser.js
+          const suffixHtml = escapeHTML(suffix).replace(/ /g, "&nbsp;");
+
+          tagSpan.innerHTML = prefixHtml + coreHtml + suffixHtml;
+        } else {
+          const evalColor = getColorByCount(0);
+          tagSpan.style.borderColor = evalColor;
+          tagSpan.style.color = evalColor;
+          tagSpan.textContent = rawTag;
+        }
+      }
+      return tagSpan;
+  }
 }
 
-/**
- * 分割されたタグ配列を元にビジュアルプレビュー（ブロック表示）を構築します。
- * @param {string} containerId - 出力先のDOM ID
- * @param {string[]} textLines - プロンプト行の配列
- */
 function buildVisualPreview(containerId, textLines) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -397,10 +428,6 @@ function buildVisualPreview(containerId, textLines) {
   });
 }
 
-/**
- * エディタのテキストを解析し、ビジュアルプレビューに変換・反映します。
- * UI上のボタンから呼び出されます。
- */
 function convert() {
   let posLines = [];
   const doAppendBreak = document.getElementById("appendBreak")
