@@ -63,6 +63,7 @@ def update_data():
                     
                 # プロパティ名を1文字に圧縮して格納
                 tags_data.append({
+                    'id': row.get('id', '').strip(),  # ★追加: IDを取得
                     't': row.get('tag', '').strip(),
                     'tr': row.get('trans', '').strip(),
                     'j': row.get('jpTag', '').strip(),

@@ -15,7 +15,7 @@ let currentMode = "normal";
 let editorNormal;
 
 // スプレッドシート用データ (2次元配列)
-// 変更: ヘッダーを英語表記に変更
+// ヘッダーを英語表記に設定
 let spreadsheetData = [
   ["Category", "Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"],
   ["", "", "", "", "", ""],
@@ -154,7 +154,6 @@ function renderSpreadsheet() {
   spreadsheetData.forEach((rowData, rIndex) => {
     const tr = document.createElement("tr");
 
-    // 1行目かどうかでクラスを分ける
     if (rIndex === 0) {
       tr.className = "spreadsheet-header-row";
     }
@@ -171,20 +170,17 @@ function renderSpreadsheet() {
       if (rIndex === 0) {
         input.readOnly = true;
         input.classList.add("header-cell");
-        input.tabIndex = -1; // Tabキーでの移動スキップ
+        input.tabIndex = -1;
       }
 
-      // データ変更時のイベント
       input.onchange = (e) => {
         updateCell(rIndex, cIndex, e.target.value);
       };
 
-      // コピペ(Paste)イベント
       input.onpaste = (e) => {
         handlePaste(e, rIndex, cIndex);
       };
 
-      // キーボード移動
       input.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -216,7 +212,6 @@ function renderSpreadsheet() {
 }
 
 function updateCell(row, col, value) {
-  // 1行目は変更不可
   if (row === 0) return;
   if (spreadsheetData[row]) {
     spreadsheetData[row][col] = value;
@@ -230,14 +225,11 @@ function addRow() {
 }
 
 function addCol() {
-  // 列追加時、ヘッダーには自動で名前を付ける
   spreadsheetData.forEach((row, rIndex) => {
     if (rIndex === 0) {
-      // 変更: ヘッダー自動命名 "Tag N"
       const newColName = "Tag " + row.length;
       row.push(newColName);
     } else {
-      // データ行
       row.push("");
     }
   });
@@ -246,10 +238,8 @@ function addCol() {
 
 function clearSpreadsheet() {
   if (!confirm("データをクリアしますか？")) return;
-  // ヘッダー行(0行目)は保持して、それ以降を初期化
   const header = spreadsheetData[0];
   const cols = header.length;
-  // ヘッダー行 + 空行4つ
   spreadsheetData = [
     [...header],
     new Array(cols).fill(""),
@@ -260,13 +250,8 @@ function clearSpreadsheet() {
   renderSpreadsheet();
 }
 
-/**
- * スプレッドシートへの貼り付け処理。
- */
 function handlePaste(e, startRow, startCol) {
   e.preventDefault();
-
-  // 1行目へのペーストは禁止
   if (startRow === 0) return;
 
   const pasteData = (e.clipboardData || window.clipboardData).getData("text");
@@ -278,7 +263,6 @@ function handlePaste(e, startRow, startCol) {
     const cols = rowStr.split("\t");
     const targetRow = startRow + i;
 
-    // 行が足りなければ追加
     if (targetRow >= spreadsheetData.length) {
       const currentCols = spreadsheetData[0].length;
       spreadsheetData.push(new Array(currentCols).fill(""));
@@ -287,12 +271,9 @@ function handlePaste(e, startRow, startCol) {
     cols.forEach((value, j) => {
       const targetCol = startCol + j;
 
-      // 列が足りなければ追加 (ヘッダーも自動更新)
       if (targetCol >= spreadsheetData[targetRow].length) {
-        // 現在の全行に対して列を追加
         spreadsheetData.forEach((r, rIdx) => {
-          if (rIdx === 0)
-            r.push("Tag " + r.length); // 変更: "Tag N"
+          if (rIdx === 0) r.push("Tag " + r.length);
           else r.push("");
         });
       }
@@ -390,14 +371,27 @@ async function fetchFromDB() {
     if (!response.ok) throw new Error("データの読み込みに失敗しました");
     const data = await response.json();
     tagDatabase = data.tags;
+
+    // IDが含まれていない場合でも動作するように考慮
     tagMap = new Map(
       tagDatabase.map((i) => [
         i.t.trim().toLowerCase().replace(/_/g, " "),
         i.c,
       ]),
     );
-    allThresholds = data.thresholds;
-    currentThresholds = allThresholds;
+
+    // thresholds.json または埋め込みデータを使用
+    if (data.thresholds) {
+      allThresholds = data.thresholds;
+      currentThresholds = allThresholds;
+    } else {
+      // フォールバック
+      currentThresholds = [
+        { minCount: 10000, colorCode: "#3498db", label: "Very Common" },
+        { minCount: 1000, colorCode: "#2ecc71", label: "Common" },
+        { minCount: 0, colorCode: "#e74c3c", label: "Rare" },
+      ];
+    }
 
     renderLegend();
 
@@ -579,7 +573,6 @@ function convert() {
   if (currentMode === "spreadsheet") {
     // 1行目(slice(1))をスキップ
     spreadsheetData.slice(1).forEach((row) => {
-      // 空行チェック
       if (row.every((cell) => !cell.trim())) return;
 
       const cat = row[0].trim();
@@ -706,7 +699,6 @@ function reflectToSpreadsheet() {
     }
   });
 
-  // 変更: デフォルトのヘッダー名 (Category, Tag 1...)
   const currentHeader = spreadsheetData[0] || [
     "Category",
     "Tag 1",
@@ -723,7 +715,7 @@ function reflectToSpreadsheet() {
     );
 
     while (currentHeader.length < maxCols) {
-      currentHeader.push("Tag " + currentHeader.length); // 変更: "Tag N"
+      currentHeader.push("Tag " + currentHeader.length);
     }
 
     newData.forEach((row) => {
@@ -1075,7 +1067,7 @@ function copyTag(tag, element) {
   });
 }
 
-// --- 検索機能 ---
+// --- 検索機能 & ツールチップ ---
 
 let currentSearchResults = [];
 let currentSearchIndex = 0;
@@ -1098,7 +1090,8 @@ function searchTags() {
     .filter(
       (i) =>
         i.t.toLowerCase().replace(/_/g, " ").includes(query) ||
-        (i.tr && i.tr.toLowerCase().includes(query)),
+        (i.tr && i.tr.toLowerCase().includes(query)) ||
+        (i.j && i.j.includes(query)),
     )
     .sort((a, b) => b.c - a.c);
 
@@ -1116,15 +1109,23 @@ function renderNextSearchBatch() {
   );
 
   const html = nextBatch
-    .map(
-      (
-        i,
-      ) => `<div class="tag-item" draggable="true" data-tag="${i.t}" onclick="copyTag('${i.t}', this)">
+    .map((i) => {
+      const subText = i.j || i.tr || "";
+      const dataJson = JSON.stringify(i).replace(/"/g, "&quot;");
+
+      return `<div class="tag-item" draggable="true" 
+                  data-tag="${i.t}" 
+                  data-detail="${dataJson}"
+                  onclick="copyTag('${i.t}', this)"
+                  onmouseenter="showTooltip(event, this)"
+                  onmouseleave="hideTooltip()"
+                  onmousemove="moveTooltip(event)"
+                  >
             <span style="font-weight:bold; color:var(--text-color);">${i.t}</span> 
             <span style="background-color: var(--tag-bg); padding: 2px 8px; border-radius: 12px; color:${getColorByCount(i.c)}; float:right; font-weight:bold; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">${i.c.toLocaleString()}</span>
-            <div style="color:#7f8c8d; font-size:0.85em; margin-top:4px;">${i.tr || ""}</div>
-          </div>`,
-    )
+            <div class="tag-subtext">${subText}</div>
+          </div>`;
+    })
     .join("");
 
   resultDiv.insertAdjacentHTML("beforeend", html);
@@ -1139,4 +1140,73 @@ function handleSearchScroll() {
   ) {
     renderNextSearchBatch();
   }
+}
+
+// --- ツールチップ (Toast) 機能 ---
+
+const tooltipEl = document.createElement("div");
+tooltipEl.id = "customTooltip";
+// 巨大なツールチップ対策: スクロール対応スタイルを追加
+tooltipEl.style.maxHeight = "80vh";
+tooltipEl.style.overflowY = "auto";
+document.body.appendChild(tooltipEl);
+
+function showTooltip(e, element) {
+  const t = document.getElementById("customTooltip");
+  if (!t) return;
+
+  let data;
+  try {
+    data = JSON.parse(element.dataset.detail);
+  } catch (err) {
+    console.error("Tooltip parse error", err);
+    return;
+  }
+
+  // 変更点1: ID列を削除
+  t.innerHTML = `
+    <div class="tooltip-row"><span class="tooltip-label">TAG</span><span class="tooltip-value val-tag">${escapeHTML(data.t)}</span></div>
+    <div class="tooltip-row"><span class="tooltip-label">TRANS</span><span class="tooltip-value val-trans">${escapeHTML(data.tr || "-")}</span></div>
+    <div class="tooltip-row"><span class="tooltip-label">JP</span><span class="tooltip-value">${escapeHTML(data.j || "-")}</span></div>
+    <div class="tooltip-row"><span class="tooltip-label">COUNT</span><span class="tooltip-value val-count">${(data.c || 0).toLocaleString()}</span></div>
+    <div class="tooltip-row"><span class="tooltip-label">GROUP</span><span class="tooltip-value">${escapeHTML(data.g || "-")}</span></div>
+  `;
+
+  t.style.display = "block";
+  moveTooltip(e);
+}
+
+function hideTooltip() {
+  const t = document.getElementById("customTooltip");
+  if (t) t.style.display = "none";
+}
+
+// 変更点2: 左下表示 + 画面内クランプ処理
+function moveTooltip(e) {
+  const t = document.getElementById("customTooltip");
+  if (!t || t.style.display === "none") return;
+
+  const offsetX = 20;
+  const offsetY = 20;
+
+  let left = e.clientX - t.offsetWidth - offsetX;
+  let top = e.clientY + offsetY; // 基本は「下」
+
+  // 左にはみ出る場合はカーソルの右側へ
+  if (left < 10) left = e.clientX + offsetX;
+
+  // 下にはみ出る場合
+  if (top + t.offsetHeight > window.innerHeight) {
+    // 上にはみ出ない範囲で、できるだけ上にずらす（画面内に押し込む）
+    let newTop = window.innerHeight - t.offsetHeight - 10;
+
+    // それでも上にはみ出る（ツールチップが巨大すぎる）場合
+    if (newTop < 10) {
+      newTop = 10; // 上端に固定（max-heightとoverflow-yでスクロールさせる）
+    }
+    top = newTop;
+  }
+
+  t.style.left = left + "px";
+  t.style.top = top + "px";
 }
