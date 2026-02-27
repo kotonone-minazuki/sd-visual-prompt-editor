@@ -13,6 +13,12 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
     <style>
       /* --- カラー変数の定義 --- */
       :root {
@@ -141,24 +147,54 @@
         margin-bottom: 20px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
-      textarea {
-        width: 100%;
+
+      /* --- CodeMirror 用のスタイル調整 --- */
+      .CodeMirror {
         height: 180px;
         font-family: "Consolas", monospace;
         font-size: 14px;
-        padding: 12px;
         border: 1px solid var(--input-border);
         border-radius: 4px;
-        box-sizing: border-box;
-        resize: vertical;
         background-color: var(--box-bg);
         color: var(--text-color);
+      }
+      .CodeMirror-gutters {
+        background-color: var(--tab-bg);
+        border-right: 1px solid var(--border-color);
+      }
+      .CodeMirror-linenumber {
+        color: #888;
+      }
+
+      /* 改行マーク (↵) の表示 */
+      .CodeMirror-line::after {
+        content: "↵";
+        color: #b0bec5;
+        margin-left: 4px;
+        font-family: sans-serif;
+        user-select: none;
+        pointer-events: none;
+      }
+      body.dark-mode .CodeMirror-line::after {
+        color: #555;
+      }
+
+      /* タブ文字の可視化 (右矢印の背景) */
+      .cm-tab {
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M1 6 h8 m-3 -3 l3 3 l-3 3" stroke="%23999999" fill="none"/></svg>')
+          no-repeat center right;
+        border-bottom: 1px solid #ddd;
+      }
+      body.dark-mode .cm-tab {
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><path d="M1 6 h8 m-3 -3 l3 3 l-3 3" stroke="%23555555" fill="none"/></svg>')
+          no-repeat center right;
+        border-bottom: 1px solid #444;
       }
 
       .mini-copy-btn {
         position: absolute;
         top: 35px;
-        right: 10px;
+        right: 25px;
         padding: 4px 8px;
         font-size: 11px;
         background-color: var(--box-bg);
@@ -169,6 +205,7 @@
         opacity: 0.7;
         transition: all 0.2s;
         font-weight: normal;
+        z-index: 10;
       }
       .mini-copy-btn:hover {
         opacity: 1;
@@ -340,21 +377,20 @@
         cursor: default;
       }
 
-      /* --- スマホ対応 (レスポンシブデザイン) --- */
       @media (max-width: 800px) {
         .main-layout {
-          grid-template-columns: 1fr; /* 画面が狭いときは1列（縦積み）にする */
+          grid-template-columns: 1fr;
           gap: 20px;
         }
         .search-sidebar {
-          position: static; /* 縦積み時はスクロール追従を解除 */
+          position: static;
           height: auto;
         }
         #searchResult {
-          max-height: 400px; /* スマホ画面での検索結果の高さを制限 */
+          max-height: 400px;
         }
         .controls {
-          position: static; /* スマホでは画面上部の固定を解除 */
+          position: static;
           flex-direction: column;
           align-items: stretch;
         }
@@ -567,11 +603,8 @@
     </div>
 
     <script>
-      // --- スマホ用ドラッグ＆ドロップ対応 (Polyfill) ---
-      MobileDragDrop.polyfill({
-        holdToDrag: 250, // スマホでは250ミリ秒長押しでドラッグ開始（スクロールとの誤爆防止）
-      });
-      // iOS Safariでの画面スクロール問題を回避するためのリスナー
+      // --- スマホ用ドラッグ＆ドロップ対応 ---
+      MobileDragDrop.polyfill({ holdToDrag: 250 });
       window.addEventListener("touchmove", function () {}, { passive: false });
 
       let tagDatabase = [];
@@ -579,6 +612,9 @@
       let allThresholds = [];
       let currentThresholds = [];
       let currentMode = "normal";
+
+      // CodeMirror インスタンス用の変数
+      let editorNormal, editorSpreadsheet;
 
       // --- i18n Dictionary ---
       const i18n = {
@@ -656,9 +692,36 @@
 
       window.onload = () => {
         initTheme();
+
+        // CodeMirror の初期化 (テキストエリアをエディタに変換)
+        editorNormal = CodeMirror.fromTextArea(
+          document.getElementById("inputNormal"),
+          {
+            lineNumbers: true,
+            lineWrapping: true, // プロンプトエディタは折り返しあり
+            mode: "text/plain",
+            tabSize: 4,
+          },
+        );
+
+        editorSpreadsheet = CodeMirror.fromTextArea(
+          document.getElementById("inputSpreadsheet"),
+          {
+            lineNumbers: true,
+            lineWrapping: false, // TSV/スプレッドシートは折り返しなし(横スクロール)
+            mode: "text/plain",
+            tabSize: 4,
+          },
+        );
+
         applyLanguage();
         fetchFromDB();
         initDragAndDrop();
+
+        // 初期表示タブのレイアウトを安定させるため再描画
+        setTimeout(() => {
+          if (editorNormal) editorNormal.refresh();
+        }, 100);
       };
 
       function toggleLanguage() {
@@ -678,10 +741,12 @@
 
         document.getElementById("tagSearch").placeholder =
           i18n[currentLang].searchPlaceholder;
-        document.getElementById("inputSpreadsheet").placeholder =
-          i18n[currentLang].placeholderSpread;
-        document.getElementById("inputNormal").placeholder =
-          i18n[currentLang].placeholderNormal;
+
+        // CodeMirror がプレースホルダーをサポートしていないため、初期値が空の場合のみセット
+        if (!editorSpreadsheet.getValue())
+          editorSpreadsheet.setValue(i18n[currentLang].placeholderSpread);
+        if (!editorNormal.getValue())
+          editorNormal.setValue(i18n[currentLang].placeholderNormal);
 
         const btn = document.getElementById("statusBtn");
         if (
@@ -751,6 +816,13 @@
           mode === "normal" ? "block" : "none";
         document.getElementById("btnUpSpreadsheet").style.display =
           mode === "spreadsheet" ? "block" : "none";
+
+        // 非表示タブから表示タブへ切り替えた直後は、CodeMirrorの再描画が必要
+        setTimeout(() => {
+          if (mode === "normal" && editorNormal) editorNormal.refresh();
+          if (mode === "spreadsheet" && editorSpreadsheet)
+            editorSpreadsheet.refresh();
+        }, 10);
       }
 
       async function fetchFromDB() {
@@ -988,9 +1060,22 @@
         }
 
         const match = rawTag.match(/^([({\[]*)(.+?)([:\d.]*[)}\]]*)$/);
-        const prefix = match ? match[1] : "";
-        const coreTag = match ? match[2] : rawTag;
-        const suffix = match ? match[3] : "";
+        let prefix = match ? match[1] : "";
+        let coreTag = match ? match[2] : rawTag;
+        let suffix = match ? match[3] : "";
+
+        const fixBrackets = (openCh, closeCh) => {
+          let oCount = coreTag.split(openCh).length - 1;
+          let cCount = coreTag.split(closeCh).length - 1;
+          while (oCount > cCount && suffix.startsWith(closeCh)) {
+            coreTag += closeCh;
+            suffix = suffix.substring(1);
+            cCount++;
+          }
+        };
+        fixBrackets("(", ")");
+        fixBrackets("[", "]");
+        fixBrackets("{", "}");
 
         const cleanCore = coreTag.trim().toLowerCase().replace(/_/g, " ");
 
@@ -1054,9 +1139,10 @@
           : false;
 
         if (currentMode === "spreadsheet") {
-          const input = document
-            .getElementById("inputSpreadsheet")
-            .value.replace(/^[ \t]*[\r\n]+/gm, "");
+          // CodeMirror から値を取得
+          const input = editorSpreadsheet
+            .getValue()
+            .replace(/^[ \t]*[\r\n]+/gm, "");
           input.split(/\r?\n/).forEach((line) => {
             let match = line.match(/^([^\t\n]+)\t+(.+?)[\t ]*$/);
             if (match) {
@@ -1069,7 +1155,8 @@
             }
           });
         } else {
-          const input = document.getElementById("inputNormal").value;
+          // CodeMirror から値を取得
+          const input = editorNormal.getValue();
           input.split(/\r?\n/).forEach((line) => {
             if (!line.trim()) return;
             let tags = splitTagsSmart(line);
@@ -1131,8 +1218,8 @@
 
       function reflectToNormal() {
         syncPreviewToData();
-        document.getElementById("inputNormal").value =
-          document.getElementById("outputRaw").value;
+        // CodeMirror に値をセット
+        editorNormal.setValue(document.getElementById("outputRaw").value);
       }
 
       function reflectToSpreadsheet() {
@@ -1179,7 +1266,8 @@
           }
         });
 
-        document.getElementById("inputSpreadsheet").value = tsvLines.join("\n");
+        // CodeMirror に値をセット
+        editorSpreadsheet.setValue(tsvLines.join("\n"));
       }
 
       function toggleBreaks() {
@@ -1268,6 +1356,10 @@
         });
 
         document.querySelectorAll(".preview-area").forEach((area) => {
+          area.addEventListener("dragenter", (e) => {
+            e.preventDefault();
+          });
+
           area.addEventListener("dragover", (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect =
@@ -1474,7 +1566,16 @@
       }
 
       function copyResult(id, btn) {
-        const text = document.getElementById(id).value;
+        let text = "";
+        // CodeMirror からテキストを取得するように分岐
+        if (id === "inputNormal") {
+          text = editorNormal.getValue();
+        } else if (id === "inputSpreadsheet") {
+          text = editorSpreadsheet.getValue();
+        } else {
+          text = document.getElementById(id).value;
+        }
+
         const originalText = btn.innerText;
         universalCopy(text)
           .then(() => {
