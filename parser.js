@@ -116,7 +116,61 @@ function detectTagType(rawTag) {
 }
 
 /**
+ * タグ文字列（断片）を受け取り、括弧や重みを除去してDB照合を行い、
+ * 色付けされたHTMLを返します。
+ *
+ * @param {string} fragment - 解析対象の文字列 (例: "(cat ears:1.2)")
+ * @returns {string} 色付けされたHTML
+ */
+function colorizeFragment(fragment) {
+  if (!fragment.trim()) return escapeHTML(fragment);
+
+  // 変更点: 正規表現を厳格化
+  // Prefix: 先頭の括弧類
+  // Core:   真ん中のタグ名 (非貪欲マッチ)
+  // Suffix: 末尾の「:数値」または「閉じ括弧類」
+  //         (?::[\d.]+)? -> コロンで始まる数値（重み）がある場合のみマッチ
+  //         [\)\]}]* -> その後の閉じ括弧
+  const match = fragment.match(/^([({\[]*)(.*?)((?::[\d.]+)?[\)\]}]*)$/);
+
+  if (!match) {
+    return escapeHTML(fragment);
+  }
+
+  const prefix = match[1];
+  const core = match[2];
+  const suffix = match[3];
+
+  // Loraや特殊タグが括弧内に入り込んだ場合の簡易ハンドリング
+  // (例: (<lora:test:1>) のようなケース)
+  if (core.startsWith("<") && core.endsWith(">")) {
+    return (
+      escapeHTML(prefix) +
+      `<span style="border-color:#e84393; color:#e84393;">${escapeHTML(core)}</span>` +
+      escapeHTML(suffix)
+    );
+  }
+
+  // データベース照合
+  const key = core.trim().toLowerCase().replace(/_/g, " ");
+  let colorStyle = "";
+
+  if (typeof tagMap !== "undefined" && tagMap.has(key)) {
+    const count = tagMap.get(key);
+    const color = getColorByCount(count);
+    colorStyle = `style="color:${color};"`;
+  }
+
+  return (
+    escapeHTML(prefix) +
+    `<span ${colorStyle}>${escapeHTML(core)}</span>` +
+    escapeHTML(suffix)
+  );
+}
+
+/**
  * Scheduling構文やAlternating構文の中身を解析し、HTMLとして装飾します。
+ * 区切られた各要素に対しても色判定を行います。
  *
  * @param {string} content - ブラケット[]の中身の文字列
  * @param {string} separator - 区切り文字 (":" または "|")
@@ -125,24 +179,33 @@ function detectTagType(rawTag) {
 function evaluateSequence(content, separator) {
   const parts = content.split(separator);
   return parts
-    .map((part) => `<span class="seq-part">${escapeHTML(part)}</span>`)
+    .map((part) => `<span class="seq-part">${colorizeFragment(part)}</span>`)
     .join(`<span class="seq-sep">${separator}</span>`);
 }
 
 /**
- * 通常タグの内部構造（強調構文など）を解析し、HTMLとして装飾します。
- * 例: (cat:1.2) -> <span class="p">d(</span>cat<span class="w">:1.2</span><span class="p">)</span>
+ * 通常タグの内部構造を解析し、HTMLとして装飾します。
+ * 括弧内の複数タグや、重み付け (:1.2) を考慮して色分けを行います。
  *
- * @param {string} tag - タグ文字列
+ * @param {string} tag - タグ文字列 (例: "flat chest, slender body" や "(cat ears:1.2)")
  * @returns {string} 装飾されたHTML文字列
  */
 function evaluateInternalParts(tag) {
-  // 簡易的な実装: そのままエスケープして返す（必要に応じて拡張可能）
-  // app.js側で括弧や重みの処理を行っている場合もありますが、
-  // ここで最低限エラーにならないよう文字列を返します。
+  const parts = tag.split(/(,)/);
 
-  // 括弧と重みを簡易的に色分けする場合の例:
-  // ( ) [ ] { } : などの記号を薄く表示する処理などを入れることができます。
+  return parts
+    .map((part) => {
+      if (part === ",") return ",";
+      if (!part.trim()) return escapeHTML(part);
 
-  return escapeHTML(tag);
+      const match = part.match(/^(\s*)(.*?)(\s*)$/);
+      if (!match) return escapeHTML(part);
+
+      const preSpace = match[1];
+      const content = match[2];
+      const postSpace = match[3];
+
+      return preSpace + colorizeFragment(content) + postSpace;
+    })
+    .join("");
 }

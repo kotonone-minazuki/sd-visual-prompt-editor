@@ -144,9 +144,19 @@
               <button onclick="clearSpreadsheet()" class="mini-tool-btn danger">
                 クリア
               </button>
+
+              <button
+                onclick="copyResult('inputSpreadsheet', this)"
+                class="mini-tool-btn"
+                style="margin-left: auto; font-weight: bold"
+                data-i18n="copy"
+              >
+                📋 コピー
+              </button>
             </div>
 
             <div id="spreadsheetContainer" class="spreadsheet-container"></div>
+            <textarea id="inputSpreadsheet" style="display: none"></textarea>
           </div>
         </div>
 
