@@ -272,7 +272,7 @@
 
         <table>
           <tr>
-            <th data-i18n="th_1">カテゴリ名</th>
+            <th data-i18n="th_1">Comment</th>
             <th data-i18n="th_2">タグ1</th>
             <th data-i18n="th_3">タグ2</th>
           </tr>
@@ -292,7 +292,7 @@
           <li data-i18n="li_1b_1">
             <strong>TSV → プロンプト変換:</strong>
             貼り付けて「反映」ボタンを押すと、自動的にタブ区切りがカンマ区切りに変換されます。
-            1列目のカテゴリ名（例：Negative）は
+            1列目のComment（例：Negative）は
             <code># Negative</code>
             という緑色のコメントブロックとして区切られ、構造が維持されます。
           </li>
@@ -367,7 +367,7 @@
         <h3 data-i18n="h3_strip">✂️ コメントアウトを除去</h3>
         <p data-i18n="p_strip">
           スプレッドシートモードでの書き出し時に有効です。<br />
-          <code># カテゴリ名</code>
+          <code># Comment</code>
           のようなコメントアウト行を、TSVデータへの変換時に除外します。学習データ作成時など、純粋なタグのみのリストが必要な場合に便利です。
         </p>
       </div>
@@ -415,7 +415,7 @@
             '編集後、画面下部の <span class="highlight">プロンプトとしてコピー</span> ボタンを押すと、整形されたプロンプトがクリップボードにコピーされます。そのままWebUI等に貼り付けてください。',
           h3_1b: "B. 「スプレッドシート」タブ（TSVデータの変換）",
           p_1b: "ExcelやGoogleスプレッドシート等で管理している表形式データを、プロンプト形式に変換するモードです。<br>以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。",
-          th_1: "カテゴリ名",
+          th_1: "Comment",
           th_2: "タグ1",
           th_3: "タグ2",
           td_1: "髪型",
@@ -425,7 +425,7 @@
           td_5: "worst quality",
           td_6: "low quality",
           li_1b_1:
-            "<strong>TSV → プロンプト変換:</strong> 貼り付けて「反映」ボタンを押すと、自動的にタブ区切りがカンマ区切りに変換されます。1列目のカテゴリ名（例：Negative）は <code># Negative</code> という緑色のコメントブロックとして区切られ、構造が維持されます。",
+            "<strong>TSV → プロンプト変換:</strong> 貼り付けて「反映」ボタンを押すと、自動的にタブ区切りがカンマ区切りに変換されます。1列目の Comment（例：Negative）は <code># Negative</code> という緑色のコメントブロックとして区切られ、構造が維持されます。",
           li_1b_2:
             '<strong>プロンプト → TSV 書き戻し:</strong> 編集結果を表計算ソフトに戻したい場合は、<span class="btn-green">↑ スプレッドシートに反映</span> ボタンを押すと、再びタブ区切り形式（TSV）に変換されます。',
           h2_2: "2. ビジュアルエディタの機能",
@@ -445,7 +445,7 @@
             "このオプションをオンにすると、各行の末尾に自動的に <code>BREAK</code> タグを挿入します。<br>Stable Diffusionのトークン制限（75トークンなど）により、プロンプトが長くなると後ろの要素が無視されやすくなる現象に対し、文脈を明示的に切ることで影響の減衰を防ぐ意図で使用されます。",
           h3_strip: "✂️ コメントアウトを除去",
           p_strip:
-            "スプレッドシートモードでの書き出し時に有効です。<br><code># カテゴリ名</code> のようなコメントアウト行を、TSVデータへの変換時に除外します。学習データ作成時など、純粋なタグのみのリストが必要な場合に便利です。",
+            "スプレッドシートモードでの書き出し時に有効です。<br><code># Comment</code> のようなコメントアウト行を、TSVデータへの変換時に除外します。学習データ作成時など、純粋なタグのみのリストが必要な場合に便利です。",
         },
         en: {
           title: "SD Visual Prompt Editor - User Manual",
@@ -467,7 +467,7 @@
             'After editing, click the <span class="highlight">Copy as Prompt</span> button at the bottom to copy the formatted prompt to your clipboard. Paste it directly into WebUI.',
           h3_1b: "B. 'Spreadsheet' Tab (TSV Conversion)",
           p_1b: "Convert tabular data from Excel or Google Sheets into prompt format.<br>Copy and paste <strong>only the data rows, excluding headers</strong>, as shown below.",
-          th_1: "Category",
+          th_1: "Comment",
           th_2: "Tag 1",
           th_3: "Tag 2",
           td_1: "Hairstyle",
@@ -477,7 +477,7 @@
           td_5: "worst quality",
           td_6: "low quality",
           li_1b_1:
-            "<strong>TSV → Prompt:</strong> Pasting and clicking 'Reflect' automatically converts tabs to commas. The first column (Category) becomes a green comment block like <code># Negative</code>, preserving structure.",
+            "<strong>TSV → Prompt:</strong> Pasting and clicking 'Reflect' automatically converts tabs to commas. The first column (Comment) becomes a green comment block like <code># Negative</code>, preserving structure.",
           li_1b_2:
             '<strong>Prompt → TSV:</strong> To export back to your spreadsheet, click <span class="btn-green">↑ Reflect to Spreadsheet</span> to convert back to Tab-Separated Values (TSV).',
           h2_2: "2. Visual Editor Features",
@@ -497,7 +497,7 @@
             "Automatically appends <code>BREAK</code> to the end of each line.<br>Intended to explicitly separate context to prevent the diminishing effect caused by Stable Diffusion's token limits (e.g., 75 tokens) on long prompts.",
           h3_strip: "✂️ Remove Comments",
           p_strip:
-            "Useful when exporting in Spreadsheet mode.<br>Excludes comment rows like <code># Category</code> when converting back to TSV data. Use this when you need a pure list of tags.",
+            "Useful when exporting in Spreadsheet mode.<br>Excludes comment rows like <code># Comment</code> when converting back to TSV data. Use this when you need a pure list of tags.",
         },
       };
 
