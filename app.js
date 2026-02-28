@@ -1,6 +1,7 @@
 /**
  * @fileoverview SD Visual Prompt Editor のメインアプリケーションロジック。
- * UIイベントのハンドリング、タブ切り替え、データの同期、クリップボード操作などを担当します。
+ * UIイベントのハンドリング、タブ切り替え、データの同期、クリップボード操作、
+ * ファイル保存・読込、自動保存などを担当します。
  */
 
 // --- グローバル変数 ---
@@ -58,6 +59,16 @@ const i18n = {
     placeholderNormal:
       "1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>...",
     dataSource: "※データソース: Danbooruタグデータセット",
+    // ボタンラベル
+    saveTxt: "Save .txt",
+    loadTxt: "Load .txt",
+    saveJson: "Save JSON",
+    loadJson: "Load JSON",
+    saveTsv: "Save TSV",
+    loadTsv: "Load TSV",
+    addRow: "+ 行追加",
+    addCol: "+ 列追加",
+    clear: "クリア",
   },
   en: {
     title: "SD Visual Prompt Editor",
@@ -91,6 +102,16 @@ const i18n = {
     placeholderNormal:
       "1girl, solo, (looking at viewer:1.2), <lora:my_lora:1.0>...",
     dataSource: "*Data source: Danbooru tag dataset",
+    // Button labels
+    saveTxt: "Save .txt",
+    loadTxt: "Load .txt",
+    saveJson: "Save JSON",
+    loadJson: "Load JSON",
+    saveTsv: "Save TSV",
+    loadTsv: "Load TSV",
+    addRow: "+ Add Row",
+    addCol: "+ Add Col",
+    clear: "Clear",
   },
 };
 
@@ -131,6 +152,13 @@ window.onload = () => {
     },
   );
 
+  // 変更検知：自動保存 (Debounceなしでも軽いので即時保存)
+  editorNormal.on("change", function () {
+    saveToLocalStorage();
+  });
+
+  restoreFromLocalStorage(); // 自動保存データの復元
+
   applyLanguage();
   fetchFromDB();
   initDragAndDrop();
@@ -141,7 +169,191 @@ window.onload = () => {
   }, 100);
 };
 
-// --- スプレッドシート機能 ---
+// --- ローカルストレージ (自動保存) 機能 ---
+
+function saveToLocalStorage() {
+  const normalContent = editorNormal ? editorNormal.getValue() : "";
+  localStorage.setItem("autosave_normal", normalContent);
+  localStorage.setItem("autosave_spreadsheet", JSON.stringify(spreadsheetData));
+  localStorage.setItem("autosave_mode", currentMode); // タブの状態も保存
+}
+
+function restoreFromLocalStorage() {
+  // 修正ポイント1: スプレッドシートを「先に」復元する
+  // (エディタ復元時のイベント発火で上書きされるのを防ぐため)
+  const spreadContent = localStorage.getItem("autosave_spreadsheet");
+  if (spreadContent !== null) {
+    try {
+      const parsed = JSON.parse(spreadContent);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        spreadsheetData = parsed;
+        // まだ描画はしない(onloadの最後でやるか、ここでやるかだが、データが入っていればOK)
+      }
+    } catch (e) {
+      console.error("Auto-save restore failed", e);
+    }
+  }
+
+  // 修正ポイント2: 次にエディタを復元
+  const normalContent = localStorage.getItem("autosave_normal");
+  if (normalContent !== null && editorNormal) {
+    editorNormal.setValue(normalContent);
+  }
+
+  // 修正ポイント3: 最後に開いていたタブを復元
+  const lastMode = localStorage.getItem("autosave_mode");
+  if (lastMode === "spreadsheet") {
+    switchTab("spreadsheet");
+  } else {
+    switchTab("normal");
+  }
+}
+
+// --- ファイル保存・読込機能 ---
+
+/**
+ * 現在の日時文字列を取得 (YYYYMMDD_HHmmss)
+ */
+function getTimestamp() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  const h = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+  const s = String(now.getSeconds()).padStart(2, "0");
+  return `${y}${m}${d}_${h}${min}${s}`;
+}
+
+/**
+ * テキストファイルをBOM付きUTF-8で保存します。
+ */
+function downloadFile(content, baseFilename, mimeType) {
+  // UTF-8 BOM (\uFEFF) を付加
+  const blob = new Blob(["\uFEFF" + content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+
+  // タイムスタンプ付与
+  const extIndex = baseFilename.lastIndexOf(".");
+  const name =
+    extIndex > 0 ? baseFilename.substring(0, extIndex) : baseFilename;
+  const ext = extIndex > 0 ? baseFilename.substring(extIndex) : "";
+  const filename = `${name}_${getTimestamp()}${ext}`;
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * ファイル読込共通処理
+ */
+function handleFileUpload(inputElement, callback) {
+  const file = inputElement.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    callback(e.target.result);
+    // 同じファイルを再選択できるようにvalueをリセット
+    inputElement.value = "";
+  };
+  reader.readAsText(file);
+}
+
+// 1. プロンプトエディタ用
+function saveNormalTxt() {
+  const content = editorNormal.getValue();
+  downloadFile(content, "prompt_editor.txt", "text/plain;charset=utf-8");
+}
+
+function loadNormalTxt(input) {
+  const current = editorNormal.getValue();
+  if (
+    current.trim() !== "" &&
+    !confirm("現在の内容を上書きしてもよろしいですか？")
+  ) {
+    input.value = "";
+    return;
+  }
+  handleFileUpload(input, (text) => {
+    editorNormal.setValue(text);
+    saveToLocalStorage();
+  });
+}
+
+// 2. スプレッドシート用
+function saveSpreadsheetJson() {
+  const content = JSON.stringify(spreadsheetData, null, 2);
+  downloadFile(content, "prompt_project.json", "application/json");
+}
+
+function loadSpreadsheetJson(input) {
+  if (!confirm("スプレッドシートの内容を上書きしてもよろしいですか？")) {
+    input.value = "";
+    return;
+  }
+  handleFileUpload(input, (text) => {
+    try {
+      const data = JSON.parse(text);
+      if (Array.isArray(data)) {
+        spreadsheetData = data;
+        renderSpreadsheet();
+        saveToLocalStorage();
+      } else {
+        alert("無効なJSONファイルです。");
+      }
+    } catch (e) {
+      alert("ファイルの読み込みに失敗しました: " + e.message);
+    }
+  });
+}
+
+function saveSpreadsheetTsv() {
+  // TSV形式に変換
+  const content = spreadsheetData.map((row) => row.join("\t")).join("\n");
+  downloadFile(
+    content,
+    "prompt_sheet.tsv",
+    "text/tab-separated-values;charset=utf-8",
+  );
+}
+
+function loadSpreadsheetTsv(input) {
+  if (!confirm("スプレッドシートの内容を上書きしてもよろしいですか？")) {
+    input.value = "";
+    return;
+  }
+  handleFileUpload(input, (text) => {
+    const rows = text.split(/\r\n|\n|\r/);
+    const newData = [];
+
+    rows.forEach((rowStr) => {
+      if (rowStr === "" && newData.length > 0) return; // 末尾の空行などは無視
+      newData.push(rowStr.split("\t"));
+    });
+
+    if (newData.length > 0) {
+      // ヘッダーやデータ構造の整合性を整える
+      const maxCols = newData.reduce(
+        (max, row) => Math.max(max, row.length),
+        0,
+      );
+      newData.forEach((row) => {
+        while (row.length < maxCols) row.push("");
+      });
+      spreadsheetData = newData;
+      renderSpreadsheet();
+      saveToLocalStorage();
+    }
+  });
+}
+
+// --- スプレッドシート機能 (既存ロジック + 自動保存フック) ---
 
 /**
  * データ配列をもとにHTMLテーブルを描画します。
@@ -181,6 +393,7 @@ function renderSpreadsheet() {
         handlePaste(e, rIndex, cIndex);
       };
 
+      // 矢印キー移動
       input.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -215,6 +428,7 @@ function updateCell(row, col, value) {
   if (row === 0) return;
   if (spreadsheetData[row]) {
     spreadsheetData[row][col] = value;
+    saveToLocalStorage(); // 自動保存
   }
 }
 
@@ -222,6 +436,7 @@ function addRow() {
   const cols = spreadsheetData[0] ? spreadsheetData[0].length : 5;
   spreadsheetData.push(new Array(cols).fill(""));
   renderSpreadsheet();
+  saveToLocalStorage(); // 自動保存
 }
 
 function addCol() {
@@ -234,20 +449,31 @@ function addCol() {
     }
   });
   renderSpreadsheet();
+  saveToLocalStorage(); // 自動保存
 }
 
 function clearSpreadsheet() {
-  if (!confirm("データをクリアしますか？")) return;
-  const header = spreadsheetData[0];
-  const cols = header.length;
-  spreadsheetData = [
-    [...header],
-    new Array(cols).fill(""),
-    new Array(cols).fill(""),
-    new Array(cols).fill(""),
-    new Array(cols).fill(""),
+  if (!confirm("データをクリアし、初期状態に戻しますか？")) return;
+
+  // ヘッダーとデータを完全に初期化して復旧する
+  const defaultHeader = [
+    "Category",
+    "Tag 1",
+    "Tag 2",
+    "Tag 3",
+    "Tag 4",
+    "Tag 5",
   ];
+  const defaultRows = 5; // 初期行数
+  const cols = defaultHeader.length;
+
+  spreadsheetData = [
+    [...defaultHeader],
+    ...Array.from({ length: defaultRows }, () => new Array(cols).fill("")),
+  ];
+
   renderSpreadsheet();
+  saveToLocalStorage(); // 自動保存
 }
 
 function handlePaste(e, startRow, startCol) {
@@ -283,6 +509,7 @@ function handlePaste(e, startRow, startCol) {
   });
 
   renderSpreadsheet();
+  saveToLocalStorage(); // 自動保存
 }
 
 // --- テーマ・言語設定 ---
@@ -362,6 +589,8 @@ function switchTab(mode) {
     if (mode === "normal" && editorNormal) editorNormal.refresh();
     if (mode === "spreadsheet") renderSpreadsheet();
   }, 10);
+
+  saveToLocalStorage(); // タブ切り替え時も保存（モードを保存するため）
 }
 
 async function fetchFromDB() {
@@ -653,6 +882,7 @@ function toggleComments() {
 function reflectToNormal() {
   syncPreviewToData();
   editorNormal.setValue(document.getElementById("outputRaw").value);
+  saveToLocalStorage(); // 保存
 }
 
 function reflectToSpreadsheet() {
@@ -729,6 +959,7 @@ function reflectToSpreadsheet() {
   }
 
   renderSpreadsheet();
+  saveToLocalStorage(); // 保存
 }
 
 function toggleBreaks() {

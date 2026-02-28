@@ -124,14 +124,42 @@
             <label class="box-label" data-i18n="labelNormal"
               >1. プロンプトエディタ</label
             >
-            <button
-              class="mini-copy-btn"
-              onclick="copyResult('inputNormal', this)"
-              data-i18n="copy"
-            >
-              コピー
-            </button>
+
+            <div class="spreadsheet-toolbar">
+              <button
+                class="mini-tool-btn"
+                onclick="saveNormalTxt()"
+                data-i18n="saveTxt"
+              >
+                Save .txt
+              </button>
+              <button
+                class="mini-tool-btn"
+                onclick="document.getElementById('fileInputNormal').click()"
+                data-i18n="loadTxt"
+              >
+                Load .txt
+              </button>
+
+              <button
+                class="mini-tool-btn"
+                onclick="copyResult('inputNormal', this)"
+                data-i18n="copy"
+                style="margin-left: auto; font-weight: bold"
+              >
+                📋 コピー
+              </button>
+            </div>
+
             <textarea id="inputNormal"></textarea>
+
+            <input
+              type="file"
+              id="fileInputNormal"
+              accept=".txt"
+              style="display: none"
+              onchange="loadNormalTxt(this)"
+            />
           </div>
 
           <div id="areaSpreadsheet" style="display: none; position: relative">
@@ -139,11 +167,66 @@
               >1. スプレッドシート (Excel/Sheetsからコピペ可能)</label
             >
             <div class="spreadsheet-toolbar">
-              <button onclick="addRow()" class="mini-tool-btn">+ 行追加</button>
-              <button onclick="addCol()" class="mini-tool-btn">+ 列追加</button>
-              <button onclick="clearSpreadsheet()" class="mini-tool-btn danger">
+              <button
+                onclick="addRow()"
+                class="mini-tool-btn"
+                data-i18n="addRow"
+              >
+                + 行追加
+              </button>
+              <button
+                onclick="addCol()"
+                class="mini-tool-btn"
+                data-i18n="addCol"
+              >
+                + 列追加
+              </button>
+              <button
+                onclick="clearSpreadsheet()"
+                class="mini-tool-btn danger"
+                data-i18n="clear"
+              >
                 クリア
               </button>
+
+              <span
+                style="
+                  margin-left: 10px;
+                  border-left: 1px solid #ccc;
+                  padding-left: 10px;
+                  display: flex;
+                  gap: 5px;
+                "
+              >
+                <button
+                  onclick="saveSpreadsheetJson()"
+                  class="mini-tool-btn"
+                  data-i18n="saveJson"
+                >
+                  Save JSON
+                </button>
+                <button
+                  onclick="document.getElementById('fileInputJson').click()"
+                  class="mini-tool-btn"
+                  data-i18n="loadJson"
+                >
+                  Load JSON
+                </button>
+                <button
+                  onclick="saveSpreadsheetTsv()"
+                  class="mini-tool-btn"
+                  data-i18n="saveTsv"
+                >
+                  Save TSV
+                </button>
+                <button
+                  onclick="document.getElementById('fileInputTsv').click()"
+                  class="mini-tool-btn"
+                  data-i18n="loadTsv"
+                >
+                  Load TSV
+                </button>
+              </span>
 
               <button
                 onclick="copyResult('inputSpreadsheet', this)"
@@ -154,6 +237,21 @@
                 📋 コピー
               </button>
             </div>
+
+            <input
+              type="file"
+              id="fileInputJson"
+              accept=".json"
+              style="display: none"
+              onchange="loadSpreadsheetJson(this)"
+            />
+            <input
+              type="file"
+              id="fileInputTsv"
+              accept=".tsv,.txt"
+              style="display: none"
+              onchange="loadSpreadsheetTsv(this)"
+            />
 
             <div id="spreadsheetContainer" class="spreadsheet-container"></div>
             <textarea id="inputSpreadsheet" style="display: none"></textarea>
