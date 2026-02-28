@@ -361,3 +361,366 @@
     <script src="app.js"></script>
   </body>
 </html>
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">SD Visual Prompt Editor</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://sd-visual-prompt-editor.pages.dev/"
+    />
+    <meta property="og:title" content="SD Visual Prompt Editor" />
+    <meta
+      property="og:description"
+      content="Stable Diffusion向けのプロンプトをDanbooruのデータに基づいて色分けし、直感的なドラッグ＆ドロップで構築・管理できるビジュアルエディタです。"
+    />
+    <meta
+      property="og:image"
+      content="https://sd-visual-prompt-editor.pages.dev/ogp-image.png"
+    />
+    <meta property="og:site_name" content="SD Visual Prompt Editor" />
+    <meta property="og:locale" content="ja_JP" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SD Visual Prompt Editor" />
+    <meta
+      name="twitter:description"
+      content="Stable Diffusion向けのプロンプトをDanbooruのデータに基づいて色分けし、直感的なドラッグ＆ドロップで構築・管理できるビジュアルエディタです。"
+    />
+    <meta
+      name="twitter:image"
+      content="https://sd-visual-prompt-editor.pages.dev/ogp-image.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/default.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/mobile-drag-drop@2.3.0-rc.2/index.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h2>
+      <span data-i18n="title">SD Visual Prompt Editor</span>
+      <div class="header-controls">
+        <button
+          onclick="toggleLanguage()"
+          class="help-link"
+          style="border: 1px solid var(--border-color)"
+        >
+          🌐 EN/JP
+        </button>
+        <a
+          href="https://ko-fi.com/kotononeminazuki"
+          target="_blank"
+          class="help-link"
+          data-i18n="kofi"
+          >☕ 支援 (Ko-fi)</a
+        >
+        <a
+          href="docs/guide.html"
+          target="_blank"
+          class="help-link"
+          data-i18n="help"
+          >📘 使い方</a
+        >
+        <a
+          href="docs/syntax.html"
+          target="_blank"
+          class="help-link"
+          data-i18n="syntax"
+          >📜 SD構文</a
+        >
+        <label style="font-size: 0.85em; font-weight: bold; cursor: pointer">
+          <input
+            type="checkbox"
+            id="darkModeToggle"
+            onchange="toggleDarkMode()"
+          />
+          <span data-i18n="darkMode">🌙 ダークモード</span>
+        </label>
+        <button
+          id="statusBtn"
+          class="refresh-btn status-loading"
+          onclick="fetchFromDB()"
+        >
+          🔄 データ取得中...
+        </button>
+      </div>
+    </h2>
+
+    <div class="main-layout">
+      <div class="converter-main">
+        <div class="tab-container">
+          <div
+            id="tabNormal"
+            class="tab active"
+            onclick="switchTab('normal')"
+            data-i18n="tabNormal"
+          >
+            プロンプトエディタ
+          </div>
+          <div
+            id="tabSpreadsheet"
+            class="tab"
+            onclick="switchTab('spreadsheet')"
+            data-i18n="tabSpread"
+          >
+            スプレッドシート
+          </div>
+        </div>
+
+        <div class="input-box">
+          <div id="areaNormal" style="position: relative">
+            <label class="box-label" data-i18n="labelNormal"
+              >1. プロンプトエディタ</label
+            >
+
+            <div class="spreadsheet-toolbar">
+              <button
+                class="mini-tool-btn"
+                onclick="saveNormalTxt()"
+                data-i18n="saveTxt"
+              >
+                Save .txt
+              </button>
+              <button
+                class="mini-tool-btn"
+                onclick="document.getElementById('fileInputNormal').click()"
+                data-i18n="loadTxt"
+              >
+                Load .txt
+              </button>
+
+              <button
+                class="mini-tool-btn"
+                onclick="copyResult('inputNormal', this)"
+                data-i18n="copy"
+                style="margin-left: auto; font-weight: bold"
+              >
+                📋 コピー
+              </button>
+            </div>
+
+            <textarea id="inputNormal"></textarea>
+
+            <input
+              type="file"
+              id="fileInputNormal"
+              accept=".txt"
+              style="display: none"
+              onchange="loadNormalTxt(this)"
+            />
+          </div>
+
+          <div id="areaSpreadsheet" style="display: none; position: relative">
+            <label class="box-label" data-i18n="labelSpread"
+              >1. スプレッドシート (Excel/Sheetsからコピペ可能)</label
+            >
+            <div class="spreadsheet-toolbar">
+              <button
+                onclick="addRow()"
+                class="mini-tool-btn"
+                data-i18n="addRow"
+              >
+                + 行追加
+              </button>
+              <button
+                onclick="addCol()"
+                class="mini-tool-btn"
+                data-i18n="addCol"
+              >
+                + 列追加
+              </button>
+              <button
+                onclick="clearSpreadsheet()"
+                class="mini-tool-btn danger"
+                data-i18n="clear"
+              >
+                クリア
+              </button>
+
+              <span
+                style="
+                  margin-left: 10px;
+                  border-left: 1px solid #ccc;
+                  padding-left: 10px;
+                  display: flex;
+                  gap: 5px;
+                "
+              >
+                <button
+                  onclick="saveSpreadsheetJson()"
+                  class="mini-tool-btn"
+                  data-i18n="saveJson"
+                >
+                  Save JSON
+                </button>
+                <button
+                  onclick="document.getElementById('fileInputJson').click()"
+                  class="mini-tool-btn"
+                  data-i18n="loadJson"
+                >
+                  Load JSON
+                </button>
+                <button
+                  onclick="saveSpreadsheetTsv()"
+                  class="mini-tool-btn"
+                  data-i18n="saveTsv"
+                >
+                  Save TSV
+                </button>
+                <button
+                  onclick="document.getElementById('fileInputTsv').click()"
+                  class="mini-tool-btn"
+                  data-i18n="loadTsv"
+                >
+                  Load TSV
+                </button>
+              </span>
+
+              <button
+                onclick="copyResult('inputSpreadsheet', this)"
+                class="mini-tool-btn"
+                style="margin-left: auto; font-weight: bold"
+                data-i18n="copy"
+              >
+                📋 コピー
+              </button>
+            </div>
+
+            <input
+              type="file"
+              id="fileInputJson"
+              accept=".json"
+              style="display: none"
+              onchange="loadSpreadsheetJson(this)"
+            />
+            <input
+              type="file"
+              id="fileInputTsv"
+              accept=".tsv,.txt"
+              style="display: none"
+              onchange="loadSpreadsheetTsv(this)"
+            />
+
+            <div id="spreadsheetContainer" class="spreadsheet-container"></div>
+            <textarea id="inputSpreadsheet" style="display: none"></textarea>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button
+            onclick="convert()"
+            style="background-color: #fe66f1; font-size: 1.1em"
+            data-i18n="btnConvert"
+          >
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬇️</span
+            >
+            ビジュアルエディタに反映
+          </button>
+
+          <button
+            id="btnUpNormal"
+            onclick="reflectToNormal()"
+            style="background-color: #3498db; font-size: 1.1em; display: block"
+            data-i18n="btnReflectN"
+          >
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬆️</span
+            >
+            プロンプトエディタに反映
+          </button>
+
+          <button
+            id="btnUpSpreadsheet"
+            onclick="reflectToSpreadsheet()"
+            style="background-color: #3498db; font-size: 1.1em; display: none"
+            data-i18n="btnReflectS"
+          >
+            <span
+              style="font-size: 1.5em; line-height: 1; vertical-align: middle"
+              >⬆️</span
+            >
+            スプレッドシートに反映
+          </button>
+
+          <div style="padding-left: 15px; display: none" id="stripOption">
+            <input
+              type="checkbox"
+              id="stripHeaders"
+              onchange="toggleComments()"
+            />
+            <label
+              for="stripHeaders"
+              style="font-size: 0.9em; cursor: pointer"
+              data-i18n="stripLabels"
+              >コメントアウトを除去</label
+            >
+          </div>
+          <div style="padding-left: 15px; display: block" id="breakOption">
+            <input type="checkbox" id="appendBreak" onchange="toggleBreaks()" />
+            <label
+              for="appendBreak"
+              style="font-size: 0.9em; cursor: pointer"
+              data-i18n="breakLabels"
+              >行末にBREAKを付加</label
+            >
+          </div>
+          <div id="legendArea" class="legend-container"></div>
+        </div>
+
+        <label class="box-label" data-i18n="labelVisual"
+          >2. ビジュアルエディタ
+          (ドラッグ＆ドロップで追加・移動・枠外へ削除)</label
+        >
+        <div id="outputPreview" class="preview-area"></div>
+        <button
+          class="copy-btn"
+          onclick="copyResult('outputRaw', this)"
+          data-i18n="copyPrompt"
+        >
+          プロンプトとしてコピー
+        </button>
+        <textarea id="outputRaw" style="display: none"></textarea>
+      </div>
+
+      <div class="search-sidebar">
+        <label class="box-label" data-i18n="searchPalette"
+          >タグ検索パレット</label
+        >
+        <div
+          style="
+            font-size: 0.8em;
+            color: #888;
+            margin-top: -5px;
+            margin-bottom: 10px;
+          "
+          data-i18n="dataSource"
+        >
+          ※データソース: Danbooruタグデータセット
+        </div>
+        <input type="text" id="tagSearch" oninput="searchTags()" disabled />
+        <div id="searchResult" onscroll="handleSearchScroll()"></div>
+      </div>
+    </div>
+
+    <script src="parser.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -16,9 +16,9 @@ let currentMode = "normal";
 let editorNormal;
 
 // スプレッドシート用データ (2次元配列)
-// ヘッダーを英語表記に設定
+// 1列目を "Comment" に変更
 let spreadsheetData = [
-  ["Category", "Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"],
+  ["Comment", "Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"],
   ["", "", "", "", "", ""],
   ["", "", "", "", "", ""],
   ["", "", "", "", "", ""],
@@ -187,7 +187,7 @@ function restoreFromLocalStorage() {
       const parsed = JSON.parse(spreadContent);
       if (Array.isArray(parsed) && parsed.length > 0) {
         spreadsheetData = parsed;
-        // まだ描画はしない(onloadの最後でやるか、ここでやるかだが、データが入っていればOK)
+        // まだ描画はしないが、メモリ上のデータは復元しておく
       }
     } catch (e) {
       console.error("Auto-save restore failed", e);
@@ -205,6 +205,7 @@ function restoreFromLocalStorage() {
   if (lastMode === "spreadsheet") {
     switchTab("spreadsheet");
   } else {
+    // デフォルトはnormal
     switchTab("normal");
   }
 }
@@ -455,9 +456,9 @@ function addCol() {
 function clearSpreadsheet() {
   if (!confirm("データをクリアし、初期状態に戻しますか？")) return;
 
-  // ヘッダーとデータを完全に初期化して復旧する
+  // 変更: ヘッダーを "Comment" にリセット
   const defaultHeader = [
-    "Category",
+    "Comment",
     "Tag 1",
     "Tag 2",
     "Tag 3",
@@ -929,8 +930,9 @@ function reflectToSpreadsheet() {
     }
   });
 
+  // 変更: デフォルトヘッダーも "Comment" に
   const currentHeader = spreadsheetData[0] || [
-    "Category",
+    "Comment",
     "Tag 1",
     "Tag 2",
     "Tag 3",
