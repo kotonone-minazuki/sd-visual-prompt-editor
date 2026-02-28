@@ -304,6 +304,8 @@ body.dark-mode .cm-tab {
   z-index: 100;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* 共通ボタン（大きめ） */
 button {
   padding: 12px 24px;
   cursor: pointer;
@@ -322,6 +324,35 @@ button:active {
 .copy-btn {
   background-color: #34a853;
   margin-bottom: 40px;
+}
+
+/* トグルボタン（小さめ・横並び用） */
+.toggle-btn {
+  padding: 8px 14px; /* 少し小さめ */
+  font-size: 0.9em;
+  background-color: var(--box-bg); /* デフォルトは背景色 */
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  opacity: 0.8;
+  font-weight: normal;
+}
+.toggle-btn:hover {
+  opacity: 1;
+  background-color: var(--hover-bg);
+}
+.toggle-btn.active {
+  background-color: var(--accent-color);
+  color: #fff;
+  border-color: var(--accent-color);
+  opacity: 1;
+  font-weight: bold;
+}
+
+.option-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: 10px;
 }
 
 .legend-container {
@@ -410,6 +441,10 @@ button:active {
     width: 100%;
     margin-bottom: 10px;
   }
+  .option-group {
+    margin-left: 0;
+    justify-content: space-between;
+  }
   .legend-container {
     margin-left: 0;
     margin-top: 10px;
@@ -422,81 +457,6 @@ button:active {
   border-color: #2c3e50 !important;
   color: #2c3e50 !important;
   background-color: #ebedef !important;
-}
-
-/* --- Spreadsheet Styles --- */
-.spreadsheet-toolbar {
-  margin-bottom: 5px;
-  display: flex;
-  gap: 5px;
-}
-
-.mini-tool-btn {
-  padding: 2px 8px;
-  font-size: 0.85em;
-  cursor: pointer;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  border-radius: 4px;
-}
-.mini-tool-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-.mini-tool-btn.danger:hover {
-  background-color: #ffebee;
-  color: #c62828;
-  border-color: #c62828;
-}
-
-.spreadsheet-container {
-  overflow: auto;
-  max-height: 500px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-color);
-}
-
-table.spreadsheet-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: max-content; /* 列数に応じて横に伸びる */
-}
-
-table.spreadsheet-table th,
-table.spreadsheet-table td {
-  border: 1px solid var(--border-color);
-  padding: 0;
-  margin: 0;
-  min-width: 100px;
-  height: 32px;
-}
-
-/* 1列目（カテゴリ）だけ少し色を変える */
-/* :not(.header-cell) を追加して、ヘッダー行を除外します */
-table.spreadsheet-table td:first-child input:not(.header-cell) {
-  background-color: rgba(0, 0, 0, 0.02);
-  font-weight: bold;
-}
-body.dark-mode table.spreadsheet-table td:first-child input:not(.header-cell) {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-table.spreadsheet-table input {
-  width: 100%;
-  height: 100%;
-  border: none;
-  padding: 4px 8px;
-  box-sizing: border-box;
-  font-family: inherit;
-  font-size: 0.95em;
-  background: transparent;
-  color: var(--text-color);
-  outline: none;
-}
-
-table.spreadsheet-table input:focus {
-  background-color: rgba(52, 152, 219, 0.1);
-  box-shadow: inset 0 0 0 2px #3498db;
 }
 
 /* --- Spreadsheet Styles --- */

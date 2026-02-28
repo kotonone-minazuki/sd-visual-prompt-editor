@@ -37,9 +37,9 @@ const i18n = {
     loaded: "✅ 取得完了: ",
     loadFail: "❌ 取得失敗",
     tabNormal: "プロンプトエディタ",
-    tabSpread: "スプレッドシート",
-    labelNormal: "1. プロンプトエディタ",
-    labelSpread: "1. スプレッドシート (Excel/Sheetsからコピペ可能)",
+    tabSpread: "スプレッドシートエディタ",
+    labelNormal: "テキストのCopy & Paste 可能",
+    labelSpread: "Excel / Sheets などから Copy & Paste 可能",
     copy: "コピー",
     copySuccess: "✅ コピー完了！",
     copyFail: "❌ 失敗",
@@ -52,7 +52,7 @@ const i18n = {
     stripLabels: "コメントアウトを除去",
     breakLabels: "行末にBREAKを付加",
     labelVisual:
-      "2. ビジュアルエディタ (ドラッグ＆ドロップで追加・移動・枠外へ削除)",
+      "ビジュアルエディタ (ドラッグ＆ドロップで追加・移動・枠外へ削除)",
     copyPrompt: "プロンプトとしてコピー",
     searchPalette: "タグ検索パレット",
     searchPlaceholder: "キーワードを入力...",
@@ -80,9 +80,9 @@ const i18n = {
     loaded: "✅ Loaded: ",
     loadFail: "❌ Failed",
     tabNormal: "Prompt Editor",
-    tabSpread: "Spreadsheet",
-    labelNormal: "1. Prompt Editor",
-    labelSpread: "1. Spreadsheet (Supports Copy & Paste from Excel)",
+    tabSpread: "Spreadsheet Editor",
+    labelNormal: "Text Copy & Paste Available",
+    labelSpread: "Copy & Paste from Excel / Sheets Available",
     copy: "Copy",
     copySuccess: "✅ Copied!",
     copyFail: "❌ Failed",
@@ -95,7 +95,7 @@ const i18n = {
     stripLabels: "Hide Comments/Headers",
     breakLabels: "Append BREAK to line ends",
     labelVisual:
-      "2. Visual Editor (Drag & Drop to add/move, drop outside to delete)",
+      "Visual Editor (Drag & Drop to add/move, drop outside to delete)",
     copyPrompt: "Copy as Prompt",
     searchPalette: "Tag Search Palette",
     searchPlaceholder: "Enter keyword...",
@@ -176,36 +176,52 @@ function saveToLocalStorage() {
   localStorage.setItem("autosave_normal", normalContent);
   localStorage.setItem("autosave_spreadsheet", JSON.stringify(spreadsheetData));
   localStorage.setItem("autosave_mode", currentMode); // タブの状態も保存
+
+  // ボタンの状態も保存
+  const breakActive = document
+    .getElementById("btnAppendBreak")
+    .classList.contains("active");
+  const stripActive = document
+    .getElementById("btnStripHeaders")
+    .classList.contains("active");
+  localStorage.setItem("autosave_opt_break", breakActive);
+  localStorage.setItem("autosave_opt_strip", stripActive);
 }
 
 function restoreFromLocalStorage() {
-  // 修正ポイント1: スプレッドシートを「先に」復元する
-  // (エディタ復元時のイベント発火で上書きされるのを防ぐため)
+  // オプションボタンの状態復元
+  const breakActive = localStorage.getItem("autosave_opt_break") === "true";
+  const stripActive = localStorage.getItem("autosave_opt_strip") === "true";
+
+  if (breakActive)
+    document.getElementById("btnAppendBreak").classList.add("active");
+  if (stripActive)
+    document.getElementById("btnStripHeaders").classList.add("active");
+
+  // スプレッドシートを「先に」復元する
   const spreadContent = localStorage.getItem("autosave_spreadsheet");
   if (spreadContent !== null) {
     try {
       const parsed = JSON.parse(spreadContent);
       if (Array.isArray(parsed) && parsed.length > 0) {
         spreadsheetData = parsed;
-        // まだ描画はしないが、メモリ上のデータは復元しておく
       }
     } catch (e) {
       console.error("Auto-save restore failed", e);
     }
   }
 
-  // 修正ポイント2: 次にエディタを復元
+  // 次にエディタを復元
   const normalContent = localStorage.getItem("autosave_normal");
   if (normalContent !== null && editorNormal) {
     editorNormal.setValue(normalContent);
   }
 
-  // 修正ポイント3: 最後に開いていたタブを復元
+  // 最後に開いていたタブを復元
   const lastMode = localStorage.getItem("autosave_mode");
   if (lastMode === "spreadsheet") {
     switchTab("spreadsheet");
   } else {
-    // デフォルトはnormal
     switchTab("normal");
   }
 }
@@ -576,10 +592,6 @@ function switchTab(mode) {
     mode === "spreadsheet" ? "block" : "none";
   document.getElementById("areaNormal").style.display =
     mode === "normal" ? "block" : "none";
-  document.getElementById("stripOption").style.display =
-    mode === "spreadsheet" ? "block" : "none";
-  document.getElementById("breakOption").style.display =
-    mode === "normal" ? "block" : "none";
 
   document.getElementById("btnUpNormal").style.display =
     mode === "normal" ? "block" : "none";
@@ -794,14 +806,36 @@ function buildVisualPreview(containerId, textLines) {
   });
 }
 
+// ボタンのトグル処理
+function toggleBreakState(btn) {
+  btn.classList.toggle("active");
+  toggleBreaks(); // DOMを更新
+  saveToLocalStorage(); // 状態保存
+}
+
+function toggleStripState(btn) {
+  btn.classList.toggle("active");
+  toggleComments(); // DOMを更新
+  saveToLocalStorage(); // 状態保存
+}
+
 function convert() {
   let posLines = [];
-  const doAppendBreak = document.getElementById("appendBreak")
-    ? document.getElementById("appendBreak").checked
-    : false;
+  const doAppendBreak = document
+    .getElementById("btnAppendBreak")
+    .classList.contains("active");
+
+  const controlTags = [
+    "break",
+    "and",
+    "addrow",
+    "addcomm",
+    "addcol",
+    "addbase",
+  ];
 
   if (currentMode === "spreadsheet") {
-    // 1行目(slice(1))をスキップ
+    // スプレッドシートからの変換
     spreadsheetData.slice(1).forEach((row) => {
       if (row.every((cell) => !cell.trim())) return;
 
@@ -810,16 +844,24 @@ function convert() {
 
       if (cat === "" && tags.length === 0) return;
 
+      // カテゴリがあればコメントとして追加
       if (cat) {
         posLines.push("# " + cat);
       }
 
       if (tags.length > 0) {
+        // 行末BREAKの判定ロジックを追加
+        if (doAppendBreak) {
+          const lastTag = tags[tags.length - 1].toLowerCase();
+          if (!controlTags.includes(lastTag)) {
+            tags.push("BREAK");
+          }
+        }
         posLines.push(tags.join(", "));
       }
     });
   } else {
-    // Normalモード
+    // プロンプトエディタからの変換
     const input = editorNormal.getValue();
     input.split(/\r?\n/).forEach((line) => {
       if (!line.trim()) return;
@@ -828,24 +870,17 @@ function convert() {
 
       if (doAppendBreak) {
         let commentTag = null;
+        // 行末がコメントなら一時退避
         if (tags.length > 0 && tags[tags.length - 1].startsWith("#")) {
           commentTag = tags.pop();
         }
         if (tags.length > 0) {
           const lastRealTag = tags[tags.length - 1].toLowerCase();
-          if (
-            ![
-              "break",
-              "and",
-              "addrow",
-              "addcomm",
-              "addcol",
-              "addbase",
-            ].includes(lastRealTag)
-          ) {
+          if (!controlTags.includes(lastRealTag)) {
             tags.push("BREAK");
           }
         }
+        // コメントを戻す
         if (commentTag) tags.push(commentTag);
       }
       posLines.push(tags.join(", "));
@@ -853,11 +888,13 @@ function convert() {
   }
 
   buildVisualPreview("outputPreview", posLines);
-  toggleComments();
+  toggleComments(); // コメント除去状態を適用
 }
 
 function toggleComments() {
-  const isChecked = document.getElementById("stripHeaders").checked;
+  const isChecked = document
+    .getElementById("btnStripHeaders")
+    .classList.contains("active");
   const container = document.getElementById("outputPreview");
   const rows = container.querySelectorAll(".prompt-row");
 
@@ -888,7 +925,9 @@ function reflectToNormal() {
 
 function reflectToSpreadsheet() {
   const container = document.getElementById("outputPreview");
-  const strip = document.getElementById("stripHeaders").checked;
+  const strip = document
+    .getElementById("btnStripHeaders")
+    .classList.contains("active");
 
   let newData = [];
   let pendingCategory = "";
@@ -965,7 +1004,9 @@ function reflectToSpreadsheet() {
 }
 
 function toggleBreaks() {
-  const isChecked = document.getElementById("appendBreak").checked;
+  const isChecked = document
+    .getElementById("btnAppendBreak")
+    .classList.contains("active");
   const container = document.getElementById("outputPreview");
   const rows = container.querySelectorAll(".prompt-row");
   const controlTags = [
