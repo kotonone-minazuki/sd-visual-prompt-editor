@@ -7,6 +7,7 @@
 /**
  * 全角英数字・記号を半角に正規化します。
  * 日本語（ひらがな・カタカナ・漢字）は維持します。
+ * また、カンマの後ろにスペースがない場合は自動的に補完します。
  *
  * @param {string} str - 正規化対象の文字列
  * @returns {string} 正規化された文字列
@@ -25,6 +26,10 @@ function normalizeText(str) {
 
   // 3. 読点(、) -> カンマ(,) ※タグ区切り対策
   normalized = normalized.replace(/、/g, ",");
+
+  // 4. 【追加】カンマの後に空白がない場合、半角スペースを挿入する
+  //    (例: "tag1,tag2" -> "tag1, tag2")
+  normalized = normalized.replace(/,([^ \t\r\n])/g, ", $1");
 
   return normalized;
 }
@@ -90,29 +95,95 @@ function splitTagsSmart(line) {
   // プロンプト本体の正規化 (全角→半角など)
   line = normalizeText(line);
 
-  // 特殊タグをカンマで囲んで分割しやすくする処理
-  let pLine = line
-    .replace(/\b(BREAK|AND|ADDROW|ADDCOMM|ADDCOL|ADDBASE)\b/gi, " , $1 , ")
-    .replace(/(<[^>]+>)/g, " , $1 , ");
+  // 特殊タグ（区切り文字として扱うキーワード）
+  const keywords = ["BREAK", "AND", "ADDROW", "ADDCOMM", "ADDCOL", "ADDBASE"];
 
-  for (let i = 0; i < pLine.length; i++) {
-    let char = pLine[i];
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+
+    // --- 1. <...> (Lora/Embedding) の開始検出 ---
+    // 現在の深さが0で、'<' が来た場合、これまでの蓄積があれば分割する
+    if (char === "<" && depth === 0 && angle === 0) {
+      if (current.trim()) {
+        result.push(current.trim());
+        current = "";
+      }
+    }
+
+    // --- 2. 深さ(Depth/Angle)の更新 ---
     if (char === "(" || char === "[" || char === "{") depth++;
     else if (char === ")" || char === "]" || char === "}")
       depth = Math.max(0, depth - 1);
     else if (char === "<") angle++;
     else if (char === ">") angle = Math.max(0, angle - 1);
 
+    // --- 3. <...> (Lora/Embedding) の終了検出 ---
+    // angleが0に戻った瞬間の '>' は、タグの終わりとみなす
+    if (char === ">" && depth === 0 && angle === 0) {
+      current += char;
+      if (current.trim()) {
+        result.push(current.trim());
+        current = "";
+      }
+      continue;
+    }
+
+    // --- 4. 通常のカンマ分割 ---
     if (char === "," && depth === 0 && angle === 0) {
       if (current.trim()) result.push(current.trim());
       current = "";
-    } else {
-      current += char;
+      continue;
     }
+
+    // --- 5. キーワード(AND, BREAK等)による分割判定 ---
+    // 深さが0の場合のみチェックを行う
+    if (depth === 0 && angle === 0) {
+      let matchedKw = null;
+
+      // 現在位置からキーワードが始まっているかチェック
+      for (const kw of keywords) {
+        // 大文字小文字を無視して比較するために substr を取得
+        if (
+          i + kw.length <= line.length &&
+          line.substr(i, kw.length).toUpperCase() === kw
+        ) {
+          // 単語の境界チェック (前後が英数字でないこと)
+          const prevChar = i > 0 ? line[i - 1] : " ";
+          const nextChar =
+            i + kw.length < line.length ? line[i + kw.length] : " ";
+          const isWordChar = (c) => /[a-zA-Z0-9_]/.test(c);
+
+          if (!isWordChar(prevChar) && !isWordChar(nextChar)) {
+            matchedKw = kw;
+            break;
+          }
+        }
+      }
+
+      if (matchedKw) {
+        // 現在蓄積中の文字があれば、それを一つのタグとして確定
+        if (current.trim()) {
+          result.push(current.trim());
+        }
+        // キーワード自体もタグとして登録 (元の文字ケースを維持)
+        result.push(line.substr(i, matchedKw.length));
+
+        // カウンタを進めて、バッファをリセット
+        current = "";
+        i += matchedKw.length - 1; // loopで i++ されるので -1
+        continue;
+      }
+    }
+
+    current += char;
   }
+
+  // 残りのバッファを追加
   if (current.trim()) result.push(current.trim());
 
+  // コメントを最後に追加
   if (commentPart !== "") result.push(commentPart);
+
   return result.filter((t) => t !== "");
 }
 
@@ -215,24 +286,31 @@ function evaluateSequence(content, separator) {
 /**
  * 通常タグの内部構造を解析し、HTMLとして装飾します。
  * 括弧内の複数タグや、重み付け (:1.2) を考慮して色分けを行います。
+ * また、未知のタグ（DB未登録）の場合はスペースで分割し、部分的なマッチングを試みます。
  *
- * @param {string} tag - タグ文字列 (例: "flat chest, slender body" や "(cat ears:1.2)")
+ * @param {string} tag - タグ文字列 (例: "flat chest, slender body" や "blue breasts")
  * @returns {string} 装飾されたHTML文字列
  */
 function evaluateInternalParts(tag) {
-  const parts = tag.split(/(,)/);
+  // 変更: カンマに加え、空白文字でも分割する（区切り文字自体も結果に含める）
+  // これにより "blue breasts" のようなスペース区切りの単語も個別に評価される
+  const parts = tag.split(/([,\s]+)/);
 
   return parts
     .map((part) => {
-      if (part === ",") return ",";
-      if (!part.trim()) return escapeHTML(part);
+      // 空白やカンマのみのパーツはそのまま返す
+      if (!part.trim() || /^[,\s]+$/.test(part)) {
+        // 修正: Flexbox内でスペースが潰れないよう、半角スペースを &nbsp; に置換
+        return escapeHTML(part).replace(/ /g, "&nbsp;");
+      }
 
       const match = part.match(/^(\s*)(.*?)(\s*)$/);
       if (!match) return escapeHTML(part);
 
-      const preSpace = match[1];
+      // 前後の空白も念のため &nbsp; 化
+      const preSpace = match[1].replace(/ /g, "&nbsp;");
       const content = match[2];
-      const postSpace = match[3];
+      const postSpace = match[3].replace(/ /g, "&nbsp;");
 
       return preSpace + colorizeFragment(content) + postSpace;
     })
