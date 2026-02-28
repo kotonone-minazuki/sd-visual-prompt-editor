@@ -5,6 +5,31 @@
  */
 
 /**
+ * 全角英数字・記号を半角に正規化します。
+ * 日本語（ひらがな・カタカナ・漢字）は維持します。
+ *
+ * @param {string} str - 正規化対象の文字列
+ * @returns {string} 正規化された文字列
+ */
+function normalizeText(str) {
+  if (!str) return "";
+
+  // 1. 全角英数字・記号 (Unicode: FF01-FF5E) を半角に変換
+  //    対応範囲: ！"＃＄％&'（）＊＋，－．／０-９：；＜＝＞？＠Ａ-Ｚ［＼］＾＿｀ａ-ｚ｛｜｝～
+  let normalized = str.replace(/[\uFF01-\uFF5E]/g, function (ch) {
+    return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
+  });
+
+  // 2. 全角スペース(U+3000) -> 半角スペース
+  normalized = normalized.replace(/\u3000/g, " ");
+
+  // 3. 読点(、) -> カンマ(,) ※タグ区切り対策
+  normalized = normalized.replace(/、/g, ",");
+
+  return normalized;
+}
+
+/**
  * 統計データに基づき、タグの出現頻度に応じた色コードを返します。
  * この関数はグローバル変数 `currentThresholds` に依存しています。
  *
@@ -54,12 +79,16 @@ function splitTagsSmart(line) {
   let angle = 0;
 
   // コメント部分の抽出
+  // (コメントは正規化の影響を受けないよう、先に退避します)
   let commentPart = "";
   const hashIndex = line.indexOf("#");
   if (hashIndex !== -1) {
     commentPart = line.substring(hashIndex).trim();
     line = line.substring(0, hashIndex);
   }
+
+  // プロンプト本体の正規化 (全角→半角など)
+  line = normalizeText(line);
 
   // 特殊タグをカンマで囲んで分割しやすくする処理
   let pLine = line
