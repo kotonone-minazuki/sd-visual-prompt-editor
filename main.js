@@ -46,3 +46,14 @@ window.onload = () => {
     if (editorNormal) editorNormal.refresh();
   }, 100);
 };
+
+// ▼ 追加: フッターのバージョン表示処理
+document.addEventListener("DOMContentLoaded", () => {
+  const verEl = document.getElementById("version-display");
+  if (verEl && typeof APP_VERSION !== "undefined") {
+    // 置換されていない場合（ローカル開発時など）の表示制御
+    const displayVer =
+      APP_VERSION === "__VERSION_STRING__" ? "Dev_Mode" : APP_VERSION;
+    verEl.textContent = displayVer;
+  }
+});

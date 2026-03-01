@@ -618,3 +618,42 @@ table.spreadsheet-table input:focus {
 .val-count {
   color: #f472b6;
 } /* ピンク */
+/* --- Footer Styles --- */
+#app-footer {
+  margin-top: 40px;
+  padding: 15px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--box-bg);
+  font-size: 0.85em;
+  color: #888;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.separator {
+  color: var(--border-color);
+}
+
+.version-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  font-family: "Consolas", monospace;
+}
+
+.version-link:hover {
+  text-decoration: underline;
+  color: var(--accent-color);
+}
+
+/* ダークモード時の微調整 */
+body.dark-mode #app-footer {
+  background-color: var(--box-bg);
+  color: #777;
+}
