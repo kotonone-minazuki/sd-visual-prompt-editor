@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">SD Visual Prompt Editor - ユーザーマニュアル</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../styles.css" />
+
+    <style>
+      /* マニュアル専用の追加スタイル */
+      body {
+        /* styles.cssのbodyスタイルを上書きしないよう調整しつつ、マニュアル用の余白を設定 */
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--bg-color); /* styles.cssの変数を利用 */
+        color: var(--text-color);
+      }
+
+      .container {
+        background: var(--container-bg);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
+        border: 1px solid var(--border-color);
+      }
+
+      h1 {
+        color: var(--text-color);
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 10px;
+        margin-top: 0;
+        padding-right: 100px;
+      }
+
+      h2 {
+        color: var(--accent-color);
+        margin-top: 30px;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 10px;
+      }
+
+      h3 {
+        color: var(--text-color);
+        margin-top: 20px;
+        font-weight: bold;
+      }
+
+      p,
+      ul,
+      ol {
+        font-size: 15px;
+        color: var(--text-color);
+        line-height: 1.7;
+      }
+
+      .step-box {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      .highlight {
+        background-color: rgba(52, 152, 219, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--accent-color);
+        font-weight: bold;
+      }
+
+      .btn-green {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: #27ae60;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      code {
+        background: rgba(128, 128, 128, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Consolas", monospace;
+        color: #e74c3c;
+        border: 1px solid var(--border-color);
+      }
+
+      /* テーブルスタイル */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9em;
+        background-color: var(--bg-color);
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid var(--border-color);
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        color: var(--text-color);
+      }
+
+      th {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .copy-target td {
+        border: 2px solid var(--accent-color);
+        background-color: rgba(52, 152, 219, 0.05);
+      }
+
+      /* 言語切り替えボタン */
+      .lang-btn {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        padding: 8px 16px;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: var(--container-bg);
+        border-radius: 4px;
+        font-weight: bold;
+        color: var(--text-color);
+        transition: background 0.2s;
+      }
+      .lang-btn:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      /* 特徴ボックス */
+      .key-feature {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 20px 0;
+      }
+      .feature-box {
+        flex: 1;
+        min-width: 250px;
+        background: rgba(52, 152, 219, 0.03);
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+      }
+
+      /* デモ用タグスタイル */
+      .demo-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 10px;
+        background-color: var(--bg-color);
+        border-radius: 6px;
+        margin: 10px 0;
+        border: 1px solid var(--border-color);
+      }
+      .demo-tag {
+        padding: 2px 10px;
+        border: 2px solid;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        background-color: var(--tag-bg);
+        color: var(--text-color);
+        cursor: default;
+        display: inline-block;
+      }
+
+      /* 戻るリンク */
+      .back-link {
+        display: block;
+        margin-top: 40px;
+        text-align: center;
+        font-weight: bold;
+        color: var(--accent-color);
+        text-decoration: none;
+        padding: 10px;
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+      .back-link:hover {
+        background-color: var(--accent-color);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="lang-btn" onclick="toggleLanguage()">🌐 EN/JP</button>
+
+      <h1 data-i18n="title">SD Visual Prompt Editor ユーザーマニュアル</h1>
+      <p data-i18n="desc">
+        Stable
+        Diffusionのプロンプト（呪文）を、直感的に編集・管理・整理するためのツールです。<br />
+        テキストを「タグの塊」として可視化することで、ドラッグ＆ドロップでの並べ替えや、タグごとの出現頻度確認が可能になります。
+        また、不揃いなプロンプトを
+        <code>タグ, タグ, ...</code>
+        （カンマ＋半角スペース）のきれいな形式に自動整形する用途にも便利です。
+      </p>
+
+      <div class="key-feature">
+        <div class="feature-box">
+          <strong data-i18n="feat_visual_title">🎨 視覚的な構造把握</strong>
+          <p data-i18n="feat_visual_desc">
+            タグの出現頻度による色分けや、LoRA・コメントの形状区別により、プロンプトの構成をひと目で視覚的に認識できます。
+          </p>
+        </div>
+        <div class="feature-box">
+          <strong data-i18n="feat_sheet_title">📊 強力な変換機能</strong>
+          <p data-i18n="feat_sheet_desc">
+            スプレッドシート（TSV）形式のデータを、カンマ区切りのプロンプト形式にシームレスに変換・統合して編集できます。
+          </p>
+        </div>
+      </div>
+
+      <h2 data-i18n="h2_1">1. 基本的な使い方（2つの入力タブ）</h2>
+      <p data-i18n="p_1">
+        入力元のデータ形式に合わせて、上部のタブを切り替えて使用します。
+      </p>
+
+      <div class="step-box">
+        <h3 data-i18n="h3_1a">
+          A. 「プロンプトエディタ」タブ（入力・ペースト）
+        </h3>
+        <p data-i18n="p_1a">
+          テキストエディタやWebUIから、プロンプトをそのまま貼り付けて編集するモードです。
+        </p>
+        <ol>
+          <li data-i18n="li_1a_1">
+            「1.
+            プロンプトエディタ」エリアにテキストをペーストまたは入力します。
+          </li>
+          <li data-i18n="li_1a_2">
+            <span class="highlight">↓ ビジュアルエディタに反映</span>
+            ボタンをクリックすると、入力内容が整形され、下の作業領域にタグとして視覚化されます。
+          </li>
+          <li data-i18n="li_1a_3">
+            編集後、画面下部の
+            <span class="highlight">プロンプトとしてコピー</span>
+            ボタンを押すと、整形されたプロンプトがクリップボードにコピーされます。そのままWebUI等に貼り付けてください。
+          </li>
+        </ol>
+      </div>
+
+      <div class="step-box">
+        <h3 data-i18n="h3_1b">
+          B. 「スプレッドシート」タブ（TSVデータの変換）
+        </h3>
+        <p data-i18n="p_1b">
+          ExcelやGoogleスプレッドシート等で管理している表形式データを、プロンプト形式に変換するモードです。<br />
+          以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。
+        </p>
+
+        <table>
+          <tr>
+            <th data-i18n="th_1">Comment</th>
+            <th data-i18n="th_2">タグ1</th>
+            <th data-i18n="th_3">タグ2</th>
+          </tr>
+          <tr class="copy-target">
+            <td data-i18n="td_1">髪型</td>
+            <td data-i18n="td_2">long hair</td>
+            <td data-i18n="td_3">blonde hair</td>
+          </tr>
+          <tr class="copy-target">
+            <td data-i18n="td_4">Negative</td>
+            <td data-i18n="td_5">worst quality</td>
+            <td data-i18n="td_6">low quality</td>
+          </tr>
+        </table>
+
+        <ul>
+          <li data-i18n="li_1b_1">
+            <strong>TSV → プロンプト変換:</strong>
+            貼り付けて「反映」ボタンを押すと、自動的にタブ区切りがカンマ区切りに変換されます。
+            1列目のComment（例：Negative）は
+            <code># Negative</code>
+            という緑色のコメントブロックとして区切られ、構造が維持されます。
+          </li>
+          <li data-i18n="li_1b_2">
+            <strong>プロンプト → TSV 書き戻し:</strong>
+            編集結果を表計算ソフトに戻したい場合は、<span class="btn-green"
+              >↑ スプレッドシートに反映</span
+            >
+            ボタンを押すと、再びタブ区切り形式（TSV）に変換されます。
+          </li>
+        </ul>
+      </div>
+
+      <h2 data-i18n="h2_2">2. ビジュアルエディタの機能</h2>
+      <p data-i18n="p_2">
+        ドラッグ＆ドロップ操作で、直感的にプロンプトを構築します。
+      </p>
+
+      <ul>
+        <li data-i18n="li_2_1">
+          <strong>パレットからの追加:</strong>
+          右側の「タグ検索パレット」から、使いたいタグをドラッグしてエディタに挿入できます。
+        </li>
+        <li data-i18n="li_2_2">
+          <strong>並び替えと削除:</strong>
+          タグや行をドラッグして並べ替えます。不要なタグは<strong>枠外に放り投げる</strong>ことで削除（ゴミ箱）できます。
+        </li>
+        <li data-i18n="li_2_5">
+          <strong>スマホ操作:</strong>
+          タッチデバイスでは、誤操作防止のためタグを<strong>長押し（約0.25秒）</strong>してからドラッグしてください。
+        </li>
+      </ul>
+
+      <h2 data-i18n="h2_3">3. タグの仕様とオプション</h2>
+
+      <div class="step-box">
+        <h3 data-i18n="h3_color">🎨 出現頻度による色分け</h3>
+        <p data-i18n="p_color">
+          Danbooruデータセットの出現頻度（人気度）に基づき、タグの枠線色が変化します。<br />
+          一般に、<strong>赤色・橙色は非常によく使われる（頻出）タグ</strong>であり、青色は比較的マイナーなタグを示します。
+        </p>
+        <div class="demo-tags">
+          <span class="demo-tag" style="border-color: #e74c3c; color: #e74c3c"
+            >1M+</span
+          >
+          <span class="demo-tag" style="border-color: #e67e22; color: #e67e22"
+            >100K+</span
+          >
+          <span class="demo-tag" style="border-color: #f1c40f; color: #f1c40f"
+            >10K+</span
+          >
+          <span class="demo-tag" style="border-color: #024fff; color: #024fff"
+            >1K+</span
+          >
+          <span class="demo-tag" style="border-color: #3498db; color: #3498db"
+            >1+</span
+          >
+        </div>
+      </div>
+
+      <div class="step-box">
+        <h3 data-i18n="h3_break">⚠️ 行末にBREAKを付加 (試験的機能)</h3>
+        <p data-i18n="p_break">
+          このオプションをオンにすると、各行の末尾に自動的に
+          <code>BREAK</code> タグを挿入します。<br />
+          Stable
+          Diffusionのトークン制限（75トークンなど）により、プロンプトが長くなると後ろの要素が無視されやすくなる現象に対し、文脈を明示的に切ることで影響の減衰を防ぐ意図で使用されます。
+        </p>
+      </div>
+
+      <div class="step-box">
+        <h3 data-i18n="h3_strip">✂️ コメントアウトを除去</h3>
+        <p data-i18n="p_strip">
+          スプレッドシートモードでの書き出し時に有効です。<br />
+          <code># Comment</code>
+          のようなコメントアウト行を、TSVデータへの変換時に除外します。学習データ作成時など、純粋なタグのみのリストが必要な場合に便利です。
+        </p>
+      </div>
+
+      <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
+    </div>
+
+    <script>
+      // OSの設定に合わせてダークモードを自動適用
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (event) => {
+          if (event.matches) {
+            document.body.classList.add("dark-mode");
+          } else {
+            document.body.classList.remove("dark-mode");
+          }
+        });
+
+      const i18n = {
+        ja: {
+          title: "SD Visual Prompt Editor ユーザーマニュアル",
+          desc: "Stable Diffusionのプロンプト（呪文）を、直感的に編集・管理・整理するためのツールです。<br>テキストを「タグの塊」として可視化することで、ドラッグ＆ドロップでの並べ替えや、タグごとの出現頻度確認が可能になります。また、不揃いなプロンプトを <code>タグ, タグ, ...</code> （カンマ＋半角スペース）のきれいな形式に自動整形する用途にも便利です。",
+          feat_visual_title: "🎨 視覚的な構造把握",
+          feat_visual_desc:
+            "タグの出現頻度による色分けや、LoRA・コメントの形状区別により、プロンプトの構成をひと目で視覚的に認識できます。",
+          feat_sheet_title: "📊 強力な変換機能",
+          feat_sheet_desc:
+            "スプレッドシート（TSV）形式のデータを、カンマ区切りのプロンプト形式にシームレスに変換・統合して編集できます。",
+          h2_1: "1. 基本的な使い方（2つの入力タブ）",
+          p_1: "入力元のデータ形式に合わせて、上部のタブを切り替えて使用します。",
+          h3_1a: "A. 「プロンプトエディタ」タブ（入力・ペースト）",
+          p_1a: "テキストエディタやWebUIから、プロンプトをそのまま貼り付けて編集するモードです。",
+          li_1a_1:
+            "「1. プロンプトエディタ」エリアにテキストをペーストまたは入力します。",
+          li_1a_2:
+            '<span class="highlight">↓ ビジュアルエディタに反映</span> ボタンをクリックすると、入力内容が整形され、下の作業領域にタグとして視覚化されます。',
+          li_1a_3:
+            '編集後、画面下部の <span class="highlight">プロンプトとしてコピー</span> ボタンを押すと、整形されたプロンプトがクリップボードにコピーされます。そのままWebUI等に貼り付けてください。',
+          h3_1b: "B. 「スプレッドシート」タブ（TSVデータの変換）",
+          p_1b: "ExcelやGoogleスプレッドシート等で管理している表形式データを、プロンプト形式に変換するモードです。<br>以下の表のように、<strong>見出し（ヘッダー）行を含めず、データ部分のみ</strong>を選択してコピーし、貼り付けてください。",
+          th_1: "Comment",
+          th_2: "タグ1",
+          th_3: "タグ2",
+          td_1: "髪型",
+          td_2: "long hair",
+          td_3: "blonde hair",
+          td_4: "Negative",
+          td_5: "worst quality",
+          td_6: "low quality",
+          li_1b_1:
+            "<strong>TSV → プロンプト変換:</strong> 貼り付けて「反映」ボタンを押すと、自動的にタブ区切りがカンマ区切りに変換されます。1列目の Comment（例：Negative）は <code># Negative</code> という緑色のコメントブロックとして区切られ、構造が維持されます。",
+          li_1b_2:
+            '<strong>プロンプト → TSV 書き戻し:</strong> 編集結果を表計算ソフトに戻したい場合は、<span class="btn-green">↑ スプレッドシートに反映</span> ボタンを押すと、再びタブ区切り形式（TSV）に変換されます。',
+          h2_2: "2. ビジュアルエディタの機能",
+          p_2: "ドラッグ＆ドロップ操作で、直感的にプロンプトを構築します。",
+          li_2_1:
+            "<strong>パレットからの追加:</strong> 右側の「タグ検索パレット」から、使いたいタグをドラッグしてエディタに挿入できます。",
+          li_2_2:
+            "<strong>並び替えと削除:</strong> タグや行をドラッグして並べ替えます。不要なタグは<strong>枠外に放り投げる</strong>ことで削除（ゴミ箱）できます。",
+          li_2_5:
+            "<strong>スマホ操作:</strong> タッチデバイスでは、誤操作防止のためタグを<strong>長押し（約0.25秒）</strong>してからドラッグしてください。",
+          h2_3: "3. タグの仕様とオプション",
+          h3_color: "🎨 出現頻度による色分け",
+          p_color:
+            "Danbooruデータセットの出現頻度（人気度）に基づき、タグの枠線色が変化します。<br>一般に、<strong>赤色・橙色は非常によく使われる（頻出）タグ</strong>であり、青色は比較的マイナーなタグを示します。",
+          h3_break: "⚠️ 行末にBREAKを付加 (試験的機能)",
+          p_break:
+            "このオプションをオンにすると、各行の末尾に自動的に <code>BREAK</code> タグを挿入します。<br>Stable Diffusionのトークン制限（75トークンなど）により、プロンプトが長くなると後ろの要素が無視されやすくなる現象に対し、文脈を明示的に切ることで影響の減衰を防ぐ意図で使用されます。",
+          h3_strip: "✂️ コメントアウトを除去",
+          p_strip:
+            "スプレッドシートモードでの書き出し時に有効です。<br><code># Comment</code> のようなコメントアウト行を、TSVデータへの変換時に除外します。学習データ作成時など、純粋なタグのみのリストが必要な場合に便利です。",
+        },
+        en: {
+          title: "SD Visual Prompt Editor - User Manual",
+          desc: "A tool to intuitively edit, manage, and organize prompts for Stable Diffusion.<br>By visualizing text as 'tag blocks', you can rearrange them via drag-and-drop and check tag frequency. It is also useful for automatically formatting messy prompts into a clean <code>tag, tag, ...</code> (comma + space) format.",
+          feat_visual_title: "🎨 Visual Structure",
+          feat_visual_desc:
+            "Color-coding by tag frequency and distinct shapes for LoRAs/Comments allow you to visually recognize the prompt structure at a glance.",
+          feat_sheet_title: "📊 Powerful Conversion",
+          feat_sheet_desc:
+            "Seamlessly converts and integrates Spreadsheet (TSV) data into comma-separated prompt format for editing.",
+          h2_1: "1. Basic Usage (Two Input Tabs)",
+          p_1: "Switch tabs based on your source data format.",
+          h3_1a: "A. 'Prompt Editor' Tab (Input/Paste)",
+          p_1a: "Paste and edit prompts directly from your text editor or WebUI.",
+          li_1a_1: "Paste or enter text into the '1. Prompt Editor' area.",
+          li_1a_2:
+            'Click <span class="highlight">↓ Reflect to Visual Editor</span> to format and visualize your input as tags below.',
+          li_1a_3:
+            'After editing, click the <span class="highlight">Copy as Prompt</span> button at the bottom to copy the formatted prompt to your clipboard. Paste it directly into WebUI.',
+          h3_1b: "B. 'Spreadsheet' Tab (TSV Conversion)",
+          p_1b: "Convert tabular data from Excel or Google Sheets into prompt format.<br>Copy and paste <strong>only the data rows, excluding headers</strong>, as shown below.",
+          th_1: "Comment",
+          th_2: "Tag 1",
+          th_3: "Tag 2",
+          td_1: "Hairstyle",
+          td_2: "long hair",
+          td_3: "blonde hair",
+          td_4: "Negative",
+          td_5: "worst quality",
+          td_6: "low quality",
+          li_1b_1:
+            "<strong>TSV → Prompt:</strong> Pasting and clicking 'Reflect' automatically converts tabs to commas. The first column (Comment) becomes a green comment block like <code># Negative</code>, preserving structure.",
+          li_1b_2:
+            '<strong>Prompt → TSV:</strong> To export back to your spreadsheet, click <span class="btn-green">↑ Reflect to Spreadsheet</span> to convert back to Tab-Separated Values (TSV).',
+          h2_2: "2. Visual Editor Features",
+          p_2: "Build prompts intuitively with drag-and-drop.",
+          li_2_1:
+            "<strong>Add from Palette:</strong> Drag tags from the 'Tag Search Palette' on the right to insert them.",
+          li_2_2:
+            "<strong>Sort & Delete:</strong> Drag tags or rows to reorder. <strong>Throw them outside the box</strong> to delete (trash).",
+          li_2_5:
+            "<strong>Mobile:</strong> On touch devices, <strong>long-press (approx. 0.25s)</strong> a tag before dragging to prevent accidental scrolling.",
+          h2_3: "3. Tag Specs & Options",
+          h3_color: "🎨 Color Coding by Frequency",
+          p_color:
+            "Tag border colors change based on Danbooru dataset frequency.<br>Generally, <strong>Red/Orange indicates very frequent (common) tags</strong>, while Blue indicates relatively minor tags.",
+          h3_break: "⚠️ Append BREAK (Experimental)",
+          p_break:
+            "Automatically appends <code>BREAK</code> to the end of each line.<br>Intended to explicitly separate context to prevent the diminishing effect caused by Stable Diffusion's token limits (e.g., 75 tokens) on long prompts.",
+          h3_strip: "✂️ Remove Comments",
+          p_strip:
+            "Useful when exporting in Spreadsheet mode.<br>Excludes comment rows like <code># Comment</code> when converting back to TSV data. Use this when you need a pure list of tags.",
+        },
+      };
+
+      let currentLang = localStorage.getItem("lang") || "ja";
+
+      window.onload = () => {
+        applyLanguage();
+      };
+
+      function toggleLanguage() {
+        currentLang = currentLang === "ja" ? "en" : "ja";
+        localStorage.setItem("lang", currentLang);
+        applyLanguage();
+      }
+
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (i18n[currentLang][key]) {
+            el.innerHTML = i18n[currentLang][key];
+          }
+        });
+        document.title = i18n[currentLang].title;
+      }
+    </script>
+  </body>
+</html>
