@@ -1,13 +1,21 @@
 /**
  * token-manager.js
  * Automatic1111 (Stable Diffusion WebUI) のトークン計算ロジックを再現
+ * - env設定を追加し、Webサーバー上での404エラー（HTML返却）を回避
  * - コメントタグ(#)の除外
  * - 記号の分離カウント
  * - BREAKによるパディング処理
  * - 複数チャンク境界の描画
  */
 
-import { AutoTokenizer } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js";
+import {
+  env,
+  AutoTokenizer,
+} from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js";
+
+// ローカルモデルの読み込みを無効化（重要）
+// これをしないと、サーバーのindex.htmlを読み込んでエラーになります
+env.allowLocalModels = false;
 
 const TOKENIZER_MODEL = "Xenova/clip-vit-large-patch14";
 const CHUNK_LIMIT = 75;
