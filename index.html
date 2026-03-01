@@ -314,6 +314,18 @@
             >
               コメントアウトを除去
             </button>
+            <button
+              id="btnTokenGuide"
+              class="toggle-btn"
+              onclick="
+                this.classList.toggle('active');
+                window.tokenManager &&
+                  window.tokenManager.toggle(this.classList.contains('active'));
+              "
+              data-i18n="tokenGuide"
+            >
+              📏 75 Token
+            </button>
           </div>
 
           <div id="legendArea" class="legend-container"></div>
@@ -364,8 +376,6 @@
       </div>
     </footer>
     <script src="parser.js"></script>
-    <!-- <script src="app.js"></script> -->
-    <script src="parser.js"></script>
     <script src="config.js"></script>
     <script src="state.js"></script>
     <script src="ui-utils.js"></script>
@@ -375,12 +385,11 @@
     <script src="tag-service.js"></script>
     <script src="drag-drop.js"></script>
     <script src="main.js"></script>
-    <!-- Cloudflare Web Analytics -->
+    <script type="module" src="token-manager.js"></script>
     <script
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "4e2ee9b9e6f04a63ade5dd85d8594f7c"}'
     ></script>
-    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>

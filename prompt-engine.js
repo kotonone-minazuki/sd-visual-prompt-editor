@@ -120,11 +120,13 @@ function toggleBreakState(btn) {
   btn.classList.toggle("active");
   toggleBreaks();
   saveToLocalStorage();
+  if (window.tokenManager) window.tokenManager.update();
 }
 function toggleStripState(btn) {
   btn.classList.toggle("active");
   toggleComments();
   saveToLocalStorage();
+  if (window.tokenManager) window.tokenManager.update();
 }
 
 function convert() {
@@ -180,6 +182,7 @@ function convert() {
   }
   buildVisualPreview("outputPreview", posLines);
   toggleComments();
+  if (window.tokenManager) window.tokenManager.update();
 }
 
 function toggleComments() {

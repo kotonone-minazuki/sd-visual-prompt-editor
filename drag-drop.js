@@ -32,6 +32,7 @@ function initDragAndDrop() {
       if (!isDroppedInValidZone) draggedElement.remove();
       draggedElement = null;
       toggleComments();
+      if (window.tokenManager) window.tokenManager.update();
     }
     dragSource = null;
     dragTagText = "";
@@ -79,6 +80,9 @@ function initDragAndDrop() {
           else area.insertBefore(newRow, afterRow);
         }
         toggleComments();
+        if (window.tokenManager) window.tokenManager.update();
+      } else if (dragSource === "internal") {
+        if (window.tokenManager) window.tokenManager.update();
       }
     });
   });

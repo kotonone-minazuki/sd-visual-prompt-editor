@@ -657,3 +657,55 @@ body.dark-mode #app-footer {
   background-color: var(--box-bg);
   color: #777;
 }
+
+/* --- Token Chunk Visualization (トークン区切り表示用) --- */
+
+/* 75トークン区切り線（通常: 青） */
+.chunk-separator {
+  display: inline-block;
+  width: 4px;
+  height: 28px;
+  background-color: #3498db;
+  margin: 0 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px rgba(52, 152, 219, 0.4);
+  z-index: 5;
+}
+
+/* 警告時の区切り線（警告: 赤） */
+.chunk-warning-line {
+  background-color: #e74c3c !important;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.6) !important;
+  z-index: 10; /* 通常線より手前に */
+}
+
+/* 線の上に浮かせる警告アイコン */
+.separator-warning-icon {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  animation: pop-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in {
+  0% {
+    transform: translateX(-50%) scale(0);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* ツールチップ代わりのホバー効果 */
+.chunk-separator:hover {
+  transform: scaleY(1.15);
+  transition: transform 0.1s;
+}
