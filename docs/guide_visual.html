@@ -3,100 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. ビジュアルエディタ操作 - SD Visual Prompt Editor</title>
+    <title>2. Visual Editor Usage - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link">イントロダクション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link active"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>2. ビジュアルエディタ操作</h1>
+      <h1>
+        <span class="lang-ja">2. ビジュアルエディタ操作</span>
+        <span class="lang-en">2. Visual Editor Usage</span>
+      </h1>
 
       <p>
-        ビジュアルエディタは、プロンプトを「タグのブロック」として直感的に操作できる場所です。<br />
-        マウスまたはタッチ操作で、タグの順序変更や削除が簡単に行えます。
+        <span class="lang-ja"
+          >ビジュアルエディタは、プロンプトを「タグのブロック」として直感的に操作できる場所です。<br />マウスまたはタッチ操作で、タグの順序変更や削除が簡単に行えます。</span
+        >
+        <span class="lang-en"
+          >The Visual Editor is a place where you can intuitively manipulate
+          prompts as "tag blocks."<br />You can easily reorder or delete tags
+          using mouse or touch operations.</span
+        >
       </p>
 
-      <h2>🖱️ 基本操作 (Drag & Drop)</h2>
+      <h2>
+        <span class="lang-ja">🖱️ 基本操作 (Drag & Drop)</span>
+        <span class="lang-en">🖱️ Basic Operations (Drag & Drop)</span>
+      </h2>
 
-      <h3>並べ替え (Reorder)</h3>
+      <h3>
+        <span class="lang-ja">並べ替え (Reorder)</span>
+        <span class="lang-en">Reorder</span>
+      </h3>
       <p>
-        タグブロックをドラッグ（掴んで移動）し、好きな場所にドロップ（離す）することで、プロンプトの順序を入れ替えることができます。<br />
-        関連するタグ（例:
-        衣装のタグ同士）を近くにまとめたり、重要なタグを先頭に移動させたりする推敲作業に最適です。
+        <span class="lang-ja"
+          >タグブロックをドラッグ（掴んで移動）し、好きな場所にドロップ（離す）することで、プロンプトの順序を入れ替えることができます。<br />関連するタグ（例:
+          衣装のタグ同士）を近くにまとめたり、重要なタグを先頭に移動させたりする推敲作業に最適です。</span
+        >
+        <span class="lang-en"
+          >You can swap the order of prompts by dragging (grabbing and moving) a
+          tag block and dropping (releasing) it wherever you like.<br />It is
+          ideal for refinement tasks such as grouping related tags (e.g., outfit
+          tags) or moving important tags to the beginning.</span
+        >
       </p>
 
-      <h3>削除 (Delete)</h3>
+      <h3>
+        <span class="lang-ja">削除 (Delete)</span>
+        <span class="lang-en">Delete</span>
+      </h3>
       <p>
-        不要なタグは、<strong>エディタの枠外（グレーの背景部分など）</strong>にドラッグしてドロップしてください。<br />
-        「ゴミ箱に捨てる」ような感覚で、プロンプトから削除されます。
+        <span class="lang-ja"
+          >不要なタグは、<strong>エディタの枠外（グレーの背景部分など）</strong>にドラッグしてドロップしてください。<br />「ゴミ箱に捨てる」ような感覚で、プロンプトから削除されます。</span
+        >
+        <span class="lang-en"
+          >To delete unnecessary tags, drag and drop them
+          <strong
+            >outside the editor frame (such as onto the gray background
+            area)</strong
+          >.<br />They will be removed from the prompt as if you were "throwing
+          them in the trash."</span
+        >
       </p>
 
       <div class="note-box">
-        <strong>📱 スマホ・タブレットでの操作:</strong><br />
-        タッチデバイスでは、誤って画面がスクロールしてしまうのを防ぐため、以下の操作を行ってください。<br />
-        <strong style="color: var(--accent-color)"
-          >タグを約0.25秒「長押し」してからドラッグを開始する</strong
-        ><br />
-        ※長押しするとタグが少し浮き上がり、移動可能になります。
+        <strong class="lang-ja">📱 スマホ・タブレットでの操作:</strong>
+        <strong class="lang-en"
+          >📱 Operation on Smartphones and Tablets:</strong
+        >
+        <br />
+        <span class="lang-ja"
+          >タッチデバイスでは、誤って画面がスクロールしてしまうのを防ぐため、以下の操作を行ってください。<br /><strong
+            style="color: var(--accent-color)"
+            >タグを約0.25秒「長押し」してからドラッグを開始する</strong
+          ><br />※長押しするとタグが少し浮き上がり、移動可能になります。</span
+        >
+        <span class="lang-en"
+          >On touch devices, to prevent accidental scrolling, please perform the
+          following operation:<br /><strong style="color: var(--accent-color)"
+            >"Long-press" a tag for about 0.25 seconds before starting to
+            drag.</strong
+          ><br />*Long-pressing will cause the tag to lift slightly, making it
+          movable.</span
+        >
       </div>
 
-      <h2>🎨 色と形状の見方</h2>
+      <h2>
+        <span class="lang-ja">🎨 色と形状の見方</span>
+        <span class="lang-en">🎨 Visual Guide to Colors and Shapes</span>
+      </h2>
 
-      <h3>1. 出現頻度による色分け (Tag Frequency)</h3>
+      <h3>
+        <span class="lang-ja">1. 出現頻度による色分け (Tag Frequency)</span>
+        <span class="lang-en"
+          >1. Color Coding by Frequency (Tag Frequency)</span
+        >
+      </h3>
       <p>
-        タグの枠線色は、Danbooruデータセットにおける「出現頻度（人気度）」を表しています。<br />
-        「みんなが使っているタグ（＝AIがよく知っているタグ）」かどうかを判別する目安になります。
+        <span class="lang-ja"
+          >タグの枠線色は、Danbooruデータセットにおける「出現頻度（人気度）」を表しています。<br />「みんなが使っているタグ（＝AIがよく知っているタグ）」かどうかを判別する目安になります。</span
+        >
+        <span class="lang-en"
+          >The border color of a tag represents its "occurrence frequency
+          (popularity)" in the Danbooru dataset.<br />It serves as a guide to
+          determine if a tag is "commonly used (i.e., well-known to the
+          AI)."</span
+        >
       </p>
 
       <div class="demo-area">
         <div style="margin-bottom: 10px; font-size: 0.9em; color: #666">
-          ▼ 実際の表示イメージ (デフォルト設定)
+          <span class="lang-ja">▼ 実際の表示イメージ (デフォルト設定)</span>
+          <span class="lang-en">▼ Actual display image (default setting)</span>
         </div>
         <span class="tag-demo tag-very-common"
           >very_popular_tag <span class="tag-count">10k+</span></span
@@ -111,43 +140,89 @@
 
       <ul>
         <li>
-          <strong style="color: #3498db">青・緑 (Common):</strong>
-          学習データに大量に含まれるタグ。AIに要素が伝わりやすい傾向があります。
+          <strong style="color: #3498db">
+            <span class="lang-ja">青・緑 (Common):</span>
+            <span class="lang-en">Blue/Green (Common):</span>
+          </strong>
+          <span class="lang-ja"
+            >学習データに大量に含まれるタグ。AIに要素が伝わりやすい傾向があります。</span
+          >
+          <span class="lang-en"
+            >Tags heavily represented in training data. These tend to be easily
+            communicated to the AI.</span
+          >
         </li>
         <li>
-          <strong style="color: #e74c3c">赤 (Rare):</strong>
-          学習データに少ないタグ。効きにくい場合があるため、強調構文
-          <code>(tag:1.3)</code> を使うなどの工夫が必要かもしれません。
+          <strong style="color: #e74c3c">
+            <span class="lang-ja">赤 (Rare):</span>
+            <span class="lang-en">Red (Rare):</span>
+          </strong>
+          <span class="lang-ja"
+            >学習データに少ないタグ。効きにくい場合があるため、強調構文
+            <code>(tag:1.3)</code> を使うなどの工夫が必要かもしれません。</span
+          >
+          <span class="lang-en"
+            >Tags with low frequency in training data. They might be less
+            effective, so techniques like using weights
+            <code>(tag:1.3)</code> may be necessary.</span
+          >
         </li>
       </ul>
 
-      <h3>2. 特殊ブロック (Special Blocks)</h3>
+      <h3>
+        <span class="lang-ja">2. 特殊ブロック (Special Blocks)</span>
+        <span class="lang-en">2. Special Blocks</span>
+      </h3>
       <p>
-        通常のタグ以外にも、特殊な構文は「角が四角いブロック」や「特別な色」で区別されます。
+        <span class="lang-ja"
+          >通常のタグ以外にも、特殊な構文は「角が四角いブロック」や「特別な色」で区別されます。</span
+        >
+        <span class="lang-en"
+          >In addition to normal tags, special syntax is distinguished by
+          "square-cornered blocks" or "special colors."</span
+        >
       </p>
 
       <div class="feature-grid">
         <div class="feature-card">
           <div class="card-title" style="color: #e84393">
             <span class="tag-demo special-pink" style="margin: 0">BREAK</span>
-            <span>⚡ BREAK / Control</span>
+            <span>
+              <span class="lang-ja">⚡ BREAK</span>
+              <span class="lang-en">⚡ BREAK</span>
+            </span>
           </div>
           <p>
-            プロンプトの文脈を強制的に切る構文です。<br />
-            LoRAなどの制御タグと同様に、<strong>ピンク色</strong>の角丸ブロックで強調表示されます。
+            <span class="lang-ja"
+              >プロンプトの文脈を強制的に切る構文です。<br />LoRAなどの制御タグと同様に、<strong>ピンク色</strong>の角丸ブロックで強調表示されます。</span
+            >
+            <span class="lang-en"
+              >A syntax that forcibly breaks the prompt context.<br />Like LoRA
+              and other control tags, it is highlighted with a
+              <strong>pink</strong> rounded block.</span
+            >
           </p>
         </div>
 
         <div class="feature-card">
           <div class="card-title" style="color: #27ae60">
             <span class="tag-demo special-green" style="margin: 0"># memo</span>
-            <span>💬 # Comment</span>
+            <span>
+              <span class="lang-ja">💬 # Comment</span>
+              <span class="lang-en">💬 # Comment</span>
+            </span>
           </div>
           <p>
-            行頭に
-            <code>#</code>
-            をつけたコメント行は、<strong>緑色</strong>のブロックとして表示されます。<br />
-            メモ書きや、一時的に無効化したタグの管理に便利です。
+            <span class="lang-ja"
+              >行頭に
+              <code>#</code>
+              をつけたコメント行は、<strong>緑色</strong>のブロックとして表示されます。<br />メモ書きや、一時的に無効化したタグの管理に便利です。</span
+            >
+            <span class="lang-en"
+              >Comment lines starting with <code>#</code> are displayed as
+              <strong>green</strong> blocks.<br />Useful for notes or managing
+              temporarily disabled tags.</span
+            >
           </p>
         </div>
 
@@ -156,11 +231,20 @@
             <span class="tag-demo special-pink" style="margin: 0"
               >&lt;lora:model:1&gt;</span
             >
-            <span>💠 LoRA</span>
+            <span>
+              <span class="lang-ja">💠 LoRA</span>
+              <span class="lang-en">💠 LoRA</span>
+            </span>
           </div>
           <p>
-            LoRA呼び出し構文は、BREAKと同様に<strong>ピンク色</strong>で区別されます。<br />
-            一目でモデルの適用状況がわかります。
+            <span class="lang-ja"
+              >LoRA呼び出し構文は、BREAKと同様に<strong>ピンク色</strong>で区別されます。<br />一目でモデルの適用状況がわかります。</span
+            >
+            <span class="lang-en"
+              >LoRA invocation syntax is distinguished by <strong>pink</strong>,
+              similar to BREAK.<br />You can see the model application status at
+              a glance.</span
+            >
           </p>
         </div>
       </div>
@@ -172,23 +256,21 @@
           padding-top: 20px;
         "
       >
-        次は、このエディタに新しいタグを追加する方法について解説します。<br />
+        <span class="lang-ja"
+          >次は、このエディタに新しいタグを追加する方法について解説します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain how to add new tags to this editor.</span
+        >
+        <br />
         <a
           href="guide_search.html"
           style="font-weight: bold; color: var(--accent-color)"
-          >3. タグ検索・追加 へ進む ➡️</a
         >
+          <span class="lang-ja">3. タグ検索・追加 へ進む ➡️</span>
+          <span class="lang-en">Go to 3. Tag Search / Add ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      // ダークモード設定の適用
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>

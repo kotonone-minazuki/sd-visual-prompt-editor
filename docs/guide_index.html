@@ -3,153 +3,262 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ユーザーマニュアル - SD Visual Prompt Editor</title>
+    <title>User Manual - SD Visual Prompt Editor</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link active"
-            >イントロダクション</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>イントロダクション</h1>
+      <h1>
+        <span class="lang-ja">イントロダクション</span>
+        <span class="lang-en">Introduction</span>
+      </h1>
 
       <div class="intro-box">
         <p>
-          <strong>「もっと意図通りに、高精度な画像を生成したい」</strong><br />
-          SD Visual Prompt Editor は、Stable
-          Diffusionのプロンプト（呪文）を単に管理するだけでなく、<strong>構造を可視化して「推敲（ブラッシュアップ）」し、生成精度を高めるため</strong>のビジュアルエディタです。
+          <strong class="lang-ja"
+            >「もっと意図通りに、高精度な画像を生成したい」</strong
+          >
+          <strong class="lang-en"
+            >"I want to generate high-precision images exactly as
+            intended"</strong
+          >
+          <br />
+          <span class="lang-ja">
+            SD Visual Prompt Editor は、Stable
+            Diffusionのプロンプト（呪文）を単に管理するだけでなく、<strong>構造を可視化して「推敲（ブラッシュアップ）」し、生成精度を高めるため</strong>のビジュアルエディタです。
+          </span>
+          <span class="lang-en">
+            SD Visual Prompt Editor is a visual editor designed not just to
+            manage Stable Diffusion prompts, but to
+            <strong
+              >visualize their structure for "refining (brushing up)"</strong
+            >
+            and improving generation accuracy.
+          </span>
         </p>
       </div>
 
       <p>
-        長いプロンプトを作成していると、「どのタグが効いているのか分からない」「重複や矛盾が発生している」「トークン数制限を超えて後ろのタグが無視されている」といった問題に直面します。<br />
-        本ツールは、テキストを「色のついたタグブロック」として可視化することで、これらの問題を一目で発見し、直感的な操作で修正することを可能にします。
+        <span class="lang-ja">
+          長いプロンプトを作成していると、「どのタグが効いているのか分からない」「重複や矛盾が発生している」「トークン数制限を超えて後ろのタグが無視されている」といった問題に直面します。<br />
+          本ツールは、テキストを「色のついたタグブロック」として可視化することで、これらの問題を一目で発見し、直感的な操作で修正することを可能にします。
+        </span>
+        <span class="lang-en">
+          When creating long prompts, you often face problems such as not
+          knowing which tags are effective, occurrences of duplication or
+          contradiction, or tags being ignored because they exceed the token
+          limit.<br />
+          This tool allows you to discover these issues at a glance and fix them
+          intuitively by visualizing text as "colored tag blocks."
+        </span>
       </p>
 
-      <h2>✨ 3つのコア・コンセプト</h2>
+      <h2>
+        <span class="lang-ja">✨ 3つのコア・コンセプト</span>
+        <span class="lang-en">✨ Three Core Concepts</span>
+      </h2>
       <div class="feature-grid">
         <div class="feature-card">
-          <div class="card-title">👁️ 構造の可視化</div>
-          テキストの羅列ではなく、意味のある「タグのブロック」としてプロンプトを捉えます。
-          これにより、文字の羅列では見落としがちな<strong>重複記述</strong>や、不自然な並び順を<strong>視覚的に発見しやすく</strong>なります。
+          <div class="card-title">
+            <span class="lang-ja">👁️ 構造の可視化</span>
+            <span class="lang-en">👁️ Structural Visualization</span>
+          </div>
+          <span class="lang-ja">
+            テキストの羅列ではなく、意味のある「タグのブロック」としてプロンプトを捉えます。
+            これにより、文字の羅列では見落としがちな<strong>重複記述</strong>や、不自然な並び順を<strong>視覚的に発見しやすく</strong>なります。
+          </span>
+          <span class="lang-en">
+            Think of prompts as meaningful "tag blocks" rather than just strings
+            of text. This makes it
+            <strong>visually easier to discover duplicate descriptions</strong>
+            or unnatural ordering that are often overlooked in plain text.
+          </span>
         </div>
         <div class="feature-card">
-          <div class="card-title">🎨 強度の識別 (Frequency)</div>
-          Danbooruタグデータセットに基づき、そのタグが「学習データにどれだけ含まれているか（人気度）」を色で可視化します。
-          <div class="note-box">
-            <strong>⚠️ 重要:</strong>
-            この色付けはあくまで「Danbooruタグ辞書」との照合結果です。<br />
-            Stable
-            DiffusionのAIは<strong>CLIP（テキストエンコーダー）</strong>を通じて自然言語も理解できるため、<strong
-              >「色がついていない＝AIが理解できない」わけではありません。</strong
-            ><br />
-            <br />
-            <small
-              >※将来的には、CLIP辞書にトークンが存在するかどうかを判定・可視化する仕組みも実装予定です。</small
-            >
+          <div class="card-title">
+            <span class="lang-ja">🎨 強度の識別 (Frequency)</span>
+            <span class="lang-en">🎨 Frequency Identification</span>
+          </div>
+          <div class="lang-ja">
+            Danbooruタグデータセットに基づき、そのタグが「学習データにどれだけ含まれているか（人気度）」を色で可視化します。
+            <div class="note-box">
+              <strong>⚠️ 重要:</strong>
+              この色付けはあくまで「Danbooruタグ辞書」との照合結果です。<br />
+              Stable
+              DiffusionのAIは<strong>CLIP（テキストエンコーダー）</strong>を通じて自然言語も理解できるため、<strong
+                >「色がついていない＝AIが理解できない」わけではありません。</strong
+              ><br />
+              <br />
+              <small
+                >※将来的には、CLIP辞書にトークンが存在するかどうかを判定・可視化する仕組みも実装予定です。</small
+              >
+            </div>
+          </div>
+          <div class="lang-en">
+            Based on the Danbooru tag dataset, it visualizes "how much that tag
+            is included in the training data (popularity)" with colors.
+            <div class="note-box">
+              <strong>⚠️ Important:</strong>
+              This coloring is only the result of matching with the "Danbooru
+              tag dictionary."<br />
+              Since Stable Diffusion AI can also understand natural language
+              through <strong>CLIP (Text Encoder)</strong>,
+              <strong
+                >"no color does not mean the AI cannot understand it."</strong
+              ><br />
+              <br />
+              <small
+                >*In the future, we plan to implement a mechanism to determine
+                and visualize whether tokens exist in the CLIP
+                dictionary.</small
+              >
+            </div>
           </div>
         </div>
         <div class="feature-card">
-          <div class="card-title">📏 トークンの最適化</div>
-          75トークンの区切り線を可視化することで、重要なプロンプトが無視されるのを防ぎ、AIに伝わりやすい最適な構成へ導きます。
-          <div class="note-box">
-            <strong>💡 なぜ75トークン？</strong><br />
-            Stable
-            Diffusion（CLIP）は、プロンプトを<strong>75トークンごとの塊（バッチ）</strong>として処理する性質があります。<br />
-            この区切りをまたぐと、単語同士の結びつきが弱くなったり、後半の要素が反映されにくくなったりすることがあります。<br />
-            このラインを意識して「絶対に外せない要素」を前半に配置することで、生成結果が安定しやすくなります。
+          <div class="card-title">
+            <span class="lang-ja">📏 トークンの最適化</span>
+            <span class="lang-en">📏 Token Optimization</span>
+          </div>
+          <div class="lang-ja">
+            75トークンの区切り線を可視化することで、重要なプロンプトが無視されるのを防ぎ、AIに伝わりやすい最適な構成へ導きます。
+            <div class="note-box">
+              <strong>💡 なぜ75トークン？</strong><br />
+              Stable
+              Diffusion（CLIP）は、プロンプトを<strong>75トークンごとの塊（バッチ）</strong>として処理する性質があります。<br />
+              この区切りをまたぐと、単語同士の結びつきが弱くなったり、後半の要素が反映されにくくなったりすることがあります。<br />
+              このラインを意識して「絶対に外せない要素」を前半に配置することで、生成結果が安定しやすくなります。
+            </div>
+          </div>
+          <div class="lang-en">
+            By visualizing the 75-token separator, it prevents important prompts
+            from being ignored and leads to an optimal configuration that is
+            easy for the AI to understand.
+            <div class="note-box">
+              <strong>💡 Why 75 tokens?</strong><br />
+              Stable Diffusion (CLIP) processes prompts in
+              <strong>chunks (batches) of 75 tokens</strong>.<br />
+              Crossing this separator can weaken the connection between words or
+              make elements in the latter half harder to reflect.<br />
+              By being aware of this line and placing "essential elements" in
+              the first half, the generation results tend to be more stable.
+            </div>
           </div>
         </div>
       </div>
 
-      <h2>🚀 クイックスタート (利用サイクル)</h2>
+      <h2>
+        <span class="lang-ja">🚀 クイックスタート (利用サイクル)</span>
+        <span class="lang-en">🚀 Quick Start (Usage Cycle)</span>
+      </h2>
       <p>
-        本ツールは、WebUI (Automatic1111等)
-        とセットで使用することを想定しています。
+        <span class="lang-ja"
+          >本ツールは、WebUI (Automatic1111等)
+          とセットで使用することを想定しています。</span
+        >
+        <span class="lang-en"
+          >This tool is intended to be used in conjunction with a WebUI (such as
+          Automatic1111).</span
+        >
       </p>
 
       <ol class="step-list">
         <li>
-          <strong>入力 (Import):</strong><br />
-          WebUIにある既存のプロンプトをコピーし、本ツールの「プロンプトエディタ」に貼り付けます。
+          <div class="lang-ja">
+            <strong>入力 (Import):</strong><br />
+            WebUIにある既存のプロンプトをコピーし、本ツールの「プロンプトエディタ」に貼り付けます。
+          </div>
+          <div class="lang-en">
+            <strong>Input (Import):</strong><br />
+            Copy an existing prompt from the WebUI and paste it into the "Prompt
+            Editor" of this tool.
+          </div>
         </li>
         <li>
-          <strong>可視化 (Convert):</strong><br />
-          画面中央の
-          <span
-            style="
-              background: #fe66f1;
-              color: white;
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-weight: bold;
-            "
-            >⬇️ ビジュアルエディタに反映</span
-          >
-          ボタンを押します。テキストが解析され、タグとして展開されます。
+          <div class="lang-ja">
+            <strong>可視化 (Convert):</strong><br />
+            画面中央の
+            <span
+              style="
+                background: #fe66f1;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: bold;
+              "
+              >⬇️ ビジュアルエディタに反映</span
+            >
+            ボタンを押します。テキストが解析され、タグとして展開されます。
+          </div>
+          <div class="lang-en">
+            <strong>Visualization (Convert):</strong><br />
+            Click the
+            <span
+              style="
+                background: #fe66f1;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: bold;
+              "
+              >⬇️ Reflect in Visual Editor</span
+            >
+            button in the center of the screen. The text is analyzed and
+            expanded as tags.
+          </div>
         </li>
         <li>
-          <strong>推敲 (Refine):</strong><br />
-          ドラッグ＆ドロップでタグの順番を入れ替えたり、検索パレットから不足しているタグを追加したりして、構成を練り直します。
+          <div class="lang-ja">
+            <strong>推敲 (Refine):</strong><br />
+            ドラッグ＆ドロップでタグの順番を入れ替えたり、検索パレットから不足しているタグを追加したりして、構成を練り直します。
+          </div>
+          <div class="lang-en">
+            <strong>Refinement (Refine):</strong><br />
+            Refine the composition by rearranging tags with drag-and-drop or
+            adding missing tags from the search palette.
+          </div>
         </li>
         <li>
-          <strong>利用 (Export):</strong><br />
-          <span
-            style="
-              background: #e0e0e0;
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-weight: bold;
-            "
-            >プロンプトとしてコピー</span
-          >
-          ボタンを押し、修正されたプロンプトをWebUIに戻して画像を生成します。
+          <div class="lang-ja">
+            <strong>利用 (Export):</strong><br />
+            <span
+              style="
+                background: #e0e0e0;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: bold;
+              "
+              >プロンプトとしてコピー</span
+            >
+            ボタンを押し、修正されたプロンプトをWebUIに戻して画像を生成します。
+          </div>
+          <div class="lang-en">
+            <strong>Use (Export):</strong><br />
+            Click the
+            <span
+              style="
+                background: #e0e0e0;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-weight: bold;
+              "
+              >Copy as Prompt</span
+            >
+            button and return the modified prompt to the WebUI to generate an
+            image.
+          </div>
         </li>
       </ol>
 
@@ -160,23 +269,21 @@
           padding-top: 20px;
         "
       >
-        次のページからは、各機能の詳細な使い方を解説します。<br />
+        <span class="lang-ja"
+          >次のページからは、各機能の詳細な使い方を解説します。</span
+        >
+        <span class="lang-en"
+          >The following pages explain how to use each function in detail.</span
+        >
+        <br />
         <a
           href="guide_basic.html"
           style="font-weight: bold; color: var(--accent-color)"
-          >1. 基本表示・モード切替 へ進む ➡️</a
         >
+          <span class="lang-ja">1. 基本表示・モード切替 へ進む ➡️</span>
+          <span class="lang-en">Go to 1. Basic Display / Modes ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      // ダークモード設定の適用
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>

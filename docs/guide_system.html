@@ -3,183 +3,243 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>7. データ保存・安全性 - SD Visual Prompt Editor</title>
+    <title>Data Storage & Safety - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link">イントロダクション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link active"
-            >7. データ保存・安全性</a
-          >
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>7. データ保存・安全性</h1>
+      <h1>
+        <span class="lang-ja">7. データ保存・安全性</span>
+        <span class="lang-en">7. Data Storage & Safety</span>
+      </h1>
 
       <p>
-        本ツールのご利用にあたり、データの保存場所やセキュリティ（プライバシー）の仕組みについて解説します。
+        <span class="lang-ja"
+          >本ツールのご利用にあたり、データの保存場所やセキュリティ（プライバシー）の仕組みについて解説します。</span
+        >
+        <span class="lang-en"
+          >This section explains where data is stored and the security (privacy)
+          mechanisms of this tool.</span
+        >
       </p>
 
-      <h2>💾 自動保存 (Auto-Save)</h2>
+      <h2>
+        <span class="lang-ja">💾 自動保存 (Auto-Save)</span>
+        <span class="lang-en">💾 Auto-Save</span>
+      </h2>
       <p>
-        本ツールに入力されたすべてのデータ（プロンプト、スプレッドシート、表示設定など）は、<strong
-          >お使いのブラウザ内 (LocalStorage)</strong
+        <span class="lang-ja"
+          >本ツールに入力されたすべてのデータ（プロンプト、スプレッドシート、表示設定など）は、<strong
+            >お使いのブラウザ内 (LocalStorage)</strong
+          >
+          にリアルタイムで自動保存されます。</span
         >
-        にリアルタイムで自動保存されます。
+        <span class="lang-en"
+          >All data entered into this tool (prompts, spreadsheets, display
+          settings, etc.) is automatically saved in real-time within
+          <strong>your browser (LocalStorage)</strong>.</span
+        >
       </p>
 
       <ul>
         <li>
-          <strong>保存のタイミング:</strong>
-          キー入力やボタン操作を行うたびに即座に保存されます。
+          <strong class="lang-ja">保存のタイミング:</strong>
+          <strong class="lang-en">Saving Timing:</strong>
+          <span class="lang-ja"
+            >キー入力やボタン操作を行うたびに即座に保存されます。</span
+          >
+          <span class="lang-en"
+            >Saved immediately upon every keystroke or button operation.</span
+          >
         </li>
         <li>
-          <strong>再開:</strong>
-          ブラウザを閉じても、次回同じブラウザでアクセスすれば、前回の続きから作業を再開できます。
+          <strong class="lang-ja">再開:</strong>
+          <strong class="lang-en">Resume:</strong>
+          <span class="lang-ja"
+            >ブラウザを閉じても、次回同じブラウザでアクセスすれば、前回の続きから作業を再開できます。</span
+          >
+          <span class="lang-en"
+            >Even if you close the browser, you can resume from where you left
+            off the next time you access it using the same browser.</span
+          >
         </li>
       </ul>
 
       <div class="warning-box">
-        <div class="warning-title">⚠️ 注意: ブラウザ単位での保存です</div>
-        データはサーバーではなく、各デバイスのブラウザに保存されます。<br />
-        「PCで作業した続きをスマホで行う」といった同期機能はありません。また、<strong>シークレットモード（プライベートブラウジング）</strong>では、ブラウザを閉じるとデータが消去されますのでご注意ください。
+        <div class="warning-title">
+          <span class="lang-ja">⚠️ 注意: ブラウザ単位での保存です</span>
+          <span class="lang-en">⚠️ Note: Saved per Browser</span>
+        </div>
+        <span class="lang-ja"
+          >データはサーバーではなく、各デバイスのブラウザに保存されます。</span
+        >
+        <span class="lang-en"
+          >Data is stored in the browser of each device, not on a server.</span
+        >
+        <br />
+        <span class="lang-ja"
+          >「PCで作業した続きをスマホで行う」といった同期機能はありません。また、<strong>シークレットモード（プライベートブラウジング）</strong>では、ブラウザを閉じるとデータが消去されますのでご注意ください。</span
+        >
+        <span class="lang-en"
+          >There is no synchronization feature such as "continuing work started
+          on a PC on a smartphone." Also, please note that in
+          <strong>Incognito Mode (Private Browsing)</strong>, data will be
+          deleted when the browser is closed.</span
+        >
       </div>
 
-      <h2>🔒 プライバシーとセキュリティ</h2>
+      <h2>
+        <span class="lang-ja">🔒 プライバシーとセキュリティ</span>
+        <span class="lang-en">🔒 Privacy and Security</span>
+      </h2>
       <p>
-        本ツールは「クライアントサイド（ブラウザ上）」で動作するように設計されています。
+        <span class="lang-ja"
+          >本ツールは「クライアントサイド（ブラウザ上）」で動作するように設計されています。</span
+        >
+        <span class="lang-en"
+          >This tool is designed to operate on the "client-side (in the
+          browser)."</span
+        >
       </p>
 
       <div class="intro-box">
-        <strong>✅ データは送信されません</strong><br />
-        あなたが入力したプロンプトや画像生成のアイデアが、外部のサーバーに送信・保存されることは一切ありません。<br />
-        すべての処理はあなたの端末内で完結しているため、未公開のプロジェクトや個人的な趣味のプロンプトも安心して扱えます。
+        <strong class="lang-ja">✅ データは送信されません</strong>
+        <strong class="lang-en">✅ No Data Transmission</strong>
+        <br />
+        <span class="lang-ja"
+          >あなたが入力したプロンプトや画像生成のアイデアが、外部のサーバーに送信・保存されることは一切ありません。</span
+        >
+        <span class="lang-en"
+          >The prompts or image generation ideas you enter are never sent to or
+          stored on an external server.</span
+        >
+        <br />
+        <span class="lang-ja"
+          >すべての処理はあなたの端末内で完結しているため、未公開のプロジェクトや個人的な趣味のプロンプトも安心して扱えます。</span
+        >
+        <span class="lang-en"
+          >Since all processing is completed within your device, you can safely
+          handle private projects or personal prompts.</span
+        >
       </div>
 
-      <h2>📦 推奨されるバックアップ方法</h2>
+      <h2>
+        <span class="lang-ja">📦 推奨されるバックアップ方法</span>
+        <span class="lang-en">📦 Recommended Backup Methods</span>
+      </h2>
       <p>
-        ブラウザのLocalStorageは、キャッシュのクリアや予期せぬエラーで消えてしまう可能性がある「一時的な保存場所」です。<br />
-        重要なプロンプトデータは、定期的にファイルとして保存することを強く推奨します。
+        <span class="lang-ja"
+          >ブラウザのLocalStorageは、キャッシュのクリアや予期せぬエラーで消えてしまう可能性がある「一時的な保存場所」です。</span
+        >
+        <span class="lang-en"
+          >The browser's LocalStorage is a "temporary storage location" that may
+          be lost due to cache clearing or unexpected errors.</span
+        >
+        <br />
+        <span class="lang-ja"
+          >重要なプロンプトデータは、定期的にファイルとして保存することを強く推奨します。</span
+        >
+        <span class="lang-en"
+          >We strongly recommend regularly saving important prompt data as
+          files.</span
+        >
       </p>
 
       <div class="feature-grid">
         <div class="feature-card">
-          <div class="card-title">Save JSON (完全バックアップ)</div>
-          スプレッドシートモードにある
-          <span class="ui-sim-tool-btn">Save JSON</span>
-          ボタンを使用してください。<br />
-          これを使えば、コメントや空白セルを含むすべての編集状態を1つのファイルとしてPCに保存できます。
+          <div class="card-title">
+            <span class="lang-ja">Save JSON (完全バックアップ)</span>
+            <span class="lang-en">Save JSON (Full Backup)</span>
+          </div>
+          <span class="lang-ja"
+            >スプレッドシートモードにある
+            <span class="ui-sim-tool-btn">Save JSON</span>
+            ボタンを使用してください。</span
+          >
+          <span class="lang-en"
+            >Use the <span class="ui-sim-tool-btn">Save JSON</span> button in
+            Spreadsheet Mode.</span
+          >
+          <br />
+          <span class="lang-ja"
+            >これを使えば、コメントや空白セルを含むすべての編集状態を1つのファイルとしてPCに保存できます。</span
+          >
+          <span class="lang-en"
+            >With this, you can save the entire editing state, including
+            comments and empty cells, as a single file to your PC.</span
+          >
         </div>
         <div class="feature-card">
-          <div class="card-title">Save .txt (テキスト保存)</div>
-          プロンプトエディタの
-          <span class="ui-sim-tool-btn">Save .txt</span>
-          は、完成したプロンプトを保存するのに適しています。<br />
-          WebUIのStyles登録用などに便利です。
+          <div class="card-title">
+            <span class="lang-ja">Save .txt (テキスト保存)</span>
+            <span class="lang-en">Save .txt (Text Export)</span>
+          </div>
+          <span class="lang-ja"
+            >プロンプトエディタの
+            <span class="ui-sim-tool-btn">Save .txt</span>
+            は、完成したプロンプトを保存するのに適しています。</span
+          >
+          <span class="lang-en"
+            >The <span class="ui-sim-tool-btn">Save .txt</span> in the Prompt
+            Editor is suitable for saving finished prompts.</span
+          >
+          <br />
+          <span class="lang-ja">WebUIのStyles登録用などに便利です。</span>
+          <span class="lang-en"
+            >Useful for registering in WebUI Styles, etc.</span
+          >
         </div>
       </div>
 
-      <h2>🛠️ トラブルシューティング</h2>
+      <h2>
+        <span class="lang-ja">🛠️ トラブルシューティング</span>
+        <span class="lang-en">🛠️ Troubleshooting</span>
+      </h2>
       <p>
-        もし画面表示がおかしくなったり、動作が重くなったりした場合は、以下の手順をお試しください。
+        <span class="lang-ja"
+          >もし画面表示がおかしくなったり、動作が重くなったりした場合は、以下の手順をお試しください。</span
+        >
+        <span class="lang-en"
+          >If the display becomes glitchy or the operation slows down, please
+          try the following steps:</span
+        >
       </p>
       <ol>
-        <li>ページを再読み込み (F5) する。</li>
-        <li>
+        <li class="lang-ja">ページを再読み込み (F5) する。</li>
+        <li class="lang-en">Reload the page (F5).</li>
+        <li class="lang-ja">
           それでも直らない場合、ブラウザのキャッシュをクリアする（※データが初期化されます）。
         </li>
+        <li class="lang-en">
+          If it still doesn't work, clear the browser cache (*Data will be
+          initialized).
+        </li>
         <li>
-          スプレッドシートの
-          <span class="ui-sim-tool-btn">🗑️ クリア</span>
-          ボタンを押して、データをリセットする。
+          <span class="lang-ja"
+            >スプレッドシートの
+            <span class="ui-sim-tool-btn">🗑️ クリア</span>
+            ボタンを押して、データをリセットする。</span
+          >
+          <span class="lang-en"
+            >Press the <span class="ui-sim-tool-btn">🗑️ Clear</span> button in
+            the spreadsheet to reset the data.</span
+          >
         </li>
       </ol>
 
-      <h2
-        style="
-          border-top: 1px dashed var(--border-color);
-          padding-top: 40px;
-          margin-top: 40px;
-        "
-      >
-        📬 フィードバック・開発者情報
-      </h2>
-      <p>
-        不具合の報告、機能の要望、または開発者へのメッセージは以下のリンクから受け付けています。<br />
-        皆様からのフィードバックが、ツールの改善につながります。
-      </p>
-
-      <div class="feature-grid">
-        <div
-          class="feature-card"
-          style="border-left: 4px solid var(--accent-color)"
-        >
-          <div class="card-title">📢 SNS / Contact</div>
-          <p>AIイラスト投稿アカウントですが、気軽にメッセージしてください。</p>
-          <a
-            href="https://x.com/KMinazuki001"
-            target="_blank"
-            class="ui-sim-btn"
-            style="margin-top: 10px"
-            >X (Twitter) @KMinazuki001</a
-          >
-        </div>
-
-        <div class="feature-card" style="border-left: 4px solid #ff5e5b">
-          <div class="card-title">☕ Support (Ko-fi)</div>
-          <p>開発を支援していただけると励みになります。</p>
-          <a
-            href="https://ko-fi.com/kotononeminazuki"
-            target="_blank"
-            class="ui-sim-btn"
-            style="margin-top: 10px; border-color: #ff5e5b; color: #ff5e5b"
-            >Ko-fi で支援する</a
-          >
-        </div>
-      </div>
       <p
         style="
           margin-top: 60px;
@@ -188,25 +248,11 @@
           text-align: center;
         "
       >
-        <strong>SD Visual Prompt Editor User Manual</strong><br />
-        <span style="font-size: 0.9em; color: #777">End of Manual</span
-        ><br /><br />
-        <a
-          href="../index.html"
-          class="back-link"
-          style="background: var(--accent-color); color: white; border: none"
-          >🚀 ツールを使って創作を始める</a
-        >
+        <a href="guide_contact.html" class="back-link">
+          <span class="lang-ja">8. フィードバック・開発者情報 へ進む ➡️</span>
+          <span class="lang-en">Go to 8. Feedback / Contact ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>

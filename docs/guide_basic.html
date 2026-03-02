@@ -3,124 +3,126 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1. 基本表示・モード切替 - SD Visual Prompt Editor</title>
+    <title>1. Basic Display / Modes - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
-    <style>
-      /* UIパーツ再現用の追加スタイル */
-      .ui-sim-btn {
-        display: inline-block;
-        padding: 5px 10px;
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
-        background-color: var(--container-bg);
-        color: var(--text-color);
-        font-size: 0.9em;
-        cursor: default;
-        text-decoration: none;
-        line-height: 1.2;
-      }
-
-      .ui-sim-checkbox {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-weight: bold;
-        font-size: 0.9em;
-        padding: 4px 8px;
-        border: 1px solid transparent; /* 配置バランス用 */
-      }
-    </style>
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link">イントロダクション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link active"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>1. 基本表示・モード切替</h1>
+      <h1>
+        <span class="lang-ja">1. 基本表示・モード切替</span>
+        <span class="lang-en">1. Basic Display / Modes</span>
+      </h1>
 
       <p>
-        本ツールは、ユーザーの好みに合わせた2つの入力モードを備えています。<br />
-        画面上部のタブ（Prompt /
-        Spreadsheet）でいつでも切り替えることができます。
+        <span class="lang-ja"
+          >本ツールは、ユーザーの好みに合わせた2つの入力モードを備えています。</span
+        >
+        <span class="lang-en"
+          >This tool features two input modes to suit user preferences.</span
+        >
+        <br />
+        <span class="lang-ja"
+          >画面上部のタブ（Prompt /
+          Spreadsheet）でいつでも切り替えることができます。</span
+        >
+        <span class="lang-en"
+          >You can switch between them at any time using the tabs at the top of
+          the screen (Prompt / Spreadsheet).</span
+        >
       </p>
 
-      <h2>📑 2つの入力モード</h2>
+      <h2>
+        <span class="lang-ja">📑 2つの入力モード</span>
+        <span class="lang-en">📑 Two Input Modes</span>
+      </h2>
 
       <div class="feature-grid">
         <div class="feature-card">
-          <div class="card-title">📝 プロンプトエディタ (Prompt)</div>
-          WebUIで見慣れた、カンマ区切りのテキスト形式で入力するモードです。<br />
-          <strong>向いている作業:</strong>
+          <div class="card-title">
+            <span class="lang-ja">📝 プロンプトエディタ (Prompt)</span>
+            <span class="lang-en">📝 Prompt Editor (Prompt)</span>
+          </div>
+          <span class="lang-ja"
+            >WebUIで見慣れた、カンマ区切りのテキスト形式で入力するモードです。</span
+          >
+          <span class="lang-en"
+            >A mode for entering text in the comma-separated format familiar
+            from the WebUI.</span
+          >
+          <br />
+          <strong class="lang-ja">向いている作業:</strong>
+          <strong class="lang-en">Suitable for:</strong>
           <ul>
-            <li>WebUIから既存プロンプトを貼り付ける</li>
-            <li>文章のように一気に書き込む</li>
-            <li>完成したプロンプトを最終確認する</li>
+            <li class="lang-ja">WebUIから既存プロンプトを貼り付ける</li>
+            <li class="lang-en">Pasting existing prompts from the WebUI</li>
+            <li class="lang-ja">文章のように一気に書き込む</li>
+            <li class="lang-en">Writing prompts all at once like a sentence</li>
+            <li class="lang-ja">完成したプロンプトを最終確認する</li>
+            <li class="lang-en">Final checking of the completed prompt</li>
           </ul>
         </div>
         <div class="feature-card">
-          <div class="card-title">📊 スプレッドシート (Spreadsheet)</div>
-          Excelのような表形式でタグを管理するモードです。<br />
-          <strong>向いている作業:</strong>
+          <div class="card-title">
+            <span class="lang-ja">📊 スプレッドシート (Spreadsheet)</span>
+            <span class="lang-en">📊 Spreadsheet (Spreadsheet)</span>
+          </div>
+          <span class="lang-ja"
+            >Excelのような表形式でタグを管理するモードです。</span
+          >
+          <span class="lang-en"
+            >A mode for managing tags in a table format like Excel.</span
+          >
+          <br />
+          <strong class="lang-ja">向いている作業:</strong>
+          <strong class="lang-en">Suitable for:</strong>
           <ul>
-            <li>タグをカテゴリごとに整理する</li>
-            <li>「髪」「衣装」「背景」など役割ごとに管理する</li>
-            <li>ExcelやGoogleスプレッドシートと連携する</li>
+            <li class="lang-ja">タグをカテゴリごとに整理する</li>
+            <li class="lang-en">Organizing tags by category</li>
+            <li class="lang-ja">
+              「髪」「衣装」「背景」など役割ごとに管理する
+            </li>
+            <li class="lang-en">
+              Managing by roles such as "hair," "outfit," or "background"
+            </li>
+            <li class="lang-ja">ExcelやGoogleスプレッドシートと連携する</li>
+            <li class="lang-en">Collaborating with Excel or Google Sheets</li>
           </ul>
         </div>
       </div>
 
-      <h2>💡 ビジュアルエディタへの反映フロー</h2>
+      <h2>
+        <span class="lang-ja">💡 ビジュアルエディタへの反映フロー</span>
+        <span class="lang-en">💡 Flow to Reflect in Visual Editor</span>
+      </h2>
       <p>
-        本ツールの最大の特徴である「ビジュアルエディタ」を使用するには、以下の手順でデータを反映させます。
+        <span class="lang-ja"
+          >本ツールの最大の特徴である「ビジュアルエディタ」を使用するには、以下の手順でデータを反映させます。</span
+        >
+        <span class="lang-en"
+          >To use the "Visual Editor," which is the most significant feature of
+          this tool, follow these steps to reflect your data.</span
+        >
       </p>
 
       <div class="intro-box">
-        <strong>1. データの同期 (Convert):</strong><br />
-        各エディタの下部にある
+        <strong class="lang-ja">1. データの同期 (Convert):</strong>
+        <strong class="lang-en">1. Data Synchronization (Convert):</strong>
+        <br />
+        <span class="lang-ja">各エディタの下部にある</span>
+        <span class="lang-en">Press the</span>
         <span
           style="
             background: #fe66f1;
@@ -130,67 +132,144 @@
             font-weight: bold;
             font-size: 0.9em;
           "
-          >⬇️ ビジュアルエディタに反映</span
         >
-        ボタンを押すと、現在の入力内容が解析され、画面中央にタグブロックとして展開されます。
+          <span class="lang-ja">⬇️ ビジュアルエディタに反映</span>
+          <span class="lang-en">⬇️ Reflect in Visual Editor</span>
+        </span>
+        <span class="lang-ja"
+          >ボタンを押すと、現在の入力内容が解析され、画面中央にタグブロックとして展開されます。</span
+        >
+        <span class="lang-en"
+          >button at the bottom of each editor to analyze the current input and
+          expand it as tag blocks in the center of the screen.</span
+        >
       </div>
 
       <div class="intro-box">
-        <strong>2. 編集の書き戻し (Reflect):</strong><br />
-        ビジュアルエディタで並び替えや削除を行った後、以下の青いボタンを押すことで、現在の入力モードに編集結果が書き戻されます。<br /><br />
-
-        プロンプトエディタ使用時:
-        <span
-          style="
-            background: #3498db;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.9em;
-          "
-          >⬆️ プロンプトエディタに反映</span
-        ><br /><br />
-
-        スプレッドシート使用時:
-        <span
-          style="
-            background: #3498db;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.9em;
-          "
-          >⬆️ スプレッドシートに反映</span
+        <strong class="lang-ja">2. 編集の書き戻し (Reflect):</strong>
+        <strong class="lang-en">2. Writing Back Edits (Reflect):</strong>
+        <br />
+        <span class="lang-ja"
+          >ビジュアルエディタで並び替えや削除を行った後、以下の青いボタンを押すことで、現在の入力モードに編集結果が書き戻されます。</span
         >
+        <span class="lang-en"
+          >After rearranging or deleting tags in the Visual Editor, press the
+          following blue buttons to write the edit results back to the current
+          input mode.</span
+        >
+        <br /><br />
+
+        <span class="lang-ja">プロンプトエディタ使用時:</span>
+        <span class="lang-en">When using Prompt Editor:</span>
+        <span
+          style="
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+          "
+        >
+          <span class="lang-ja">⬆️ プロンプトエディタに反映</span>
+          <span class="lang-en">⬆️ Reflect in Prompt Editor</span>
+        </span>
+        <br /><br />
+
+        <span class="lang-ja">スプレッドシート使用時:</span>
+        <span class="lang-en">When using Spreadsheet:</span>
+        <span
+          style="
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9em;
+          "
+        >
+          <span class="lang-ja">⬆️ スプレッドシートに反映</span>
+          <span class="lang-en">⬆️ Reflect in Spreadsheet</span>
+        </span>
       </div>
 
-      <h2>🌐 言語設定と表示モード</h2>
+      <h2>
+        <span class="lang-ja">🌐 言語設定と表示モード</span>
+        <span class="lang-en">🌐 Language Settings and Display Modes</span>
+      </h2>
       <p>
-        画面右上のヘッダーコントロールを使用して、表示をカスタマイズできます。
+        <span class="lang-ja"
+          >画面右上のヘッダーコントロールを使用して、表示をカスタマイズできます。</span
+        >
+        <span class="lang-en"
+          >You can customize the display using the header controls at the top
+          right of the screen.</span
+        >
       </p>
 
-      <h3>言語の切り替え (Language)</h3>
+      <h3>
+        <span class="lang-ja">言語の切り替え (Language)</span>
+        <span class="lang-en">Language Switching (Language)</span>
+      </h3>
       <p>
         <span class="ui-sim-btn">🌐 EN/JP</span>
-        ボタンをクリックすると、メニューやボタンの表示言語（日本語 /
-        英語）が切り替わります。<br />
-        ※プロンプトの内容自体（タグの翻訳など）は変化しません。
+        <span class="lang-ja"
+          >ボタンをクリックすると、メニューやボタンの表示言語（日本語 /
+          英語）が切り替わります。</span
+        >
+        <span class="lang-en"
+          >Clicking this button switches the display language of menus and
+          buttons (Japanese / English).</span
+        >
+        <br />
+        <span class="lang-ja"
+          >※プロンプトの内容自体（タグの翻訳など）は変化しません。</span
+        >
+        <span class="lang-en"
+          >*The content of the prompt itself (such as tag translations) does not
+          change.</span
+        >
       </p>
 
-      <h3>ダークモード (Dark Mode)</h3>
+      <h3>
+        <span class="lang-ja">ダークモード (Dark Mode)</span>
+        <span class="lang-en">Dark Mode (Dark Mode)</span>
+      </h3>
       <p>
         <label class="ui-sim-checkbox"
-          ><input type="checkbox" checked disabled /> 🌙 ダークモード</label
+          ><input type="checkbox" checked disabled />
+          <span class="lang-ja">🌙 ダークモード</span>
+          <span class="lang-en">🌙 Dark Mode</span>
+        </label>
+        <br />
+        <span class="lang-ja"
+          >チェックボックスで、画面全体の背景色を切り替えられます。</span
         >
-        チェックボックスで、画面全体の背景色を切り替えられます。<br />
-        長時間の編集作業を行う際は、ON（ダークモード）にすることで目の負担を軽減できます。
+        <span class="lang-en"
+          >You can switch the background color of the entire screen with the
+          checkbox.</span
+        >
+        <br />
+        <span class="lang-ja"
+          >長時間の編集作業を行う際は、ON（ダークモード）にすることで目の負担を軽減できます。</span
+        >
+        <span class="lang-en"
+          >When working on edits for a long time, turning it ON (Dark Mode) can
+          reduce eye strain.</span
+        >
       </p>
 
       <div class="note-box">
-        <strong>📌 ヒント:</strong><br />
-        これらの設定（言語、ダークモード）および入力中の内容は、ブラウザに自動保存されます。
+        <strong class="lang-ja">📌 ヒント:</strong>
+        <strong class="lang-en">📌 Hint:</strong>
+        <br />
+        <span class="lang-ja"
+          >これらの設定（言語、ダークモード）および入力中の内容は、ブラウザに自動保存されます。</span
+        >
+        <span class="lang-en"
+          >These settings (language, dark mode) and the content being entered
+          are automatically saved in the browser.</span
+        >
       </div>
 
       <p
@@ -200,22 +279,22 @@
           padding-top: 20px;
         "
       >
-        次に、実際にタグを動かしてプロンプトを練り上げる方法を詳しく見ていきます。<br />
+        <span class="lang-ja"
+          >次に、実際にタグを動かしてプロンプトを練り上げる方法を詳しく見ていきます。</span
+        >
+        <span class="lang-en"
+          >Next, we will look in detail at how to actually move tags and refine
+          the prompt.</span
+        >
+        <br />
         <a
           href="guide_visual.html"
           style="font-weight: bold; color: var(--accent-color)"
-          >2. ビジュアルエディタ操作 へ進む ➡️</a
         >
+          <span class="lang-ja">2. ビジュアルエディタ操作 へ進む ➡️</span>
+          <span class="lang-en">Go to 2. Visual Editor Usage ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>

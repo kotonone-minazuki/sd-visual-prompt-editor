@@ -3,95 +3,114 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3. タグ検索・追加 - SD Visual Prompt Editor</title>
+    <title>3. Tag Search / Add - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link">イントロダクション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link active"
-            >3. タグ検索・追加</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>3. タグ検索・追加</h1>
+      <h1>
+        <span class="lang-ja">3. タグ検索・追加</span>
+        <span class="lang-en">3. Tag Search / Add</span>
+      </h1>
 
       <p>
-        画面右側（スマホの場合は下部）にある「タグ検索パレット」を使うと、Danbooruデータセットに含まれる膨大なタグの中から、必要なものを探してプロンプトに追加できます。
+        <span class="lang-ja"
+          >画面右側（スマホの場合は下部）にある「タグ検索パレット」を使うと、Danbooruデータセットに含まれる膨大なタグの中から、必要なものを探してプロンプトに追加できます。</span
+        >
+        <span class="lang-en"
+          >Using the "Tag Search Palette" on the right side of the screen (or
+          bottom on smartphones), you can search for and add tags to your prompt
+          from the vast collection in the Danbooru dataset.</span
+        >
       </p>
 
-      <h2>🔍 タグの検索 (Search)</h2>
+      <h2>
+        <span class="lang-ja">🔍 タグの検索 (Search)</span>
+        <span class="lang-en">🔍 Tag Search (Search)</span>
+      </h2>
       <p>
-        検索ボックスにキーワードを入力すると、リアルタイムで候補が絞り込まれます。<br />
-        以下の3種類のデータに対して検索が行われます。
+        <span class="lang-ja"
+          >検索ボックスにキーワードを入力すると、リアルタイムで候補が絞り込まれます。<br />以下の3種類のデータに対して検索が行われます。</span
+        >
+        <span class="lang-en"
+          >Entering keywords in the search box filters candidates in
+          real-time.<br />Searches are performed across the following three
+          types of data:</span
+        >
       </p>
 
       <ul>
         <li>
-          <strong>タグ名 (Tag):</strong> 英語のタグ名 (例: <code>1girl</code>)
+          <strong class="lang-ja">タグ名 (Tag):</strong>
+          <strong class="lang-en">Tag Name (Tag):</strong>
+          <span class="lang-ja">英語のタグ名 (例: <code>1girl</code>)</span>
+          <span class="lang-en"
+            >English tag name (e.g., <code>1girl</code>)</span
+          >
         </li>
         <li>
-          <strong>日本語訳 (JP):</strong> 日本語の意味 (例: <code>女の子</code>)
+          <strong class="lang-ja">日本語訳 (JP):</strong>
+          <strong class="lang-en">Japanese Translation (JP):</strong>
+          <span class="lang-ja">日本語の意味 (例: <code>女の子</code>)</span>
+          <span class="lang-en"
+            >Japanese meaning (e.g., <code>女の子</code>)</span
+          >
         </li>
-        <li><strong>翻訳エイリアス (Trans):</strong> その他の翻訳候補</li>
+        <li>
+          <strong class="lang-ja">翻訳エイリアス (Trans):</strong>
+          <strong class="lang-en">Translation Alias (Trans):</strong>
+          <span class="lang-ja">その他の翻訳候補</span>
+          <span class="lang-en">Other translation candidates</span>
+        </li>
       </ul>
 
       <div class="intro-box">
-        <strong>💡 ポイント:</strong><br />
-        「女の子」のように<strong>日本語で入力してもヒットする</strong>ため、英語のタグ名がわからなくても直感的に探すことができます。
+        <strong class="lang-ja">💡 ポイント:</strong>
+        <strong class="lang-en">💡 Point:</strong>
+        <br />
+        <span class="lang-ja"
+          >「女の子」のように<strong>日本語で入力してもヒットする</strong>ため、英語のタグ名がわからなくても直感的に探すことができます。</span
+        >
+        <span class="lang-en"
+          >Since it <strong>hits even when entered in Japanese</strong> (e.g.,
+          "女の子"), you can search intuitively even if you don't know the
+          English tag name.</span
+        >
       </div>
 
-      <h2>🖱️ タグの追加 (Drag & Drop)</h2>
+      <h2>
+        <span class="lang-ja">🖱️ タグの追加 (Drag & Drop)</span>
+        <span class="lang-en">🖱️ Adding Tags (Drag & Drop)</span>
+      </h2>
       <p>
-        検索結果に表示されたタグは、ビジュアルエディタへ直接ドラッグ＆ドロップして追加します。
+        <span class="lang-ja"
+          >検索結果に表示されたタグは、ビジュアルエディタへ直接ドラッグ＆ドロップして追加します。</span
+        >
+        <span class="lang-en"
+          >Tags displayed in the search results can be added by dragging and
+          dropping them directly into the Visual Editor.</span
+        >
       </p>
 
       <div class="feature-grid">
         <div class="feature-card">
-          <div class="card-title">検索結果の見方</div>
+          <div class="card-title">
+            <span class="lang-ja">検索結果の見方</span>
+            <span class="lang-en">Reading Search Results</span>
+          </div>
           <div class="search-demo-box">
             <div class="search-item-demo">
               <div>
@@ -103,34 +122,87 @@
           </div>
           <ul>
             <li>
-              <strong>上段:</strong> 正式なタグ名（プロンプトに使われる文字）
+              <strong class="lang-ja">上段:</strong>
+              <strong class="lang-en">Top:</strong>
+              <span class="lang-ja"
+                >正式なタグ名（プロンプトに使われる文字）</span
+              >
+              <span class="lang-en"
+                >Official tag name (characters used in the prompt)</span
+              >
             </li>
-            <li><strong>下段:</strong> 日本語訳などの補足情報</li>
             <li>
-              <strong>右側:</strong> 出現件数（人気度により色が変わります）
+              <strong class="lang-ja">下段:</strong>
+              <strong class="lang-en">Bottom:</strong>
+              <span class="lang-ja">日本語訳などの補足情報</span>
+              <span class="lang-en"
+                >Supplementary information such as Japanese translation</span
+              >
+            </li>
+            <li>
+              <strong class="lang-ja">右側:</strong>
+              <strong class="lang-en">Right:</strong>
+              <span class="lang-ja"
+                >出現件数（人気度により色が変わります）</span
+              >
+              <span class="lang-en"
+                >Count (color changes based on popularity)</span
+              >
             </li>
           </ul>
         </div>
 
         <div class="feature-card">
-          <div class="card-title">追加手順</div>
+          <div class="card-title">
+            <span class="lang-ja">追加手順</span>
+            <span class="lang-en">Addition Steps</span>
+          </div>
           <ol>
-            <li>欲しいタグをマウスで掴みます（スマホは長押し）。</li>
-            <li>
+            <li class="lang-ja">
+              欲しいタグをマウスで掴みます（スマホは長押し）。
+            </li>
+            <li class="lang-en">
+              Grab the desired tag with your mouse (long-press on smartphones).
+            </li>
+            <li class="lang-ja">
               左側のビジュアルエディタ上の<strong>「入れたい場所」</strong>まで引っ張ります。
             </li>
-            <li>ドロップすると、その位置にタグが挿入されます。</li>
+            <li class="lang-en">
+              Drag it to the <strong>"desired position"</strong> in the Visual
+              Editor on the left.
+            </li>
+            <li class="lang-ja">
+              ドロップすると、その位置にタグが挿入されます。
+            </li>
+            <li class="lang-en">Drop it to insert the tag at that position.</li>
           </ol>
           <div class="note-box">
-            <strong>📋 クリックでコピー:</strong><br />
-            タグをクリックすると、クリップボードにタグ名がコピーされます。他のツールに貼り付けたい場合に便利です。
+            <strong class="lang-ja">📋 クリックでコピー:</strong>
+            <strong class="lang-en">📋 Click to Copy:</strong>
+            <br />
+            <span class="lang-ja"
+              >タグをクリックすると、クリップボードにタグ名がコピーされます。他のツールに貼り付けたい場合に便利です。</span
+            >
+            <span class="lang-en"
+              >Clicking a tag copies the tag name to the clipboard. Convenient
+              for pasting into other tools.</span
+            >
           </div>
         </div>
       </div>
 
-      <h2>ℹ️ 詳細情報の確認 (Tooltip)</h2>
+      <h2>
+        <span class="lang-ja">ℹ️ 詳細情報の確認 (Tooltip)</span>
+        <span class="lang-en">ℹ️ Checking Details (Tooltip)</span>
+      </h2>
       <p>
-        検索結果のタグにマウスカーソルを乗せる（ホバーする）と、詳細情報がポップアップ表示されます。
+        <span class="lang-ja"
+          >検索結果のタグにマウスカーソルを乗せる（ホバーする）と、詳細情報がポップアップ表示されます。</span
+        >
+        <span class="lang-en"
+          >Hovering your mouse cursor over a tag in the search results displays
+          detailed information in a pop-up.</span
+        >
       </p>
 
       <div class="tooltip-demo">
@@ -160,15 +232,37 @@
       </div>
 
       <ul style="margin-top: 20px">
-        <li><strong>TAG:</strong> プロンプトとして出力される文字列。</li>
         <li>
-          <strong>TRANS / JP:</strong> 翻訳情報および関連する日本語キーワード。
+          <strong class="lang-ja">TAG:</strong>
+          <strong class="lang-en">TAG:</strong>
+          <span class="lang-ja">プロンプトとして出力される文字列。</span>
+          <span class="lang-en">The string output as a prompt.</span>
         </li>
         <li>
-          <strong>COUNT:</strong>
-          Danbooruでの投稿数。この数字が大きいほどAIがよく学習しているタグです。
+          <strong class="lang-ja">TRANS / JP:</strong>
+          <strong class="lang-en">TRANS / JP:</strong>
+          <span class="lang-ja">翻訳情報および関連する日本語キーワード。</span>
+          <span class="lang-en"
+            >Translation info and related Japanese keywords.</span
+          >
         </li>
-        <li><strong>GROUP:</strong> タグのカテゴリ情報（存在する場合）。</li>
+        <li>
+          <strong class="lang-ja">COUNT:</strong>
+          <strong class="lang-en">COUNT:</strong>
+          <span class="lang-ja"
+            >Danbooruでの投稿数。この数字が大きいほどAIがよく学習しているタグです。</span
+          >
+          <span class="lang-en"
+            >Number of posts on Danbooru. The larger this number, the better the
+            AI has likely learned the tag.</span
+          >
+        </li>
+        <li>
+          <strong class="lang-ja">GROUP:</strong>
+          <strong class="lang-en">GROUP:</strong>
+          <span class="lang-ja">タグのカテゴリ情報（存在する場合）。</span>
+          <span class="lang-en">Tag category information (if available).</span>
+        </li>
       </ul>
 
       <p
@@ -178,22 +272,22 @@
           padding-top: 20px;
         "
       >
-        次は、テキストベースで編集を行う「プロンプトエディタ」の詳細機能について解説します。<br />
+        <span class="lang-ja"
+          >次は、テキストベースで編集を行う「プロンプトエディタ」の詳細機能について解説します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain the detailed features of the "Prompt Editor"
+          for text-based editing.</span
+        >
+        <br />
         <a
           href="guide_text.html"
           style="font-weight: bold; color: var(--accent-color)"
-          >4. プロンプトエディタ詳細 へ進む ➡️</a
         >
+          <span class="lang-ja">4. プロンプトエディタ詳細 へ進む ➡️</span>
+          <span class="lang-en">Go to 4. Prompt Editor Details ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>

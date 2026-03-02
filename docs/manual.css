@@ -467,8 +467,68 @@ h3 {
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--border-color);
+    position: relative;
   }
   .manual-content {
     padding: 20px;
   }
+}
+
+/* =========================================
+   多言語化・共通ナビゲーション追加スタイル
+   ========================================= */
+
+/* 言語切り替え制御 */
+body:not(.lang-en) .lang-en {
+  display: none !important;
+}
+body.lang-en .lang-ja {
+  display: none !important;
+}
+
+/* 言語セレクター (サイドパネル用) */
+.lang-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lang-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--container-bg);
+  color: var(--text-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: var(--accent-color);
+}
+
+.lang-btn.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+/* ナビゲーションのフェードイン (JS読み込み時のチラつき防止) */
+.manual-nav {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.manual-nav.loaded {
+  opacity: 1;
+}
+
+/* 英語モード時のフォント微調整 */
+body.lang-en {
+  letter-spacing: 0.01em;
 }

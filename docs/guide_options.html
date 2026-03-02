@@ -3,116 +3,144 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>6. 生成オプション - SD Visual Prompt Editor</title>
+    <title>6. Generation Options - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
   </head>
   <body>
-    <nav class="manual-nav">
-      <div class="nav-title">
-        SD Visual Prompt Editor<br /><span
-          style="font-size: 0.7em; font-weight: normal"
-          >User Manual</span
-        >
-      </div>
-      <ul class="nav-list">
-        <li class="nav-item">
-          <a href="guide_index.html" class="nav-link">イントロダクション</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_basic.html" class="nav-link"
-            >1. 基本表示・モード切替</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_visual.html" class="nav-link"
-            >2. ビジュアルエディタ操作</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
-        </li>
-        <li class="nav-item">
-          <a href="guide_text.html" class="nav-link"
-            >4. プロンプトエディタ詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_table.html" class="nav-link"
-            >5. スプレッドシート詳細</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_options.html" class="nav-link active"
-            >6. 生成オプション</a
-          >
-        </li>
-        <li class="nav-item">
-          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
-        </li>
-      </ul>
-      <div style="margin-top: 30px; text-align: center">
-        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
-      </div>
-    </nav>
+    <nav class="manual-nav"></nav>
 
     <main class="manual-content">
-      <h1>6. 生成オプション</h1>
+      <h1>
+        <span class="lang-ja">6. 生成オプション</span>
+        <span class="lang-en">6. Generation Options</span>
+      </h1>
 
       <p>
-        画面下部にあるオプション設定により、プロンプトを出力（コピー）する際の形式や、ビジュアルエディタでの表示方法をカスタマイズできます。
+        <span class="lang-ja"
+          >画面下部にあるオプション設定により、プロンプトを出力（コピー）する際の形式や、ビジュアルエディタでの表示方法をカスタマイズできます。</span
+        >
+        <span class="lang-en"
+          >Using the option settings at the bottom of the screen, you can
+          customize the format for exporting (copying) prompts and the display
+          method in the Visual Editor.</span
+        >
       </p>
 
-      <h2>⚙️ 出力制御オプション</h2>
+      <h2>
+        <span class="lang-ja">⚙️ 出力制御オプション</span>
+        <span class="lang-en">⚙️ Output Control Options</span>
+      </h2>
       <p>
-        チェックボックスをオンにすることで、プロンプト生成時の挙動が変わります。
+        <span class="lang-ja"
+          >チェックボックスをオンにすることで、プロンプト生成時の挙動が変わります。</span
+        >
+        <span class="lang-en"
+          >Turning on the checkboxes changes the behavior when generating
+          prompts.</span
+        >
       </p>
 
       <div class="feature-grid">
         <div class="feature-card">
           <div class="card-title">
-            <label class="ui-sim-checkbox"
-              ><input type="checkbox" checked disabled />
-              行末にBREAKを付加</label
-            >
+            <label class="ui-sim-checkbox">
+              <input type="checkbox" checked disabled />
+              <span class="lang-ja">行末にBREAKを付加</span>
+              <span class="lang-en">Append BREAK to Line End</span>
+            </label>
           </div>
           <p>
-            各行（または各ブロック）の終わりに、自動的に
-            <code>BREAK</code> タグを挿入して出力します。
+            <span class="lang-ja"
+              >各行（または各ブロック）の終わりに、自動的に
+              <code>BREAK</code> タグを挿入して出力します。</span
+            >
+            <span class="lang-en"
+              >Automatically inserts a <code>BREAK</code> tag at the end of each
+              line (or block) in the output.</span
+            >
           </p>
           <div class="note-box">
-            <strong>⚠️ 注意: トークン消費の増大</strong><br />
-            この機能を有効にすると、<strong>すべての行</strong>が強制的に個別のチャンク（75トークンのブロック）として扱われます。<br />
-            短い行が大量にある状態で使用すると、無駄なパディング（埋め草データ）が増大し、AIへの指示密度が下がってしまう可能性があります。トークン総数を意識してご使用ください。
+            <strong class="lang-ja">⚠️ 注意: トークン消費の増大</strong>
+            <strong class="lang-en"
+              >⚠️ Note: Increased Token Consumption</strong
+            >
+            <br />
+            <span class="lang-ja"
+              >この機能を有効にすると、<strong>すべての行</strong>が強制的に個別のチャンク（75トークンのブロック）として扱われます。<br />短い行が大量にある状態で使用すると、無駄なパディング（埋め草データ）が増大し、AIへの指示密度が下がってしまう可能性があります。トークン総数を意識してご使用ください。</span
+            >
+            <span class="lang-en"
+              >When this feature is enabled, <strong>every line</strong> is
+              forcibly treated as a separate chunk (a block of 75 tokens).<br />Using
+              it with many short lines can increase wasted padding (filler data)
+              and potentially lower the density of instructions to the AI.
+              Please be mindful of the total token count.</span
+            >
           </div>
         </div>
 
         <div class="feature-card">
           <div class="card-title">
-            <label class="ui-sim-checkbox"
-              ><input type="checkbox" checked disabled />
-              コメントアウトを除去</label
-            >
+            <label class="ui-sim-checkbox">
+              <input type="checkbox" checked disabled />
+              <span class="lang-ja">コメントアウトを除去</span>
+              <span class="lang-en">Remove Comments</span>
+            </label>
           </div>
           <p>
-            <code>#</code>
-            で始まるコメントブロックを、最終的なプロンプトから<strong>除外</strong>して出力します。
+            <span class="lang-ja"
+              ><code>#</code>
+              で始まるコメントブロックを、最終的なプロンプトから<strong>除外</strong>して出力します。</span
+            >
+            <span class="lang-en"
+              ><strong>Excludes</strong> comment blocks starting with
+              <code>#</code> from the final prompt output.</span
+            >
           </p>
           <div class="note-box">
-            <strong>用途:</strong><br />
-            自分用のメモ（「ここから衣装」など）は残しつつ、AIに渡すプロンプトだけをきれいに抽出したい場合に必須の機能です。
+            <strong class="lang-ja">用途:</strong>
+            <strong class="lang-en">Use Case:</strong>
+            <br />
+            <span class="lang-ja"
+              >自分用のメモ（「ここから衣装」など）は残しつつ、AIに渡すプロンプトだけをきれいに抽出したい場合に必須の機能です。</span
+            >
+            <span class="lang-en"
+              >This is an essential feature when you want to keep personal notes
+              (e.g., "Outfits from here") while cleanly extracting only the
+              prompts to be passed to the AI.</span
+            >
           </div>
         </div>
       </div>
 
-      <h2>📏 75トークンガイド (Token Guide)</h2>
+      <h2>
+        <span class="lang-ja">📏 75トークンガイド (Token Guide)</span>
+        <span class="lang-en">📏 75 Token Guide (Token Guide)</span>
+      </h2>
       <p>
-        ビジュアルエディタ上には、Stable
-        Diffusionの処理単位である「75トークン」ごとの区切り線が表示されます。
+        <span class="lang-ja"
+          >ビジュアルエディタ上には、Stable
+          Diffusionの処理単位である「75トークン」ごとの区切り線が表示されます。</span
+        >
+        <span class="lang-en"
+          >A separator line for every "75 tokens," the processing unit of Stable
+          Diffusion, is displayed on the Visual Editor.</span
+        >
       </p>
 
       <div class="intro-box">
-        <strong>表示イメージ:</strong>
+        <strong class="lang-ja">表示イメージ:</strong>
+        <strong class="lang-en">Display Image:</strong>
 
         <div class="token-guide-demo">
           <div class="token-line"></div>
@@ -130,15 +158,35 @@
         </div>
 
         <p style="margin-top: 10px; font-size: 0.9em">
-          赤い点線を超えたタグは「次のチャンク（処理ブロック）」として扱われます。<br />
-          重要なタグがこの線の直後に来てしまうと、AIへの影響力が弱まる可能性があるため、<strong>線の手前に収めるか、BREAKで明示的に区切る</strong>などの調整を行う目安にしてください。
+          <span class="lang-ja"
+            >赤い点線を超えたタグは「次のチャンク（処理ブロック）」として扱われます。<br />重要なタグがこの線の直後に来てしまうと、AIへの影響力が弱まる可能性があるため、<strong>線の手前に収めるか、BREAKで明示的に区切る</strong>などの調整を行う目安にしてください。</span
+          >
+          <span class="lang-en"
+            >Tags that cross the red dotted line are treated as the "next chunk
+            (processing block)."<br />Since important tags appearing immediately
+            after this line might have weakened influence on the AI, use this as
+            a guide to adjust them by
+            <strong
+              >keeping them before the line or explicitly separating them with a
+              BREAK</strong
+            >.</span
+          >
         </p>
       </div>
 
       <div class="note-box">
-        <strong>⚠️ 注意:</strong><br />
-        このガイドは簡易的な計算（単語数などに基づく推計）であり、実際のStable
-        Diffusion内部でのトークン数とは厳密に一致しない場合があります。あくまで目安としてご活用ください。
+        <strong class="lang-ja">⚠️ 注意:</strong>
+        <strong class="lang-en">⚠️ Note:</strong>
+        <br />
+        <span class="lang-ja"
+          >このガイドは簡易的な計算（単語数などに基づく推計）であり、実際のStable
+          Diffusion内部でのトークン数とは厳密に一致しない場合があります。あくまで目安としてご活用ください。</span
+        >
+        <span class="lang-en"
+          >This guide is based on a simple calculation (estimates based on word
+          count, etc.) and may not strictly match the actual token count within
+          Stable Diffusion. Please use it only as a reference.</span
+        >
       </div>
 
       <p
@@ -148,22 +196,21 @@
           padding-top: 20px;
         "
       >
-        最後は、データの保存場所やセキュリティに関する情報です。<br />
+        <span class="lang-ja"
+          >最後は、データの保存場所やセキュリティに関する情報です。</span
+        >
+        <span class="lang-en"
+          >Finally, information regarding data storage and security.</span
+        >
+        <br />
         <a
           href="guide_system.html"
           style="font-weight: bold; color: var(--accent-color)"
-          >7. データ保存・安全性 へ進む ➡️</a
         >
+          <span class="lang-ja">7. データ保存・安全性 へ進む ➡️</span>
+          <span class="lang-en">Go to 7. Data Storage & Safety ➡️</span>
+        </a>
       </p>
     </main>
-
-    <script>
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        document.body.classList.add("dark-mode");
-      }
-    </script>
   </body>
 </html>
