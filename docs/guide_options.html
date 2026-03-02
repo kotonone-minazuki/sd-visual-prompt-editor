@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>6. 生成オプション - SD Visual Prompt Editor</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <nav class="manual-nav">
+      <div class="nav-title">
+        SD Visual Prompt Editor<br /><span
+          style="font-size: 0.7em; font-weight: normal"
+          >User Manual</span
+        >
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="guide_index.html" class="nav-link">イントロダクション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_basic.html" class="nav-link"
+            >1. 基本表示・モード切替</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_visual.html" class="nav-link"
+            >2. ビジュアルエディタ操作</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_text.html" class="nav-link"
+            >4. プロンプトエディタ詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_table.html" class="nav-link"
+            >5. スプレッドシート詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_options.html" class="nav-link active"
+            >6. 生成オプション</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
+        </li>
+      </ul>
+      <div style="margin-top: 30px; text-align: center">
+        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
+      </div>
+    </nav>
+
+    <main class="manual-content">
+      <h1>6. 生成オプション</h1>
+
+      <p>
+        画面下部にあるオプション設定により、プロンプトを出力（コピー）する際の形式や、ビジュアルエディタでの表示方法をカスタマイズできます。
+      </p>
+
+      <h2>⚙️ 出力制御オプション</h2>
+      <p>
+        チェックボックスをオンにすることで、プロンプト生成時の挙動が変わります。
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <label class="ui-sim-checkbox"
+              ><input type="checkbox" checked disabled />
+              行末にBREAKを付加</label
+            >
+          </div>
+          <p>
+            各行（または各ブロック）の終わりに、自動的に
+            <code>BREAK</code> タグを挿入して出力します。
+          </p>
+          <div class="note-box">
+            <strong>⚠️ 注意: トークン消費の増大</strong><br />
+            この機能を有効にすると、<strong>すべての行</strong>が強制的に個別のチャンク（75トークンのブロック）として扱われます。<br />
+            短い行が大量にある状態で使用すると、無駄なパディング（埋め草データ）が増大し、AIへの指示密度が下がってしまう可能性があります。トークン総数を意識してご使用ください。
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">
+            <label class="ui-sim-checkbox"
+              ><input type="checkbox" checked disabled />
+              コメントアウトを除去</label
+            >
+          </div>
+          <p>
+            <code>#</code>
+            で始まるコメントブロックを、最終的なプロンプトから<strong>除外</strong>して出力します。
+          </p>
+          <div class="note-box">
+            <strong>用途:</strong><br />
+            自分用のメモ（「ここから衣装」など）は残しつつ、AIに渡すプロンプトだけをきれいに抽出したい場合に必須の機能です。
+          </div>
+        </div>
+      </div>
+
+      <h2>📏 75トークンガイド (Token Guide)</h2>
+      <p>
+        ビジュアルエディタ上には、Stable
+        Diffusionの処理単位である「75トークン」ごとの区切り線が表示されます。
+      </p>
+
+      <div class="intro-box">
+        <strong>表示イメージ:</strong>
+
+        <div class="token-guide-demo">
+          <div class="token-line"></div>
+          <div class="token-label">75 Tokens</div>
+
+          <span class="tag-demo tag-common">tag_A</span>
+          <span class="tag-demo tag-common">tag_B</span>
+          <span class="tag-demo tag-common" style="margin-right: 40px"
+            >...</span
+          >
+          <span class="tag-demo tag-common" style="margin-left: 40px"
+            >tag_C</span
+          >
+          <span class="tag-demo tag-common">tag_D</span>
+        </div>
+
+        <p style="margin-top: 10px; font-size: 0.9em">
+          赤い点線を超えたタグは「次のチャンク（処理ブロック）」として扱われます。<br />
+          重要なタグがこの線の直後に来てしまうと、AIへの影響力が弱まる可能性があるため、<strong>線の手前に収めるか、BREAKで明示的に区切る</strong>などの調整を行う目安にしてください。
+        </p>
+      </div>
+
+      <div class="note-box">
+        <strong>⚠️ 注意:</strong><br />
+        このガイドは簡易的な計算（単語数などに基づく推計）であり、実際のStable
+        Diffusion内部でのトークン数とは厳密に一致しない場合があります。あくまで目安としてご活用ください。
+      </div>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        最後は、データの保存場所やセキュリティに関する情報です。<br />
+        <a
+          href="guide_system.html"
+          style="font-weight: bold; color: var(--accent-color)"
+          >7. データ保存・安全性 へ進む ➡️</a
+        >
+      </p>
+    </main>
+
+    <script>
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+    </script>
+  </body>
+</html>

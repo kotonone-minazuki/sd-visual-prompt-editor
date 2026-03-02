@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5. スプレッドシート詳細 - SD Visual Prompt Editor</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <nav class="manual-nav">
+      <div class="nav-title">
+        SD Visual Prompt Editor<br /><span
+          style="font-size: 0.7em; font-weight: normal"
+          >User Manual</span
+        >
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="guide_index.html" class="nav-link">イントロダクション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_basic.html" class="nav-link"
+            >1. 基本表示・モード切替</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_visual.html" class="nav-link"
+            >2. ビジュアルエディタ操作</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_text.html" class="nav-link"
+            >4. プロンプトエディタ詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_table.html" class="nav-link active"
+            >5. スプレッドシート詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
+        </li>
+      </ul>
+      <div style="margin-top: 30px; text-align: center">
+        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
+      </div>
+    </nav>
+
+    <main class="manual-content">
+      <h1>5. スプレッドシート詳細</h1>
+
+      <p>
+        「スプレッドシートエディタ (Spreadsheet
+        Mode)」は、Excelのように行と列でプロンプトを管理するモードです。<br />
+        「衣装」「ポーズ」「背景」のように要素ごとに列を分けたり、複数のバリエーションを保存したりするのに最適です。
+      </p>
+
+      <h2>📊 テーブルの基本操作</h2>
+
+      <table class="sheet-demo">
+        <thead>
+          <tr>
+            <th>Comment</th>
+            <th>Tag 1</th>
+            <th>Tag 2</th>
+            <th>Tag 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Base</td>
+            <td>1girl</td>
+            <td>solo</td>
+            <td>long hair</td>
+          </tr>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Outfit</td>
+            <td class="sheet-active-cell">white shirt</td>
+            <td>blue skirt</td>
+            <td>school uniform</td>
+          </tr>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Action</td>
+            <td>standing</td>
+            <td>looking at viewer</td>
+            <td>smile</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>編集とクリア</h3>
+      <ul>
+        <li>
+          <strong>セルの編集:</strong>
+          編集したいセルをクリックして文字を入力します。
+        </li>
+        <li>
+          <strong>行・列の追加:</strong> ツールバーの
+          <span class="ui-sim-tool-btn">➕ 行追加</span> /
+          <span class="ui-sim-tool-btn">➕ 列追加</span> ボタンで拡張できます。
+        </li>
+        <li>
+          <strong>クリア:</strong>
+          <span class="ui-sim-tool-btn">🗑️ クリア</span>
+          ボタンを押すと、シートの内容をリセット（初期化）します。
+        </li>
+      </ul>
+
+      <div class="note-box">
+        <strong>💬 Comment列の自動変換:</strong><br />
+        ヘッダーが
+        <strong>Comment</strong>
+        となっている列に入力したテキストは、ビジュアルエディタへの反映時に<strong>自動的に「コメントブロック（#付き）」に変換されます</strong>。<br />
+        そのため、スプレッドシート上でわざわざ
+        <code># Base</code> のように記号を入力する必要はありません。
+      </div>
+
+      <h2>💾 外部連携と保存 (Interoperability)</h2>
+      <p>
+        このモードの最大の特徴は、ExcelやGoogleスプレッドシートとの連携機能です。
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">TSV (Excel連携用)</div>
+          <p>
+            <strong>タブ区切りテキスト (TSV)</strong>
+            形式での入出力に対応しています。
+          </p>
+          <ul>
+            <li>
+              <strong>Save TSV:</strong>
+              データをTSVファイルとして保存します。Excelで開くことができます。
+            </li>
+            <li><strong>Load TSV:</strong> TSVファイルを読み込みます。</li>
+          </ul>
+          <div class="note-box">
+            <strong>📋 コピペ連携:</strong><br />
+            Excel上のセル範囲をコピーし、このツールのセル上で
+            <code>Ctrl+V</code> (ペースト)
+            すると、テーブルが自動拡張されてデータが貼り付けられます。逆も可能です。
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">JSON (完全バックアップ)</div>
+          <p>シートの状態を<strong>そのまま保存</strong>する形式です。</p>
+          <ul>
+            <li>
+              <strong>Save JSON:</strong>
+              空のセルも含め、シート全体の構造を保存します。
+            </li>
+            <li>
+              <strong>Load JSON:</strong> 保存した状態を完全に復元します。
+            </li>
+          </ul>
+          <small
+            >※TSVは空セルなどが詰められる場合がありますが、JSONは配置を維持します。</small
+          >
+        </div>
+      </div>
+
+      <h2>🔄 ビジュアルエディタとの変換ルール</h2>
+      <p>
+        スプレッドシートとビジュアルエディタ（タグブロック）の行き来には、以下のルールが適用されます。
+      </p>
+
+      <ul>
+        <li>
+          <strong>⬇️ 反映時 (Convert):</strong>
+          左上のセルから右へ、その後下の行へと順にタグが結合されます。<br />
+          (例: Comment → Tag 1 → Tag 2 → Tag 3 → 次の行...)
+        </li>
+        <li>
+          <strong>⬆️ 反映時 (Reflect):</strong>
+          ビジュアルエディタ上のタグ順序を維持して、セルに書き戻されます。<br />
+          ※元の列構造などはリセットされ、1つのセルに1つのタグが入る形で再配置される場合がありますのでご注意ください。
+        </li>
+      </ul>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        次は、生成されるプロンプトの形式を調整する「生成オプション」について解説します。<br />
+        <a
+          href="guide_options.html"
+          style="font-weight: bold; color: var(--accent-color)"
+          >6. 生成オプション へ進む ➡️</a
+        >
+      </p>
+    </main>
+
+    <script>
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+    </script>
+  </body>
+</html>

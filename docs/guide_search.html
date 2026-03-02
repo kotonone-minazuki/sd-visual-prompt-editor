@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. タグ検索・追加 - SD Visual Prompt Editor</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <nav class="manual-nav">
+      <div class="nav-title">
+        SD Visual Prompt Editor<br /><span
+          style="font-size: 0.7em; font-weight: normal"
+          >User Manual</span
+        >
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="guide_index.html" class="nav-link">イントロダクション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_basic.html" class="nav-link"
+            >1. 基本表示・モード切替</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_visual.html" class="nav-link"
+            >2. ビジュアルエディタ操作</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_search.html" class="nav-link active"
+            >3. タグ検索・追加</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_text.html" class="nav-link"
+            >4. プロンプトエディタ詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_table.html" class="nav-link"
+            >5. スプレッドシート詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
+        </li>
+      </ul>
+      <div style="margin-top: 30px; text-align: center">
+        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
+      </div>
+    </nav>
+
+    <main class="manual-content">
+      <h1>3. タグ検索・追加</h1>
+
+      <p>
+        画面右側（スマホの場合は下部）にある「タグ検索パレット」を使うと、Danbooruデータセットに含まれる膨大なタグの中から、必要なものを探してプロンプトに追加できます。
+      </p>
+
+      <h2>🔍 タグの検索 (Search)</h2>
+      <p>
+        検索ボックスにキーワードを入力すると、リアルタイムで候補が絞り込まれます。<br />
+        以下の3種類のデータに対して検索が行われます。
+      </p>
+
+      <ul>
+        <li>
+          <strong>タグ名 (Tag):</strong> 英語のタグ名 (例: <code>1girl</code>)
+        </li>
+        <li>
+          <strong>日本語訳 (JP):</strong> 日本語の意味 (例: <code>女の子</code>)
+        </li>
+        <li><strong>翻訳エイリアス (Trans):</strong> その他の翻訳候補</li>
+      </ul>
+
+      <div class="intro-box">
+        <strong>💡 ポイント:</strong><br />
+        「女の子」のように<strong>日本語で入力してもヒットする</strong>ため、英語のタグ名がわからなくても直感的に探すことができます。
+      </div>
+
+      <h2>🖱️ タグの追加 (Drag & Drop)</h2>
+      <p>
+        検索結果に表示されたタグは、ビジュアルエディタへ直接ドラッグ＆ドロップして追加します。
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">検索結果の見方</div>
+          <div class="search-demo-box">
+            <div class="search-item-demo">
+              <div>
+                <div class="tag-name">1girl</div>
+                <div class="tag-sub">1人の女の子</div>
+              </div>
+              <span class="tag-count-badge" style="color: #2ecc71">6.1M</span>
+            </div>
+          </div>
+          <ul>
+            <li>
+              <strong>上段:</strong> 正式なタグ名（プロンプトに使われる文字）
+            </li>
+            <li><strong>下段:</strong> 日本語訳などの補足情報</li>
+            <li>
+              <strong>右側:</strong> 出現件数（人気度により色が変わります）
+            </li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">追加手順</div>
+          <ol>
+            <li>欲しいタグをマウスで掴みます（スマホは長押し）。</li>
+            <li>
+              左側のビジュアルエディタ上の<strong>「入れたい場所」</strong>まで引っ張ります。
+            </li>
+            <li>ドロップすると、その位置にタグが挿入されます。</li>
+          </ol>
+          <div class="note-box">
+            <strong>📋 クリックでコピー:</strong><br />
+            タグをクリックすると、クリップボードにタグ名がコピーされます。他のツールに貼り付けたい場合に便利です。
+          </div>
+        </div>
+      </div>
+
+      <h2>ℹ️ 詳細情報の確認 (Tooltip)</h2>
+      <p>
+        検索結果のタグにマウスカーソルを乗せる（ホバーする）と、詳細情報がポップアップ表示されます。
+      </p>
+
+      <div class="tooltip-demo">
+        <div class="tooltip-row">
+          <span class="tooltip-label">TAG</span
+          ><span class="tooltip-value val-tag">1girl</span>
+        </div>
+        <div class="tooltip-row">
+          <span class="tooltip-label">TRANS</span
+          ><span class="tooltip-value val-trans">1人の女の子</span>
+        </div>
+        <div class="tooltip-row">
+          <span class="tooltip-label">JP</span
+          ><span class="tooltip-value"
+            >女の子 女性 少女 girl おんなのこ 女子 ?? 女孩 姑娘 女 ガール
+            ガールズイラスト animegirl 創作男女</span
+          >
+        </div>
+        <div class="tooltip-row">
+          <span class="tooltip-label">COUNT</span
+          ><span class="tooltip-value val-count">6,181,567</span>
+        </div>
+        <div class="tooltip-row">
+          <span class="tooltip-label">GROUP</span
+          ><span class="tooltip-value">タググループなし</span>
+        </div>
+      </div>
+
+      <ul style="margin-top: 20px">
+        <li><strong>TAG:</strong> プロンプトとして出力される文字列。</li>
+        <li>
+          <strong>TRANS / JP:</strong> 翻訳情報および関連する日本語キーワード。
+        </li>
+        <li>
+          <strong>COUNT:</strong>
+          Danbooruでの投稿数。この数字が大きいほどAIがよく学習しているタグです。
+        </li>
+        <li><strong>GROUP:</strong> タグのカテゴリ情報（存在する場合）。</li>
+      </ul>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        次は、テキストベースで編集を行う「プロンプトエディタ」の詳細機能について解説します。<br />
+        <a
+          href="guide_text.html"
+          style="font-weight: bold; color: var(--accent-color)"
+          >4. プロンプトエディタ詳細 へ進む ➡️</a
+        >
+      </p>
+    </main>
+
+    <script>
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+    </script>
+  </body>
+</html>

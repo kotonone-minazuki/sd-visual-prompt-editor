@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4. プロンプトエディタ詳細 - SD Visual Prompt Editor</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+  </head>
+  <body>
+    <nav class="manual-nav">
+      <div class="nav-title">
+        SD Visual Prompt Editor<br /><span
+          style="font-size: 0.7em; font-weight: normal"
+          >User Manual</span
+        >
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="guide_index.html" class="nav-link">イントロダクション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_basic.html" class="nav-link"
+            >1. 基本表示・モード切替</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_visual.html" class="nav-link"
+            >2. ビジュアルエディタ操作</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_search.html" class="nav-link">3. タグ検索・追加</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_text.html" class="nav-link active"
+            >4. プロンプトエディタ詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_table.html" class="nav-link"
+            >5. スプレッドシート詳細</a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="guide_options.html" class="nav-link">6. 生成オプション</a>
+        </li>
+        <li class="nav-item">
+          <a href="guide_system.html" class="nav-link">7. データ保存・安全性</a>
+        </li>
+      </ul>
+      <div style="margin-top: 30px; text-align: center">
+        <a href="../index.html" class="back-link">↩️ ツールに戻る</a>
+      </div>
+    </nav>
+
+    <main class="manual-content">
+      <h1>4. プロンプトエディタ詳細</h1>
+
+      <p>
+        「プロンプトエディタ (Normal
+        Mode)」は、Automatic1111などのWebUIと最も親和性が高い、テキストベースの編集画面です。<br />
+        WebUIからコピーしたプロンプトを貼り付けたり、最終的な調整を行ったりするのに適しています。
+      </p>
+
+      <h2>📝 エディタの機能</h2>
+      <p>
+        単なるテキストボックスではなく、プロンプト編集に特化した機能（CodeMirror）を搭載しています。
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">シンタックスハイライト</div>
+          <p>
+            入力されたテキストを解析し、色分けして表示します。<br />
+            特に
+            <code>#</code>
+            で始まるコメント行は<strong>緑色</strong>で表示されるため、メモ書きと実際のプロンプトを視覚的に区別できます。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="card-title">行番号と折り返し</div>
+          <p>
+            左側に行番号が表示されます。長いプロンプトもエディタの幅に合わせて自動的に折り返して表示されるため、横スクロールの手間がありません。
+          </p>
+        </div>
+      </div>
+
+      <h2>💾 ファイルの保存と読込 (File I/O)</h2>
+      <p>
+        作成したプロンプトをテキストファイル（.txt）としてパソコン内に保存したり、読み込んだりすることができます。
+      </p>
+
+      <h3>Save .txt (保存)</h3>
+      <p>
+        現在のエディタの内容をそのままテキストファイルとしてダウンロードします。<br />
+        WebUIの「Styles」機能に登録するためのファイル作成や、シンプルにメモ帳で管理したい場合に便利です。
+      </p>
+
+      <h3>Load .txt (読込)</h3>
+      <p>
+        ローカルにあるテキストファイルを選択して読み込みます。<br />
+        <span
+          class="note-box"
+          style="display: inline-block; margin: 0; padding: 4px 10px"
+          >ドラッグ＆ドロップ対応</span
+        ><br />
+        ボタンを使わずとも、テキストファイルをエディタエリアに直接<strong>ドラッグ＆ドロップ</strong>することでも読み込みが可能です。
+      </p>
+
+      <h2>📋 クリップボードへのコピー</h2>
+      <p>
+        作成したプロンプトをWebUIに貼り付けるための方法は、以下の2通り用意されています。
+      </p>
+
+      <div class="intro-box">
+        <strong>方法A: メインコピーボタン</strong><br />
+        画面下部（または出力エリア）にある
+        <span class="ui-sim-green-btn">📋 プロンプトとしてコピー</span>
+        ボタンを押すと、すべてのタグが整形された状態でクリップボードにコピーされます。<br />
+        基本的にはこのボタンを使うのが確実です。
+      </div>
+
+      <div class="intro-box">
+        <strong>方法B: エディタ内ツールボタン</strong><br />
+        エディタ上部のツールバーにある
+        <span class="ui-sim-tool-btn">📄 コピー</span>
+        ボタンを使うと、現在エディタに入力されているテキスト（コメント行などを含む）をそのままコピーできます。<br />
+        また、一般的なテキストエディタと同様に、テキストを選択して
+        <code>Ctrl+C</code> でコピーすることも可能です。
+      </div>
+
+      <h2>🔄 編集サイクルのおさらい</h2>
+      <p>プロンプトエディタは「入り口」であり「出口」です。</p>
+      <ol class="step-list">
+        <li>ここにテキストを貼る。</li>
+        <li>
+          <span
+            style="
+              background: #fe66f1;
+              color: white;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-weight: bold;
+              font-size: 0.9em;
+            "
+            >⬇️ ビジュアルエディタに反映</span
+          >
+          を押して可視化・推敲する。
+        </li>
+        <li>
+          <span
+            style="
+              background: #3498db;
+              color: white;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-weight: bold;
+              font-size: 0.9em;
+            "
+            >⬆️ プロンプトエディタに反映</span
+          >
+          でテキストに戻す。
+        </li>
+        <li>
+          <span
+            class="ui-sim-green-btn"
+            style="font-size: 0.8em; padding: 4px 8px"
+            >📋 プロンプトとしてコピー</span
+          >
+          を押してWebUIへ持っていく。
+        </li>
+      </ol>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        次は、もう一つの強力な編集モード「スプレッドシートエディタ」について解説します。<br />
+        <a
+          href="guide_table.html"
+          style="font-weight: bold; color: var(--accent-color)"
+          >5. スプレッドシート詳細 へ進む ➡️</a
+        >
+      </p>
+    </main>
+
+    <script>
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+    </script>
+  </body>
+</html>
