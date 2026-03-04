@@ -5,7 +5,8 @@ if (typeof CodeMirror !== "undefined") {
   CodeMirror.defineMode("sd-prompt-mode", function () {
     return {
       token: function (stream) {
-        if (stream.sol() && stream.match("#")) {
+        // 修正: 行頭だけでなく、行の途中の "#" もコメントとして認識する
+        if (stream.match("#")) {
           stream.skipToEnd();
           return "comment";
         }

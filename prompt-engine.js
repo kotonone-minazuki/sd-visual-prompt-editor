@@ -222,19 +222,31 @@ function reflectToSpreadsheet() {
       .filter((t) => t.style.display !== "none")
       .map((t) => t.dataset.raw);
     if (rowTags.length === 0) return;
-    let commentIndex = rowTags.findIndex((t) => t.startsWith("#"));
 
-    if (!strip) {
-      if (commentIndex !== -1) {
-        pendingCategory = rowTags[commentIndex].substring(1).trim();
-        rowTags.splice(commentIndex, 1);
-        if (rowTags.length === 0) return;
+    // 修正: 行内のタグがすべてコメントかどうか判定
+    const allComments = rowTags.every((t) => t.startsWith("#"));
+
+    if (allComments) {
+      // 行すべてがコメントの場合 -> カテゴリヘッダーとして扱い、pendingCategoryを更新
+      if (!strip) {
+        pendingCategory = rowTags[0].substring(1).trim();
       }
+      // データ行としては追加しない
+      return;
+    }
+
+    // 通常のタグが含まれる場合
+    if (!strip) {
+      // インラインコメントが含まれていても、それは通常のタグとして扱い、
+      // Comment列(Category)を上書きしないようにする。
       newData.push([pendingCategory, ...rowTags]);
-      pendingCategory = "";
+      pendingCategory = ""; // カテゴリ適用後リセット（既存挙動維持）
     } else {
-      if (commentIndex !== -1) rowTags.splice(commentIndex, 1);
-      if (rowTags.length > 0) newData.push(["", ...rowTags]);
+      // Stripモード: コメントタグを除去してデータがあれば追加
+      const cleanTags = rowTags.filter((t) => !t.startsWith("#"));
+      if (cleanTags.length > 0) {
+        newData.push(["", ...cleanTags]);
+      }
     }
   });
 
