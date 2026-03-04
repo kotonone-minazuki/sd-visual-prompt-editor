@@ -228,14 +228,24 @@
                 </button>
               </span>
 
-              <button
-                onclick="copyResult('inputSpreadsheet', this)"
-                class="mini-tool-btn"
-                style="margin-left: auto; font-weight: bold"
-                data-i18n="copy"
-              >
-                📋 コピー
-              </button>
+              <div style="margin-left: auto; display: flex; gap: 5px">
+                <button
+                  onclick="copyResult('inputSpreadsheet', this, false)"
+                  class="mini-tool-btn"
+                  style="font-weight: bold"
+                  data-i18n="copyHeader"
+                >
+                  📋 コピー(Header)
+                </button>
+                <button
+                  onclick="copyResult('inputSpreadsheet', this, true)"
+                  class="mini-tool-btn"
+                  style="font-weight: bold"
+                  data-i18n="copy"
+                >
+                  📋 コピー
+                </button>
+              </div>
             </div>
 
             <input

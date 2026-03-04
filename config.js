@@ -20,6 +20,7 @@ const i18n = {
     labelNormal: "テキストのCopy & Paste 可能",
     labelSpread: "Excel / Sheets などから Copy & Paste 可能",
     copy: "コピー",
+    copyHeader: "コピー(Header)",
     copySuccess: "✅ コピー完了！",
     copyFail: "❌ 失敗",
     btnConvert:
@@ -62,6 +63,7 @@ const i18n = {
     labelNormal: "Text Copy & Paste Available",
     labelSpread: "Copy & Paste from Excel / Sheets Available",
     copy: "Copy",
+    copyHeader: "Copy (Header)",
     copySuccess: "✅ Copied!",
     copyFail: "❌ Failed",
     btnConvert:

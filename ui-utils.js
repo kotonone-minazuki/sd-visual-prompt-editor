@@ -98,12 +98,14 @@ function universalCopy(text) {
   }
 }
 
-function copyResult(id, btn) {
+function copyResult(id, btn, excludeHeader = false) {
   let text = "";
   if (id === "inputNormal") {
     text = editorNormal.getValue();
   } else if (id === "inputSpreadsheet") {
-    text = spreadsheetData.map((row) => row.join("\t")).join("\n");
+    // excludeHeader が true なら 1行目以降を使用、false なら全体を使用
+    const rows = excludeHeader ? spreadsheetData.slice(1) : spreadsheetData;
+    text = rows.map((row) => row.join("\t")).join("\n");
   } else {
     text = document.getElementById(id).value;
   }
