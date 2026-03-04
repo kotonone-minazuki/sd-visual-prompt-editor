@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLIP Token Magnitude Extractor</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      .container {
+        border: 1px solid #ccc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        background: #f9f9f9;
+      }
+      .status {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-left: 4px solid #007bff;
+        background: #e9f4ff;
+        display: none;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
+      #progress {
+        font-weight: bold;
+        color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CLIP Token Magnitude Extractor</h1>
+    <p>
+      モデルファイル（.safetensors）から各トークンのベクトル強度（L2ノルム）を抽出し、TSV形式で保存します。
+    </p>
+
+    <div class="container">
+      <label for="modelFile">モデルファイルを選択 (.safetensors):</label
+      ><br /><br />
+      <input type="file" id="modelFile" accept=".safetensors" /><br /><br />
+
+      <button id="startBtn">解析してTSVを保存</button>
+
+      <div id="statusArea" class="status">
+        <span id="progress">準備中...</span>
+        <div id="detail"></div>
+      </div>
+    </div>
+
+    <script src="processor.js"></script>
+  </body>
+</html>
