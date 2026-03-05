@@ -35,7 +35,11 @@ window.onload = () => {
     },
   );
 
-  editorNormal.on("change", () => saveToLocalStorage());
+  // 変更時に保存し、かつ「戻る」ボタンの状態を更新する
+  editorNormal.on("change", () => {
+    saveToLocalStorage();
+    updateNormalUndoButtonState();
+  });
 
   restoreFromLocalStorage();
   applyLanguage();
@@ -44,9 +48,32 @@ window.onload = () => {
   renderSpreadsheet();
 
   setTimeout(() => {
-    if (editorNormal) editorNormal.refresh();
+    if (editorNormal) {
+      editorNormal.refresh();
+      updateNormalUndoButtonState(); // 初回状態反映
+    }
   }, 100);
 };
+
+// ▼ 追加: プロンプトエディタのUndo実行
+function undoNormal() {
+  if (editorNormal) {
+    editorNormal.undo();
+    updateNormalUndoButtonState();
+  }
+}
+
+// ▼ 追加: プロンプトエディタの「戻る」ボタンの有効/無効を更新
+function updateNormalUndoButtonState() {
+  const btn = document.getElementById("btnUndoNormal");
+  if (btn && editorNormal) {
+    const history = editorNormal.historySize();
+    btn.disabled = history.undo === 0;
+    // 見た目のフィードバック
+    btn.style.opacity = btn.disabled ? "0.5" : "1";
+    btn.style.cursor = btn.disabled ? "not-allowed" : "pointer";
+  }
+}
 
 // ▼ 追加: フッターのバージョン表示処理
 document.addEventListener("DOMContentLoaded", () => {

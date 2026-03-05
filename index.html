@@ -141,14 +141,25 @@
                 Load .txt
               </button>
 
-              <button
-                class="mini-tool-btn"
-                onclick="copyResult('inputNormal', this)"
-                data-i18n="copy"
-                style="margin-left: auto; font-weight: bold"
-              >
-                📋 コピー
-              </button>
+              <div style="margin-left: auto; display: flex; gap: 5px">
+                <button
+                  id="btnUndoNormal"
+                  onclick="undoNormal()"
+                  class="mini-tool-btn"
+                  data-i18n="undo"
+                  disabled
+                >
+                  ↩️ 戻る
+                </button>
+                <button
+                  class="mini-tool-btn"
+                  onclick="copyResult('inputNormal', this)"
+                  data-i18n="copy"
+                  style="font-weight: bold"
+                >
+                  📋 コピー
+                </button>
+              </div>
             </div>
 
             <textarea id="inputNormal"></textarea>
@@ -324,14 +335,10 @@
           (ドラッグ＆ドロップで追加・移動・枠外へ削除)</label
         >
 
-        <!-- ▼ 新設：ビジュアルエディタ用のツールバー ▼ -->
-        <div
-          class="spreadsheet-toolbar"
-          style="align-items: center; margin-bottom: 10px"
-        >
+        <div class="spreadsheet-toolbar visual-editor-toolbar">
           <button
             id="btnAppendBreak"
-            class="toggle-btn"
+            class="toggle-btn mini-tool-btn"
             onclick="toggleBreakState(this)"
             data-i18n="breakLabels"
           >
@@ -339,7 +346,7 @@
           </button>
           <button
             id="btnStripHeaders"
-            class="toggle-btn"
+            class="toggle-btn mini-tool-btn"
             onclick="toggleStripState(this)"
             data-i18n="stripLabels"
           >
@@ -347,7 +354,7 @@
           </button>
           <button
             id="btnTokenGuide"
-            class="toggle-btn"
+            class="toggle-btn mini-tool-btn"
             onclick="
               this.classList.toggle('active');
               window.tokenManager &&
@@ -358,24 +365,18 @@
             📏 75 Token
           </button>
 
-          <!-- 右寄せの戻るボタン -->
-          <button
-            id="btnUndoVisual"
-            onclick="undoVisual()"
-            class="mini-tool-btn"
-            data-i18n="undo"
-            disabled
-            style="
-              margin-left: auto;
-              height: fit-content;
-              padding: 6px 12px;
-              font-size: 0.9em;
-            "
-          >
-            ↩️ 戻る
-          </button>
+          <div style="margin-left: auto">
+            <button
+              id="btnUndoVisual"
+              onclick="undoVisual()"
+              class="mini-tool-btn"
+              data-i18n="undo"
+              disabled
+            >
+              ↩️ 戻る
+            </button>
+          </div>
         </div>
-        <!-- ▲ 新設ここまで ▲ -->
 
         <div id="outputPreview" class="preview-area"></div>
         <button

@@ -326,27 +326,59 @@ button:active {
   margin-bottom: 40px;
 }
 
-/* トグルボタン（小さめ・横並び用） */
+/* --- 各種エディタのツールバーとボタンの統一デザイン --- */
+.spreadsheet-toolbar {
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.mini-tool-btn,
 .toggle-btn {
-  padding: 8px 14px; /* 少し小さめ */
+  padding: 6px 12px;
   font-size: 0.9em;
-  background-color: var(--box-bg); /* デフォルトは背景色 */
+  cursor: pointer;
+  background-color: var(--bg-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
-  opacity: 0.8;
+  border-radius: 4px;
   font-weight: normal;
+  transition: all 0.2s;
+  height: fit-content;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.mini-tool-btn:hover,
 .toggle-btn:hover {
-  opacity: 1;
   background-color: var(--hover-bg);
 }
+
+/* ボタン無効時(disabled)のスタイル */
+.mini-tool-btn:disabled,
+.toggle-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* トグルボタン(アクティブ時) */
 .toggle-btn.active {
   background-color: var(--accent-color);
   color: #fff;
   border-color: var(--accent-color);
-  opacity: 1;
   font-weight: bold;
 }
+
+/* 危険操作ボタン(クリアなど) */
+.mini-tool-btn.danger:hover {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #c62828;
+}
+/* --------------------------------------------------- */
 
 .option-group {
   display: flex;
@@ -460,29 +492,6 @@ button:active {
 }
 
 /* --- Spreadsheet Styles --- */
-.spreadsheet-toolbar {
-  margin-bottom: 5px;
-  display: flex;
-  gap: 5px;
-}
-
-.mini-tool-btn {
-  padding: 2px 8px;
-  font-size: 0.85em;
-  cursor: pointer;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  border-radius: 4px;
-}
-.mini-tool-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-.mini-tool-btn.danger:hover {
-  background-color: #ffebee;
-  color: #c62828;
-  border-color: #c62828;
-}
 
 .spreadsheet-container {
   overflow: auto;
