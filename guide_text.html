@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4. Prompt Editor Details - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
+  </head>
+  <body>
+    <nav class="manual-nav"></nav>
+
+    <main class="manual-content">
+      <h1>
+        <span class="lang-ja">4. プロンプトエディタ詳細</span>
+        <span class="lang-en">4. Prompt Editor Details</span>
+      </h1>
+
+      <p>
+        <span class="lang-ja"
+          >「プロンプトエディタ (Normal
+          Mode)」は、Automatic1111などのWebUIと最も親和性が高い、テキストベースの編集画面です。<br />WebUIからコピーしたプロンプトを貼り付けたり、最終的な調整を行ったりするのに適しています。</span
+        >
+        <span class="lang-en"
+          >"Prompt Editor (Normal Mode)" is a text-based editing screen with the
+          highest affinity for WebUIs such as Automatic1111.<br />It is suitable
+          for pasting prompts copied from the WebUI or making final
+          adjustments.</span
+        >
+      </p>
+
+      <h2>
+        <span class="lang-ja">📝 エディタの機能</span>
+        <span class="lang-en">📝 Editor Features</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >単なるテキストボックスではなく、プロンプト編集に特化した機能（CodeMirror）を搭載しています。</span
+        >
+        <span class="lang-en"
+          >It is not just a simple text box but is equipped with features
+          specialized for prompt editing (CodeMirror).</span
+        >
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">シンタックスハイライト</span>
+            <span class="lang-en">Syntax Highlighting</span>
+          </div>
+          <p>
+            <span class="lang-ja"
+              >入力されたテキストを解析し、色分けして表示します。<br />特に
+              <code>#</code>
+              で始まるコメント行は<strong>緑色</strong>で表示されるため、メモ書きと実際のプロンプトを視覚的に区別できます。</span
+            >
+            <span class="lang-en"
+              >It analyzes the entered text and displays it in color-coded
+              sections.<br />In particular, comment lines starting with
+              <code>#</code> are displayed in <strong>green</strong>, allowing
+              you to visually distinguish notes from actual prompts.</span
+            >
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">行番号と折り返し</span>
+            <span class="lang-en">Line Numbers and Wrapping</span>
+          </div>
+          <p>
+            <span class="lang-ja"
+              >左側に行番号が表示されます。長いプロンプトもエディタの幅に合わせて自動的に折り返して表示されるため、横スクロールの手間がありません。</span
+            >
+            <span class="lang-en"
+              >Line numbers are displayed on the left. Long prompts are
+              automatically wrapped to fit the width of the editor, eliminating
+              the need for horizontal scrolling.</span
+            >
+          </p>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-ja">💾 ファイルの保存と読込 (File I/O)</span>
+        <span class="lang-en">💾 File Saving and Loading (File I/O)</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >作成したプロンプトをテキストファイル（.txt）としてパソコン内に保存したり、読み込んだりすることができます。</span
+        >
+        <span class="lang-en"
+          >You can save your created prompts as text files (.txt) on your
+          computer or load them from files.</span
+        >
+      </p>
+
+      <h3>
+        <span class="lang-ja">Save .txt (保存)</span>
+        <span class="lang-en">Save .txt (Save)</span>
+      </h3>
+      <p>
+        <span class="lang-ja"
+          >現在のエディタの内容をそのままテキストファイルとしてダウンロードします。<br />WebUIの「Styles」機能に登録するためのファイル作成や、シンプルにメモ帳で管理したい場合に便利です。</span
+        >
+        <span class="lang-en"
+          >Downloads the current content of the editor as a text file.<br />Convenient
+          for creating files to register in the WebUI's "Styles" function or for
+          simply managing prompts with a text editor.</span
+        >
+      </p>
+
+      <h3>
+        <span class="lang-ja">Load .txt (読込)</span>
+        <span class="lang-en">Load .txt (Load)</span>
+      </h3>
+      <p>
+        <span class="lang-ja"
+          >ローカルにあるテキストファイルを選択して読み込みます。</span
+        >
+        <span class="lang-en">Select and load a local text file.</span>
+        <br />
+        <span
+          class="note-box"
+          style="display: inline-block; margin: 0; padding: 4px 10px"
+        >
+          <span class="lang-ja">ドラッグ＆ドロップ対応</span>
+          <span class="lang-en">Drag & Drop Support</span>
+        </span>
+        <br />
+        <span class="lang-ja"
+          >ボタンを使わずとも、テキストファイルをエディタエリアに直接<strong>ドラッグ＆ドロップ</strong>することでも読み込みが可能です。</span
+        >
+        <span class="lang-en"
+          >Loading is also possible by <strong>dragging and dropping</strong> a
+          text file directly into the editor area without using the
+          button.</span
+        >
+      </p>
+
+      <h2>
+        <span class="lang-ja">📋 クリップボードへのコピー</span>
+        <span class="lang-en">📋 Copying to Clipboard</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >作成したプロンプトをWebUIに貼り付けるための方法は、以下の2通り用意されています。</span
+        >
+        <span class="lang-en"
+          >There are two ways provided to copy the created prompt for pasting
+          into the WebUI:</span
+        >
+      </p>
+
+      <div class="intro-box">
+        <strong class="lang-ja">方法A: メインコピーボタン</strong>
+        <strong class="lang-en">Method A: Main Copy Button</strong>
+        <br />
+        <span class="lang-ja">画面下部（または出力エリア）にある</span>
+        <span class="lang-en">Pressing the</span>
+        <span class="ui-sim-green-btn">
+          <span class="lang-ja">📋 プロンプトとしてコピー</span>
+          <span class="lang-en">📋 Copy as Prompt</span>
+        </span>
+        <span class="lang-ja"
+          >ボタンを押すと、すべてのタグが整形された状態でクリップボードにコピーされます。<br />基本的にはこのボタンを使うのが確実です。</span
+        >
+        <span class="lang-en"
+          >button located at the bottom of the screen (or in the output area)
+          copies all tags in a formatted state to the clipboard.<br />Basically,
+          using this button is the most reliable method.</span
+        >
+      </div>
+
+      <div class="intro-box">
+        <strong class="lang-ja">方法B: エディタ内ツールボタン</strong>
+        <strong class="lang-en">Method B: In-Editor Tool Button</strong>
+        <br />
+        <span class="lang-ja">エディタ上部のツールバーにある</span>
+        <span class="lang-en">Using the</span>
+        <span class="ui-sim-tool-btn">
+          <span class="lang-ja">📄 コピー</span>
+          <span class="lang-en">📄 Copy</span>
+        </span>
+        <span class="lang-ja"
+          >ボタンを使うと、現在エディタに入力されているテキスト（コメント行などを含む）をそのままコピーできます。<br />また、一般的なテキストエディタと同様に、テキストを選択して
+          <code>Ctrl+C</code> でコピーすることも可能です。</span
+        >
+        <span class="lang-en"
+          >button on the toolbar at the top of the editor allows you to copy the
+          current text in the editor (including comment lines, etc.) as is.<br />Also,
+          similar to common text editors, you can copy selected text using
+          <code>Ctrl+C</code>.</span
+        >
+      </div>
+
+      <h2>
+        <span class="lang-ja">🔄 編集サイクルのおさらい</span>
+        <span class="lang-en">🔄 Review of the Editing Cycle</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >プロンプトエディタは「入り口」であり「出口」です。</span
+        >
+        <span class="lang-en"
+          >The Prompt Editor is both the "entrance" and the "exit."</span
+        >
+      </p>
+      <ol class="step-list">
+        <li class="lang-ja">ここにテキストを貼る。</li>
+        <li class="lang-en">Paste text here.</li>
+        <li>
+          <span
+            style="
+              background: #fe66f1;
+              color: white;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-weight: bold;
+              font-size: 0.9em;
+            "
+          >
+            <span class="lang-ja">⬇️ ビジュアルエディタに反映</span>
+            <span class="lang-en">⬇️ Reflect in Visual Editor</span>
+          </span>
+          <span class="lang-ja">を押して可視化・推敲する。</span>
+          <span class="lang-en">to visualize and refine.</span>
+        </li>
+        <li>
+          <span
+            style="
+              background: #3498db;
+              color: white;
+              padding: 2px 8px;
+              border-radius: 4px;
+              font-weight: bold;
+              font-size: 0.9em;
+            "
+          >
+            <span class="lang-ja">⬆️ プロンプトエディタに反映</span>
+            <span class="lang-en">⬆️ Reflect in Prompt Editor</span>
+          </span>
+          <span class="lang-ja">でテキストに戻す。</span>
+          <span class="lang-en">to return to text.</span>
+        </li>
+        <li>
+          <span
+            class="ui-sim-green-btn"
+            style="font-size: 0.8em; padding: 4px 8px"
+          >
+            <span class="lang-ja">📋 プロンプトとしてコピー</span>
+            <span class="lang-en">📋 Copy as Prompt</span>
+          </span>
+          <span class="lang-ja">を押してWebUIへ持っていく。</span>
+          <span class="lang-en">and take it to the WebUI.</span>
+        </li>
+      </ol>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        <span class="lang-ja"
+          >次は、もう一つの強力な編集モード「スプレッドシートエディタ」について解説します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain the other powerful editing mode, the
+          "Spreadsheet Editor."</span
+        >
+        <br />
+        <a
+          href="guide_table.html"
+          style="font-weight: bold; color: var(--accent-color)"
+        >
+          <span class="lang-ja">5. スプレッドシート詳細 へ進む ➡️</span>
+          <span class="lang-en">Go to 5. Spreadsheet Details ➡️</span>
+        </a>
+      </p>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7. Token & Chunking - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
+  </head>
+  <body>
+    <nav class="manual-nav"></nav>
+
+    <main class="manual-content">
+      <h1>
+        <span class="lang-ja">7. トークンとチャンク</span>
+        <span class="lang-en">7. Token & Chunking</span>
+      </h1>
+
+      <p>
+        <span class="lang-ja"
+          >Stable
+          Diffusionで思い通りの画像を生成するために避けて通れない、「75トークンの壁」と「チャンク分割」について解説します。</span
+        >
+        <span class="lang-en"
+          >This section explains the "75-token wall" and "chunking," which are
+          unavoidable for generating images exactly as you envision in Stable
+          Diffusion.</span
+        >
+      </p>
+
+      <h2>
+        <span class="lang-ja">1. トークンとは？</span>
+        <span class="lang-en">1. What is a Token?</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >AIは言葉をそのまま理解するのではなく、「トークン
+          (Token)」という数値に変換して理解します。「1単語＝1トークン」とは限らず、長い単語は分割されることがあります。</span
+        >
+        <span class="lang-en"
+          >AI converts words into numbers called "tokens". It's not always "1
+          word = 1 token"; long words may be split.</span
+        >
+      </p>
+
+      <div class="viz-container">
+        <div class="viz-title">Example: "masterpiece"</div>
+        <div class="chunk-row">
+          <span class="token-box">masterpiece</span>
+          <span>➡️</span>
+          <span class="token-box">master</span>
+          <span class="token-box">piece</span>
+          <span style="font-size: 0.8em; color: #777; margin-left: 10px"
+            >(2 tokens)</span
+          >
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-ja">2. 75トークンの制限とチャンク</span>
+        <span class="lang-en">2. The 75-Token Limit & Chunking</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >Stable
+          Diffusionは、プロンプトを<strong>75トークンごとの塊（チャンク）</strong>に区切って処理します。<br />
+          あふれた分は捨てられるわけではなく、2つ目、3つ目のチャンクとして処理されますが、<strong>「チャンクを跨ぐと文脈が途切れやすい」</strong>という性質があります。</span
+        >
+        <span class="lang-en"
+          >Stable Diffusion processes prompts in
+          <strong>chunks of 75 tokens</strong>.<br />
+          Overflow is not discarded but processed as a 2nd or 3rd chunk.
+          However,
+          <strong>"context is easily broken across chunks"</strong>.</span
+        >
+      </p>
+
+      <div class="intro-box">
+        <strong class="lang-ja">技術的な補足 (75 vs 77)</strong>
+        <strong class="lang-en">Technical Note (75 vs 77)</strong>
+        <br />
+        <span class="lang-ja"
+          >仕様上の最大長は77トークンですが、開始(Start)と終了(End)のタグが自動挿入されるため、ユーザーが使えるのは実質75トークンです。</span
+        >
+        <span class="lang-en"
+          >The max length is 77 tokens, but Start/End tags are auto-inserted, so
+          users effectively have 75 tokens.</span
+        >
+      </div>
+
+      <div class="viz-container">
+        <div class="viz-title">
+          <span class="lang-ja">チャンク分割のイメージ</span>
+          <span class="lang-en">Chunking Visualization</span>
+        </div>
+        <div class="chunk-row">
+          <div class="chunk-label">Chunk 1</div>
+          <div
+            style="
+              border: 2px solid #3498db;
+              padding: 5px;
+              border-radius: 4px;
+              background: #fff;
+              width: 100%;
+            "
+          >
+            <div style="display: flex; gap: 4px; flex-wrap: wrap">
+              <span class="token-box start">START</span>
+              <span class="token-box">1girl</span>
+              <span class="token-box">solo</span>
+              <span style="color: #aaa">... (many tags) ...</span>
+              <span class="token-box">white</span>
+              <span class="token-box end">END</span>
+            </div>
+          </div>
+        </div>
+        <div class="arrow-down">⬇️ Overflow</div>
+        <div class="chunk-row">
+          <div class="chunk-label">Chunk 2</div>
+          <div
+            style="
+              border: 2px solid #3498db;
+              padding: 5px;
+              border-radius: 4px;
+              background: #fff;
+              width: 100%;
+            "
+          >
+            <div style="display: flex; gap: 4px; flex-wrap: wrap">
+              <span class="token-box start">START</span>
+              <span class="token-box">dress</span>
+              <span class="token-box">frills</span>
+              <span style="color: #aaa">...</span>
+              <span class="token-box end">END</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="color: #e74c3c; border-bottom-color: #e74c3c">
+        <span class="lang-ja">3. 【重要】画質崩壊の罠 (チャンク跨ぎ)</span>
+        <span class="lang-en">3. The Trap: Chunk Straddling</span>
+      </h2>
+      <div class="feature-card" style="border-left: 5px solid #e74c3c">
+        <p>
+          <span class="lang-ja"
+            ><strong
+              >「プロンプトを少し微調整しただけなのに、生成された画像が真っ白になったり、色がぐちゃぐちゃになったりした」</strong
+            ><br />その原因は、重要な単語がチャンクの境界で分断された（跨いだ）ことにあるかもしれません。</span
+          >
+          <span class="lang-en"
+            ><strong
+              >"I just tweaked the prompt a little, but the image turned white
+              or messy."</strong
+            ><br />The cause might be that a crucial word was split (straddled)
+            across the chunk boundary.</span
+          >
+        </p>
+
+        <div
+          class="viz-container"
+          style="border-color: #e74c3c; background: #fdf2e9"
+        >
+          <div class="viz-title" style="color: #c0392b">
+            ❌ Bad Case: "blue sky" is split
+          </div>
+
+          <div class="chunk-row">
+            <span class="chunk-label">Chunk 1</span>
+            <span class="token-box">... (74 tokens) ...</span>
+            <span class="token-box bad">blue</span>
+          </div>
+
+          <div class="boundary-line">
+            <span class="boundary-label">Boundary (The Wall)</span>
+          </div>
+
+          <div class="chunk-row">
+            <span class="chunk-label">Chunk 2</span>
+            <span class="token-box bad">sky</span>
+            <span class="token-box">clouds</span>
+            <span class="token-box">...</span>
+          </div>
+
+          <div
+            style="
+              text-align: center;
+              margin-top: 10px;
+              font-size: 0.9em;
+              color: #c0392b;
+            "
+          >
+            <span class="lang-ja"
+              >AI: 「blue」と「sky」の関係性が切れてしまい、理解できない！</span
+            ><br />
+            <span class="lang-en"
+              >AI: The connection between "blue" and "sky" is broken!</span
+            >
+          </div>
+        </div>
+
+        <p>
+          <span class="lang-ja">
+            <strong>解決策:</strong>
+            本ツールの可視化機能を見て、警告が出ているタグを移動させるか、手前で
+            <code>BREAK</code> を入れて区切りを調整してください。
+          </span>
+          <span class="lang-en">
+            <strong>Solution:</strong> Check the visualization in this tool. If
+            you see a warning, move the tag or insert a
+            <code>BREAK</code> before it to adjust the split.
+          </span>
+        </p>
+
+        <div
+          class="viz-container"
+          style="border-color: #27ae60; background: #eafaf1"
+        >
+          <div class="viz-title" style="color: #27ae60">
+            ✅ Good Case: Fixed with BREAK
+          </div>
+
+          <div class="chunk-row">
+            <span class="chunk-label">Chunk 1</span>
+            <span class="token-box">... (tags) ...</span>
+            <span class="token-box highlight">BREAK</span>
+            <span style="color: #aaa; font-size: 0.8em">(Padding)</span>
+          </div>
+
+          <div class="boundary-line" style="border-color: #27ae60">
+            <span class="boundary-label" style="color: #27ae60"
+              >New Chunk Forced</span
+            >
+          </div>
+
+          <div class="chunk-row">
+            <span class="chunk-label">Chunk 2</span>
+            <span class="token-box good">blue</span>
+            <span class="token-box good">sky</span>
+            <span class="token-box">clouds</span>
+            <span class="token-box">...</span>
+          </div>
+
+          <div
+            style="
+              text-align: center;
+              margin-top: 10px;
+              font-size: 0.9em;
+              color: #27ae60;
+            "
+          >
+            <span class="lang-ja"
+              >AI: 「blue sky」が一つの塊として認識される！</span
+            ><br />
+            <span class="lang-en"
+              >AI: "blue sky" is recognized as a single unit!</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-ja">4. 本ツールの機能</span>
+        <span class="lang-en">4. Tool Features</span>
+      </h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">区切り線 (Separator)</span>
+            <span class="lang-en">Separator Line</span>
+          </div>
+          <p>
+            <span class="lang-ja">75トークンごとの境界線を表示します。</span>
+            <span class="lang-en"
+              >Displays boundary lines for every 75 tokens.</span
+            >
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">⚠️ 分断警告 (Warning)</span>
+            <span class="lang-en">Split Warning</span>
+          </div>
+          <p>
+            <span class="lang-ja"
+              >タグの途中でチャンクが切れてしまっている場合、警告アイコンでお知らせします。</span
+            >
+            <span class="lang-en"
+              >Alerts you with a warning icon if a chunk is cut off in the
+              middle of a tag.</span
+            >
+          </p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
