@@ -230,6 +230,15 @@
 
               <div style="margin-left: auto; display: flex; gap: 5px">
                 <button
+                  id="btnUndoSpreadsheet"
+                  onclick="undoSpreadsheet()"
+                  class="mini-tool-btn"
+                  data-i18n="undo"
+                  disabled
+                >
+                  ↩️ 戻る
+                </button>
+                <button
                   onclick="copyResult('inputSpreadsheet', this, false)"
                   class="mini-tool-btn"
                   style="font-weight: bold"
@@ -307,37 +316,6 @@
             スプレッドシートに反映
           </button>
 
-          <div class="option-group">
-            <button
-              id="btnAppendBreak"
-              class="toggle-btn"
-              onclick="toggleBreakState(this)"
-              data-i18n="breakLabels"
-            >
-              行末にBREAKを付加
-            </button>
-            <button
-              id="btnStripHeaders"
-              class="toggle-btn"
-              onclick="toggleStripState(this)"
-              data-i18n="stripLabels"
-            >
-              コメントアウトを除去
-            </button>
-            <button
-              id="btnTokenGuide"
-              class="toggle-btn"
-              onclick="
-                this.classList.toggle('active');
-                window.tokenManager &&
-                  window.tokenManager.toggle(this.classList.contains('active'));
-              "
-              data-i18n="tokenGuide"
-            >
-              📏 75 Token
-            </button>
-          </div>
-
           <div id="legendArea" class="legend-container"></div>
         </div>
 
@@ -345,6 +323,60 @@
           >ビジュアルエディタ
           (ドラッグ＆ドロップで追加・移動・枠外へ削除)</label
         >
+
+        <!-- ▼ 新設：ビジュアルエディタ用のツールバー ▼ -->
+        <div
+          class="spreadsheet-toolbar"
+          style="align-items: center; margin-bottom: 10px"
+        >
+          <button
+            id="btnAppendBreak"
+            class="toggle-btn"
+            onclick="toggleBreakState(this)"
+            data-i18n="breakLabels"
+          >
+            行末にBREAKを付加
+          </button>
+          <button
+            id="btnStripHeaders"
+            class="toggle-btn"
+            onclick="toggleStripState(this)"
+            data-i18n="stripLabels"
+          >
+            コメントアウトを除去
+          </button>
+          <button
+            id="btnTokenGuide"
+            class="toggle-btn"
+            onclick="
+              this.classList.toggle('active');
+              window.tokenManager &&
+                window.tokenManager.toggle(this.classList.contains('active'));
+            "
+            data-i18n="tokenGuide"
+          >
+            📏 75 Token
+          </button>
+
+          <!-- 右寄せの戻るボタン -->
+          <button
+            id="btnUndoVisual"
+            onclick="undoVisual()"
+            class="mini-tool-btn"
+            data-i18n="undo"
+            disabled
+            style="
+              margin-left: auto;
+              height: fit-content;
+              padding: 6px 12px;
+              font-size: 0.9em;
+            "
+          >
+            ↩️ 戻る
+          </button>
+        </div>
+        <!-- ▲ 新設ここまで ▲ -->
+
         <div id="outputPreview" class="preview-area"></div>
         <button
           class="copy-btn"

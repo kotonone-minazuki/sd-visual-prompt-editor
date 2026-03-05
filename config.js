@@ -48,6 +48,7 @@ const i18n = {
     addRow: "+ 行追加",
     addCol: "+ 列追加",
     clear: "クリア",
+    undo: "↩️ 戻る",
   },
   en: {
     title: "SD Visual Prompt Editor",
@@ -91,5 +92,6 @@ const i18n = {
     addRow: "+ Add Row",
     addCol: "+ Add Col",
     clear: "Clear",
+    undo: "↩️ Undo",
   },
 };

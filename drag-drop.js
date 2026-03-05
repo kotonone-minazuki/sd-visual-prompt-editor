@@ -6,6 +6,80 @@ let dragSource = null;
 let dragTagText = "";
 let isDroppedInValidZone = false;
 
+// --- Visual Editor Undo機能 ---
+let visualUndoStack = [];
+const MAX_VISUAL_UNDO_STACK = 20;
+
+/**
+ * 現在のビジュアルエディタのDOM状態を履歴に保存する
+ */
+function saveVisualState() {
+  const previewArea = document.getElementById("outputPreview");
+  if (!previewArea) return;
+
+  // 現在のHTML構造（innerHTML）を丸ごと保存
+  visualUndoStack.push(previewArea.innerHTML);
+  if (visualUndoStack.length > MAX_VISUAL_UNDO_STACK) {
+    visualUndoStack.shift();
+  }
+  updateVisualUndoButtonState();
+}
+
+/**
+ * ビジュアルエディタの状態を1つ前に戻す
+ */
+function undoVisual() {
+  if (visualUndoStack.length === 0) return;
+
+  const previousHTML = visualUndoStack.pop();
+  const previewArea = document.getElementById("outputPreview");
+  if (previewArea) {
+    previewArea.innerHTML = previousHTML;
+
+    // 状態をローカルストレージに保存し、トークン数等も再計算させる
+    if (typeof saveToLocalStorage === "function") {
+      saveToLocalStorage();
+    }
+    updateVisualUndoButtonState();
+  }
+}
+
+/**
+ * 戻るボタンの有効・無効状態を更新する
+ */
+function updateVisualUndoButtonState() {
+  const btn = document.getElementById("btnUndoVisual");
+  if (btn) {
+    btn.disabled = visualUndoStack.length === 0;
+    btn.style.opacity = btn.disabled ? "0.5" : "1";
+    btn.style.cursor = btn.disabled ? "not-allowed" : "pointer";
+  }
+}
+
+// Ctrl+Z 押下時にビジュアルエディタのUndoを発火させるイベントリスナー
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+    const active = document.activeElement;
+
+    // テキスト入力欄（CodeMirror含む）にフォーカスがある場合は、ブラウザ標準のUndoを優先する
+    const isInput =
+      active &&
+      (active.tagName === "INPUT" ||
+        active.tagName === "TEXTAREA" ||
+        active.closest(".CodeMirror") ||
+        active.tagName === "SELECT");
+
+    if (!isInput) {
+      // スプレッドシートモードの時はスプレッドシート専用のUndoが働くため、
+      // プロンプトエディタ（normal）モードの時のみビジュアルエディタのUndoを発動させる
+      if (typeof currentMode !== "undefined" && currentMode === "normal") {
+        e.preventDefault();
+        undoVisual();
+      }
+    }
+  }
+});
+
 function initDragAndDrop() {
   document.addEventListener("dragstart", (e) => {
     isDroppedInValidZone = false;
@@ -13,6 +87,7 @@ function initDragAndDrop() {
       e.target.classList.contains("prompt-tag") ||
       e.target.classList.contains("prompt-row")
     ) {
+      saveVisualState(); // ★ 内部ドラッグ（移動・削除）の開始直前に状態を保存
       draggedElement = e.target;
       dragSource = "internal";
       setTimeout(() => e.target.classList.add("dragging"), 0);
@@ -63,10 +138,12 @@ function initDragAndDrop() {
       e.preventDefault();
       isDroppedInValidZone = true;
       if (dragSource === "search" && dragTagText) {
+        // ★ ここは元のコードのまま、createTagElement を使用します
         const newTag = createTagElement(dragTagText),
           row = e.target.closest(".prompt-row");
         if (row) {
           const after = getDragAfterElement(row, e.clientX, false);
+          saveVisualState(); // ★ 検索からの新規追加直前に状態を保存
           if (after == null) row.appendChild(newTag);
           else row.insertBefore(newTag, after);
         } else {
@@ -76,6 +153,7 @@ function initDragAndDrop() {
           newRow.innerHTML = '<div class="row-handle">≡</div>';
           newRow.appendChild(newTag);
           const afterRow = getDragAfterElement(area, e.clientY, true);
+          saveVisualState(); // ★ 検索からの新規行追加直前に状態を保存
           if (afterRow == null) area.appendChild(newRow);
           else area.insertBefore(newRow, afterRow);
         }
