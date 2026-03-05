@@ -12,8 +12,8 @@ echo   SD Tag Converter Pro を起動しています...
 echo ==================================================
 echo.
 echo [アクセス情報]
-echo - このPCから: http://localhost:%PORT%/converter.html
-echo - LAN内から : http://%IP%:%PORT%/converter.html
+echo - このPCから: http://localhost:%PORT%/
+echo - LAN内から : http://%IP%:%PORT%/
 echo.
 echo [サーバーログ]
 
