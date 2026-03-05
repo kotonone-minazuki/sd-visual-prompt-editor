@@ -47,6 +47,19 @@ function applyLanguage() {
   } else {
     btn.innerText = i18n[currentLang].loadFail;
   }
+
+  // ▼ 追加: モバイル警告モーダルの多言語対応
+  const noticeTitle = document.getElementById("mobileNoticeTitle");
+  if (noticeTitle) noticeTitle.innerText = i18n[currentLang].mobileNoticeTitle;
+
+  const noticeText = document.getElementById("mobileNoticeText");
+  if (noticeText) noticeText.innerText = i18n[currentLang].mobileNoticeText;
+
+  const noticeCheck = document.getElementById("mobileNoticeCheckboxLabel");
+  if (noticeCheck) noticeCheck.innerText = i18n[currentLang].dontShowAgain;
+
+  const noticeBtn = document.getElementById("mobileNoticeBtn");
+  if (noticeBtn) noticeBtn.innerText = i18n[currentLang].close;
 }
 
 function switchTab(mode) {
@@ -143,4 +156,50 @@ function copyTag(tag, element) {
       setTimeout(() => (element.style.transition = ""), 200);
     }, 300);
   });
+}
+
+// ▼ 追加: モバイル判定と警告モーダル制御
+function isMobileDevice() {
+  // 1. User-Agentによる従来型の判定（iPhone, Androidスマホなど）
+  const isMobileUA =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
+
+  // 2. 画面幅による判定（スマホ想定）
+  const isSmallScreen = window.innerWidth <= 800;
+
+  // 3. iPadOS 13以降のSafari対応（User-AgentがMacintoshになるが、タッチ対応している端末）
+  const isIPadOS =
+    (navigator.platform === "MacIntel" ||
+      navigator.userAgent.includes("Mac")) &&
+    navigator.maxTouchPoints !== undefined &&
+    navigator.maxTouchPoints > 1;
+
+  // いずれかの条件を満たせばモバイル（タッチ端末）と判定
+  return isMobileUA || isSmallScreen || isIPadOS;
+}
+
+function checkMobileNotice() {
+  // モバイル端末であり、かつ「次回から表示しない」が設定されていない場合のみ表示
+  if (isMobileDevice() && localStorage.getItem("hideMobileNotice") !== "true") {
+    const overlay = document.getElementById("mobileNoticeOverlay");
+    if (overlay) {
+      overlay.classList.add("show");
+    }
+  }
+}
+
+function closeMobileNotice() {
+  // チェックボックスの状態を確認してlocalStorageに保存
+  const checkbox = document.getElementById("mobileNoticeCheckbox");
+  if (checkbox && checkbox.checked) {
+    localStorage.setItem("hideMobileNotice", "true");
+  }
+
+  // モーダルを閉じる
+  const overlay = document.getElementById("mobileNoticeOverlay");
+  if (overlay) {
+    overlay.classList.remove("show");
+  }
 }

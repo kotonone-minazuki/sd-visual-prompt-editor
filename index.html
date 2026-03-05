@@ -49,6 +49,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- ▼ 追加: モバイル警告モーダル -->
+    <div id="mobileNoticeOverlay" class="mobile-notice-overlay">
+      <div class="mobile-notice-modal">
+        <h3 id="mobileNoticeTitle">【モバイル環境でのご利用について】</h3>
+        <p id="mobileNoticeText">
+          本ツールはPC向けに最適化されています。スマートフォンやタブレットでは、操作性が不十分な場合があります。PC環境でのご利用を強く推奨します。
+        </p>
+        <div class="mobile-notice-actions">
+          <label class="mobile-notice-checkbox-label">
+            <input type="checkbox" id="mobileNoticeCheckbox" />
+            <span id="mobileNoticeCheckboxLabel">次回から表示しない</span>
+          </label>
+          <button
+            class="mobile-notice-btn"
+            id="mobileNoticeBtn"
+            onclick="closeMobileNotice()"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
     <h2>
       <span data-i18n="title">SD Visual Prompt Editor</span>
       <div class="header-controls">

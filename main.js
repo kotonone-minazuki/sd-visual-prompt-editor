@@ -47,6 +47,9 @@ window.onload = () => {
   initDragAndDrop();
   renderSpreadsheet();
 
+  // ▼ 追加: モバイル環境でのアクセス時に警告モーダルを表示するチェックを実行
+  checkMobileNotice();
+
   setTimeout(() => {
     if (editorNormal) {
       editorNormal.refresh();

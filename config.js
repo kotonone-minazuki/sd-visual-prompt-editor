@@ -49,6 +49,12 @@ const i18n = {
     addCol: "+ 列追加",
     clear: "クリア",
     undo: "↩️ 戻る",
+    // ▼ 追加: モバイル警告用テキスト
+    mobileNoticeTitle: "【モバイル環境でのご利用について】",
+    mobileNoticeText:
+      "本ツールはPC向けに最適化されています。スマートフォンやタブレットでは、操作性が不十分な場合があります。PC環境でのご利用を強く推奨します。",
+    dontShowAgain: "次回から表示しない",
+    close: "OK",
   },
   en: {
     title: "SD Visual Prompt Editor",
@@ -93,5 +99,11 @@ const i18n = {
     addCol: "+ Add Col",
     clear: "Clear",
     undo: "↩️ Undo",
+    // ▼ 追加: モバイル警告用テキスト
+    mobileNoticeTitle: "[Mobile Usage Notice]",
+    mobileNoticeText:
+      "This tool is optimized for PC. Usability may be limited on smartphones or tablets. We strongly recommend using a PC environment for the best experience.",
+    dontShowAgain: "Don't show this again",
+    close: "OK",
   },
 };
