@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>8. Tips: Useful Techniques - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
+  </head>
+  <body>
+    <nav class="manual-nav"></nav>
+
+    <main class="manual-content">
+      <h1>
+        <span class="lang-ja">8. 活用テクニック</span>
+        <span class="lang-en">8. Tips: Useful Techniques</span>
+      </h1>
+
+      <p>
+        <span class="lang-ja"
+          >本ツールの「反映」ボタンが手動である理由と、その仕様を活用した高度なテクニックについて解説します。</span
+        >
+        <span class="lang-en"
+          >This section explains why the "Reflect" button is manual and advanced
+          techniques utilizing this specification.</span
+        >
+      </p>
+
+      <div class="intro-box">
+        <strong class="lang-ja">🔒 手動同期のメリット (Safety Design)</strong>
+        <strong class="lang-en"
+          >🔒 Benefits of Manual Synchronization (Safety Design)</strong
+        >
+        <br />
+        <span class="lang-ja"
+          >本ツールは、誤操作によるデータの破損を防ぐため、自動同期を行いません。各エディタは「反映」ボタンを押すまで互いに干渉せず、独立して動作します。</span
+        >
+        <span class="lang-en"
+          >This tool does not auto-sync to prevent accidental data corruption.
+          Each editor operates independently and does not interfere with the
+          others until the "Reflect" button is pressed.</span
+        >
+      </div>
+
+      <h2>
+        <span class="lang-ja">🛠️ 3つの活用パターン</span>
+        <span class="lang-en">🛠️ Three Usage Patterns</span>
+      </h2>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">🧹 1. プロンプトの正規化</span>
+            <span class="lang-en">🧹 1. Prompt Normalization</span>
+          </div>
+          <span class="lang-ja"
+            >表記揺れや全角文字を含むプロンプトを、標準的な形式に自動整形（クリーニング）します。</span
+          >
+          <span class="lang-en"
+            >Automatically formats (cleans) prompts containing notation
+            variations or full-width characters into a standard format.</span
+          >
+          <br /><br />
+          <ol>
+            <li>
+              <span class="lang-ja"
+                >テキストエディタにそのまま貼り付けます。</span
+              >
+              <span class="lang-en">Paste directly into the Text Editor.</span>
+            </li>
+            <li>
+              <span class="ui-sim-btn">⬇️</span>
+              <span class="lang-ja">ボタンでビジュアルエディタに反映。</span>
+              <span class="lang-en"
+                >button to reflect in the Visual Editor.</span
+              >
+            </li>
+            <li>
+              <span class="lang-ja"
+                >自動的にパースされ、クリーンなタグになります。</span
+              >
+              <span class="lang-en"
+                >It is automatically parsed into clean tags.</span
+              >
+            </li>
+          </ol>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">🧪 2. 非破壊的な試行錯誤</span>
+            <span class="lang-en">🧪 2. Non-destructive Editing</span>
+          </div>
+          <span class="lang-ja"
+            >元のデータを保持したまま、タグの削除や並べ替えを安全にテストできます（サンドボックス機能）。</span
+          >
+          <span class="lang-en"
+            >Safely test deleting or reordering tags while preserving the
+            original data (Sandbox feature).</span
+          >
+          <br /><br />
+          <ul>
+            <li>
+              <strong class="lang-ja">失敗した場合:</strong>
+              <strong class="lang-en">If failed:</strong><br />
+              <span class="lang-ja"
+                >再度
+                <span class="ui-sim-btn">⬇️</span>
+                を押すとリセット（Undo）されます。</span
+              >
+              <span class="lang-en"
+                >Press <span class="ui-sim-btn">⬇️</span> again to reset
+                (Undo).</span
+              >
+            </li>
+            <li>
+              <strong class="lang-ja">成功した場合:</strong>
+              <strong class="lang-en">If successful:</strong><br />
+              <span class="lang-ja"
+                ><span
+                  class="ui-sim-btn"
+                  style="background-color: #3498db; color: white"
+                  >⬆️</span
+                >
+                を押して変更を確定（保存）します。</span
+              >
+              <span class="lang-en"
+                >Press
+                <span
+                  class="ui-sim-btn"
+                  style="background-color: #3498db; color: white"
+                  >⬆️</span
+                >
+                to confirm (save) changes.</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">🔄 3. データ形式の相互変換</span>
+            <span class="lang-en">🔄 3. Data Format Conversion</span>
+          </div>
+          <span class="lang-ja"
+            >ビジュアルエディタを経由することで、「テキスト形式」と「スプレッドシート（表）形式」を相互に変換できます。</span
+          >
+          <span class="lang-en"
+            >By bridging through the Visual Editor, you can mutually convert
+            between "Text format" and "Spreadsheet (Table) format".</span
+          >
+          <br /><br />
+          <div class="note-box">
+            <span class="lang-ja"
+              >変換したいデータを貼り付け → <span class="ui-sim-btn">⬇️</span> →
+              タブ切り替え →
+              <span
+                class="ui-sim-btn"
+                style="background-color: #3498db; color: white"
+                >⬆️</span
+              ></span
+            >
+            <span class="lang-en"
+              >Paste data → <span class="ui-sim-btn">⬇️</span> → Switch Tab →
+              <span
+                class="ui-sim-btn"
+                style="background-color: #3498db; color: white"
+                >⬆️</span
+              ></span
+            >
+          </div>
+        </div>
+      </div>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        <span class="lang-ja"
+          >続いて、データの保存と安全性について説明します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain data saving and safety.</span
+        >
+        <br />
+        <a
+          href="guide_system.html"
+          style="font-weight: bold; color: var(--accent-color)"
+        >
+          <span class="lang-ja">9. データ保存・安全性 へ進む ➡️</span>
+          <span class="lang-en">Go to 9. System & Safety ➡️</span>
+        </a>
+      </p>
+    </main>
+  </body>
+</html>

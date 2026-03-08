@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5. Spreadsheet Details - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
+  </head>
+  <body>
+    <nav class="manual-nav"></nav>
+
+    <main class="manual-content">
+      <h1>
+        <span class="lang-ja">5. スプレッドシート詳細</span>
+        <span class="lang-en">5. Spreadsheet Details</span>
+      </h1>
+
+      <p>
+        <span class="lang-ja"
+          >「スプレッドシートエディタ (Spreadsheet
+          Mode)」は、Excelのように行と列でプロンプトを管理するモードです。<br />「衣装」「ポーズ」「背景」のように要素ごとに列を分けたり、複数のバリエーションを保存したりするのに最適です。</span
+        >
+        <span class="lang-en"
+          >"Spreadsheet Editor (Spreadsheet Mode)" is a mode for managing
+          prompts in rows and columns like Excel.<br />It is ideal for
+          separating columns by elements such as "outfit," "pose," or
+          "background," and for saving multiple variations.</span
+        >
+      </p>
+
+      <h2>
+        <span class="lang-ja">📊 テーブルの基本操作</span>
+        <span class="lang-en">📊 Basic Table Operations</span>
+      </h2>
+
+      <table class="sheet-demo">
+        <thead>
+          <tr>
+            <th>Comment</th>
+            <th>Tag 1</th>
+            <th>Tag 2</th>
+            <th>Tag 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Base</td>
+            <td>1girl</td>
+            <td>solo</td>
+            <td>long hair</td>
+          </tr>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Outfit</td>
+            <td class="sheet-active-cell">white shirt</td>
+            <td>blue skirt</td>
+            <td>school uniform</td>
+          </tr>
+          <tr>
+            <td style="color: #27ae60; font-weight: bold">Action</td>
+            <td>standing</td>
+            <td>looking at viewer</td>
+            <td>smile</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span class="lang-ja">編集とクリア</span>
+        <span class="lang-en">Editing and Clearing</span>
+      </h3>
+      <ul>
+        <li>
+          <strong class="lang-ja">セルの編集:</strong>
+          <strong class="lang-en">Editing Cells:</strong>
+          <span class="lang-ja"
+            >編集したいセルをクリックして文字を入力します。</span
+          >
+          <span class="lang-en"
+            >Click the cell you want to edit and enter text.</span
+          >
+        </li>
+        <li>
+          <strong class="lang-ja">行・列の追加:</strong>
+          <strong class="lang-en">Adding Rows/Columns:</strong>
+          <span class="lang-ja">ツールバーの</span>
+          <span class="lang-en">Expand using the</span>
+          <span class="ui-sim-tool-btn">
+            <span class="lang-ja">➕ 行追加</span>
+            <span class="lang-en">➕ Add Row</span>
+          </span>
+          /
+          <span class="ui-sim-tool-btn">
+            <span class="lang-ja">➕ 列追加</span>
+            <span class="lang-en">➕ Add Column</span>
+          </span>
+          <span class="lang-ja">ボタンで拡張できます。</span>
+          <span class="lang-en">buttons on the toolbar.</span>
+        </li>
+        <li>
+          <strong class="lang-ja">クリア:</strong>
+          <strong class="lang-en">Clearing:</strong>
+          <span class="lang-ja"></span>
+          <span class="lang-en">Press the</span>
+          <span class="ui-sim-tool-btn">
+            <span class="lang-ja">🗑️ クリア</span>
+            <span class="lang-en">🗑️ Clear</span>
+          </span>
+          <span class="lang-ja"
+            >ボタンを押すと、シートの内容をリセット（初期化）します。</span
+          >
+          <span class="lang-en"
+            >button to reset (initialize) the content of the sheet.</span
+          >
+        </li>
+      </ul>
+
+      <div class="note-box">
+        <strong class="lang-ja">💬 Comment列の自動変換:</strong>
+        <strong class="lang-en"
+          >💬 Automatic Conversion of Comment Column:</strong
+        >
+        <br />
+        <span class="lang-ja"
+          >ヘッダーが
+          <strong>Comment</strong>
+          となっている列に入力したテキストは、ビジュアルエディタへの反映時に<strong>自動的に「コメントブロック（#付き）」に変換されます</strong>。<br />そのため、スプレッドシート上でわざわざ
+          <code># Base</code> のように記号を入力する必要はありません。</span
+        >
+        <span class="lang-en"
+          >Text entered in a column with the header
+          <strong>Comment</strong> will be
+          <strong
+            >automatically converted into a "comment block (with #)"</strong
+          >
+          when reflected in the Visual Editor.<br />Therefore, there is no need
+          to enter symbols like <code># Base</code> on the spreadsheet.</span
+        >
+      </div>
+
+      <h2>
+        <span class="lang-ja">💾 外部連携と保存 (Interoperability)</span>
+        <span class="lang-en"
+          >💾 External Integration and Saving (Interoperability)</span
+        >
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >このモードの最大の特徴は、ExcelやGoogleスプレッドシートとの連携機能です。</span
+        >
+        <span class="lang-en"
+          >The most significant feature of this mode is its integration with
+          Excel and Google Sheets.</span
+        >
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">TSV (Excel連携用)</span>
+            <span class="lang-en">TSV (for Excel Integration)</span>
+          </div>
+          <p>
+            <strong class="lang-ja">タブ区切りテキスト (TSV)</strong>
+            <strong class="lang-en">Tab-Separated Values (TSV)</strong>
+            <span class="lang-ja">形式での入出力に対応しています。</span>
+            <span class="lang-en"
+              >format is supported for input and output.</span
+            >
+          </p>
+          <ul>
+            <li>
+              <strong class="lang-ja">Save TSV:</strong>
+              <strong class="lang-en">Save TSV:</strong>
+              <span class="lang-ja"
+                >データをTSVファイルとして保存します。Excelで開くことができます。</span
+              >
+              <span class="lang-en"
+                >Saves data as a TSV file, which can be opened in Excel.</span
+              >
+            </li>
+            <li>
+              <strong class="lang-ja">Load TSV:</strong>
+              <strong class="lang-en">Load TSV:</strong>
+              <span class="lang-ja">TSVファイルを読み込みます。</span>
+              <span class="lang-en">Loads a TSV file.</span>
+            </li>
+          </ul>
+          <div class="note-box">
+            <strong class="lang-ja">📋 コピペ連携:</strong>
+            <strong class="lang-en">📋 Copy-Paste Integration:</strong>
+            <br />
+            <span class="lang-ja"
+              >Excel上のセル範囲をコピーし、このツールのセル上で
+              <code>Ctrl+V</code> (ペースト)
+              すると、テーブルが自動拡張されてデータが貼り付けられます。逆も可能です。</span
+            >
+            <span class="lang-en"
+              >If you copy a range of cells in Excel and use
+              <code>Ctrl+V</code> (paste) on a cell in this tool, the table will
+              automatically expand and paste the data. The reverse is also
+              possible.</span
+            >
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">
+            <span class="lang-ja">JSON (完全バックアップ)</span>
+            <span class="lang-en">JSON (Full Backup)</span>
+          </div>
+          <p>
+            <span class="lang-ja"
+              >シートの状態を<strong>そのまま保存</strong>する形式です。</span
+            >
+            <span class="lang-en"
+              >A format that
+              <strong>saves the state of the sheet as is</strong>.</span
+            >
+          </p>
+          <ul>
+            <li>
+              <strong class="lang-ja">Save JSON:</strong>
+              <strong class="lang-en">Save JSON:</strong>
+              <span class="lang-ja"
+                >空のセルも含め、シート全体の構造を保存します。</span
+              >
+              <span class="lang-en"
+                >Saves the entire structure of the sheet, including empty
+                cells.</span
+              >
+            </li>
+            <li>
+              <strong class="lang-ja">Load JSON:</strong>
+              <strong class="lang-en">Load JSON:</strong>
+              <span class="lang-ja">保存した状態を完全に復元します。</span>
+              <span class="lang-en">Completely restores the saved state.</span>
+            </li>
+          </ul>
+          <small>
+            <span class="lang-ja"
+              >※TSVは空セルなどが詰められる場合がありますが、JSONは配置を維持します。</span
+            >
+            <span class="lang-en"
+              >*TSV may shrink empty cells, but JSON preserves the layout.</span
+            >
+          </small>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-ja">🔄 ビジュアルエディタとの変換ルール</span>
+        <span class="lang-en">🔄 Conversion Rules with Visual Editor</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >スプレッドシートとビジュアルエディタ（タグブロック）の行き来には、以下のルールが適用されます。</span
+        >
+        <span class="lang-en"
+          >The following rules apply when moving between the spreadsheet and the
+          Visual Editor (tag blocks):</span
+        >
+      </p>
+
+      <ul>
+        <li>
+          <strong class="lang-ja">⬇️ 反映時 (Convert):</strong>
+          <strong class="lang-en">⬇️ During Reflection (Convert):</strong>
+          <span class="lang-ja"
+            >左上のセルから右へ、その後下の行へと順にタグが結合されます。<br />(例:
+            Comment → Tag 1 → Tag 2 → Tag 3 → 次の行...)</span
+          >
+          <span class="lang-en"
+            >Tags are combined in order from the top-left cell to the right, and
+            then to the next row below.<br />(e.g., Comment → Tag 1 → Tag 2 →
+            Tag 3 → Next row...)</span
+          >
+        </li>
+        <li>
+          <strong class="lang-ja">⬆️ 反映時 (Reflect):</strong>
+          <strong class="lang-en">⬆️ During Reflection (Reflect):</strong>
+          <span class="lang-ja"
+            >ビジュアルエディタ上のタグ順序を維持して、セルに書き戻されます。<br />※元の列構造などはリセットされ、1つのセルに1つのタグが入る形で再配置される場合がありますのでご注意ください。</span
+          >
+          <span class="lang-en"
+            >Tags are written back to cells while maintaining the tag order in
+            the Visual Editor.<br />*Please note that the original column
+            structure may be reset, and tags may be rearranged with one tag per
+            cell.</span
+          >
+        </li>
+      </ul>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        <span class="lang-ja"
+          >次は、生成されるプロンプトの形式を調整する「生成オプション」について解説します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain the "Generation Options" for adjusting the
+          format of the generated prompt.</span
+        >
+        <br />
+        <a
+          href="guide_options.html"
+          style="font-weight: bold; color: var(--accent-color)"
+        >
+          <span class="lang-ja">6. 生成オプション へ進む ➡️</span>
+          <span class="lang-en">Go to 6. Generation Options ➡️</span>
+        </a>
+      </p>
+    </main>
+  </body>
+</html>

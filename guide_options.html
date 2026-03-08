@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>6. Generation Options - SD Visual Prompt Editor</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="manual.css" />
+    <script src="manual_common.js" defer></script>
+  </head>
+  <body>
+    <nav class="manual-nav"></nav>
+
+    <main class="manual-content">
+      <h1>
+        <span class="lang-ja">6. 生成オプション</span>
+        <span class="lang-en">6. Generation Options</span>
+      </h1>
+
+      <p>
+        <span class="lang-ja"
+          >画面下部にあるオプション設定により、プロンプトを出力（コピー）する際の形式や、ビジュアルエディタでの表示方法をカスタマイズできます。</span
+        >
+        <span class="lang-en"
+          >Using the option settings at the bottom of the screen, you can
+          customize the format for exporting (copying) prompts and the display
+          method in the Visual Editor.</span
+        >
+      </p>
+
+      <h2>
+        <span class="lang-ja">⚙️ 出力制御オプション</span>
+        <span class="lang-en">⚙️ Output Control Options</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >チェックボックスをオンにすることで、プロンプト生成時の挙動が変わります。</span
+        >
+        <span class="lang-en"
+          >Turning on the checkboxes changes the behavior when generating
+          prompts.</span
+        >
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-title">
+            <label class="ui-sim-checkbox">
+              <input type="checkbox" checked disabled />
+              <span class="lang-ja">行末にBREAKを付加</span>
+              <span class="lang-en">Append BREAK to Line End</span>
+            </label>
+          </div>
+          <p>
+            <span class="lang-ja"
+              >各行（または各ブロック）の終わりに、自動的に
+              <code>BREAK</code> タグを挿入して出力します。</span
+            >
+            <span class="lang-en"
+              >Automatically inserts a <code>BREAK</code> tag at the end of each
+              line (or block) in the output.</span
+            >
+          </p>
+          <div class="note-box">
+            <strong class="lang-ja">⚠️ 注意: トークン消費の増大</strong>
+            <strong class="lang-en"
+              >⚠️ Note: Increased Token Consumption</strong
+            >
+            <br />
+            <span class="lang-ja"
+              >この機能を有効にすると、<strong>すべての行</strong>が強制的に個別のチャンク（75トークンのブロック）として扱われます。<br />短い行が大量にある状態で使用すると、無駄なパディング（埋め草データ）が増大し、AIへの指示密度が下がってしまう可能性があります。トークン総数を意識してご使用ください。</span
+            >
+            <span class="lang-en"
+              >When this feature is enabled, <strong>every line</strong> is
+              forcibly treated as a separate chunk (a block of 75 tokens).<br />Using
+              it with many short lines can increase wasted padding (filler data)
+              and potentially lower the density of instructions to the AI.
+              Please be mindful of the total token count.</span
+            >
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-title">
+            <label class="ui-sim-checkbox">
+              <input type="checkbox" checked disabled />
+              <span class="lang-ja">コメントアウトを除去</span>
+              <span class="lang-en">Remove Comments</span>
+            </label>
+          </div>
+          <p>
+            <span class="lang-ja"
+              ><code>#</code>
+              で始まるコメントブロックを、最終的なプロンプトから<strong>除外</strong>して出力します。</span
+            >
+            <span class="lang-en"
+              ><strong>Excludes</strong> comment blocks starting with
+              <code>#</code> from the final prompt output.</span
+            >
+          </p>
+          <div class="note-box">
+            <strong class="lang-ja">用途:</strong>
+            <strong class="lang-en">Use Case:</strong>
+            <br />
+            <span class="lang-ja"
+              >自分用のメモ（「ここから衣装」など）は残しつつ、AIに渡すプロンプトだけをきれいに抽出したい場合に必須の機能です。</span
+            >
+            <span class="lang-en"
+              >This is an essential feature when you want to keep personal notes
+              (e.g., "Outfits from here") while cleanly extracting only the
+              prompts to be passed to the AI.</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <h2>
+        <span class="lang-ja">📏 75トークンガイド (Token Guide)</span>
+        <span class="lang-en">📏 75 Token Guide (Token Guide)</span>
+      </h2>
+      <p>
+        <span class="lang-ja"
+          >ビジュアルエディタ上には、Stable
+          Diffusionの処理単位である「75トークン」ごとの区切り線が表示されます。</span
+        >
+        <span class="lang-en"
+          >A separator line for every "75 tokens," the processing unit of Stable
+          Diffusion, is displayed on the Visual Editor.</span
+        >
+      </p>
+
+      <div class="intro-box">
+        <strong class="lang-ja">表示イメージ:</strong>
+        <strong class="lang-en">Display Image:</strong>
+
+        <div class="token-guide-demo">
+          <div class="token-line"></div>
+          <div class="token-label">75 Tokens</div>
+
+          <span class="tag-demo tag-common">tag_A</span>
+          <span class="tag-demo tag-common">tag_B</span>
+          <span class="tag-demo tag-common" style="margin-right: 40px"
+            >...</span
+          >
+          <span class="tag-demo tag-common" style="margin-left: 40px"
+            >tag_C</span
+          >
+          <span class="tag-demo tag-common">tag_D</span>
+        </div>
+
+        <p style="margin-top: 10px; font-size: 0.9em">
+          <span class="lang-ja"
+            >赤い点線を超えたタグは「次のチャンク（処理ブロック）」として扱われます。<br />重要なタグがこの線の直後に来てしまうと、AIへの影響力が弱まる可能性があるため、<strong>線の手前に収めるか、BREAKで明示的に区切る</strong>などの調整を行う目安にしてください。</span
+          >
+          <span class="lang-en"
+            >Tags that cross the red dotted line are treated as the "next chunk
+            (processing block)."<br />Since important tags appearing immediately
+            after this line might have weakened influence on the AI, use this as
+            a guide to adjust them by
+            <strong
+              >keeping them before the line or explicitly separating them with a
+              BREAK</strong
+            >.</span
+          >
+        </p>
+      </div>
+
+      <div class="note-box">
+        <strong class="lang-ja">⚠️ 注意:</strong>
+        <strong class="lang-en">⚠️ Note:</strong>
+        <br />
+        <span class="lang-ja"
+          >このガイドは簡易的な計算（単語数などに基づく推計）であり、実際のStable
+          Diffusion内部でのトークン数とは厳密に一致しない場合があります。あくまで目安としてご活用ください。</span
+        >
+        <span class="lang-en"
+          >This guide is based on a simple calculation (estimates based on word
+          count, etc.) and may not strictly match the actual token count within
+          Stable Diffusion. Please use it only as a reference.</span
+        >
+      </div>
+
+      <p
+        style="
+          margin-top: 40px;
+          border-top: 1px solid var(--border-color);
+          padding-top: 20px;
+        "
+      >
+        <span class="lang-ja"
+          >次は、Stable
+          Diffusionの仕様である「トークン」と「チャンク」について詳しく解説します。</span
+        >
+        <span class="lang-en"
+          >Next, we will explain in detail about "Tokens" and "Chunks," which
+          are specifications of Stable Diffusion.</span
+        >
+        <br />
+        <a
+          href="guide_token.html"
+          style="font-weight: bold; color: var(--accent-color)"
+        >
+          <span class="lang-ja">7. トークンとチャンク へ進む ➡️</span>
+          <span class="lang-en">Go to 7. Token & Chunking ➡️</span>
+        </a>
+      </p>
+    </main>
+  </body>
+</html>

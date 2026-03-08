@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">SD Syntax Guide - SD Visual Prompt Editor</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../favicon-32x32.png"
+    />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      body {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.7;
+      }
+      .container {
+        background: var(--container-bg);
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
+        border: 1px solid var(--border-color);
+      }
+      h1 {
+        color: var(--text-color);
+        border-bottom: 3px solid var(--accent-color);
+        padding-bottom: 10px;
+        margin-top: 0;
+        padding-right: 120px;
+      }
+      h2 {
+        color: var(--accent-color);
+        margin-top: 30px;
+        border-left: 5px solid var(--accent-color);
+        padding-left: 10px;
+      }
+      .syntax-section {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 24px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        background-color: var(--bg-color);
+      }
+      table,
+      th,
+      td {
+        border: 1px solid var(--border-color);
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: rgba(0, 0, 0, 0.05);
+        font-weight: bold;
+      }
+      code {
+        background: rgba(128, 128, 128, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Consolas", monospace;
+        color: #e74c3c;
+      }
+      .lang-btn {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        padding: 8px 16px;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        background: var(--container-bg);
+        border-radius: 4px;
+        font-weight: bold;
+        color: var(--text-color);
+      }
+      .back-link {
+        display: block;
+        margin-top: 40px;
+        text-align: center;
+        font-weight: bold;
+        color: var(--accent-color);
+        text-decoration: none;
+        padding: 10px;
+        border: 2px solid var(--accent-color);
+        border-radius: 8px;
+      }
+      .back-link:hover {
+        background-color: var(--accent-color);
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button class="lang-btn" onclick="toggleLanguage()">🌐 EN/JP</button>
+      <h1 data-i18n="title">Stable Diffusion 構文ガイド</h1>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_emphasis">1. 強調・重み付け (Emphasis)</h2>
+        <p data-i18n="p_emphasis">
+          特定の単語の影響力を調整します。カッコを重ねることで効果を累積させることができます。
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="th_syntax">構文</th>
+              <th data-i18n="th_effect">効果</th>
+              <th data-i18n="th_example">例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>(tag)</code></td>
+              <td data-i18n="td_em_1">重みを 1.1 倍に増加</td>
+              <td><code>(1girl)</code></td>
+            </tr>
+            <tr>
+              <td><code>((tag))</code></td>
+              <td data-i18n="td_em_2">重みを 1.21 倍に増加</td>
+              <td><code>((masterpiece))</code></td>
+            </tr>
+            <tr>
+              <td><code>[tag]</code></td>
+              <td data-i18n="td_em_3">重みを 0.9 倍に減少</td>
+              <td><code>[low quality]</code></td>
+            </tr>
+            <tr>
+              <td><code>(tag:1.2)</code></td>
+              <td data-i18n="td_em_4">重みを数値で直接指定</td>
+              <td><code>(blush:1.2)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_scheduling">2. プロンプト編集 (Scheduling)</h2>
+        <p data-i18n="p_scheduling">
+          生成ステップの途中で単語を切り替えたり、特定のタイミングから追加したりします。
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="th_syntax">構文</th>
+              <th data-i18n="th_effect">効果</th>
+              <th data-i18n="th_example">例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>[A : B : step]</code></td>
+              <td data-i18n="td_sch_1">途中で A から B に切り替え</td>
+              <td><code>[blue hair : red hair : 0.5]</code></td>
+            </tr>
+            <tr>
+              <td><code>[B : step]</code></td>
+              <td data-i18n="td_sch_2">指定ステップから B を追加</td>
+              <td><code>[glasses : 0.2]</code></td>
+            </tr>
+            <tr>
+              <td><code>[A :: step]</code></td>
+              <td data-i18n="td_sch_3">指定ステップで A を削除</td>
+              <td><code>[hat :: 0.8]</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <small data-i18n="note_step"
+            >※stepが1未満なら「割合」、1以上なら「ステップ数」を指定します。</small
+          >
+        </p>
+      </div>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_alternating">3. 単語の交互指定 (Alternating)</h2>
+        <p data-i18n="p_alternating">
+          ステップごとに単語を交互に使用します。混ざり合ったような表現が可能です。
+        </p>
+        <ul>
+          <li>
+            <strong data-i18n="li_alt_syntax">構文:</strong>
+            <code>[word1 | word2]</code>
+          </li>
+          <li>
+            <strong data-i18n="li_alt_ex">例:</strong>
+            <code>[cowboy shot | full body]</code>
+          </li>
+        </ul>
+      </div>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_network">4. LoRA / ネットワークタグ</h2>
+        <p data-i18n="p_network">
+          外部モデルを適用します。エディタ上ではピンク色の枠で強調されます。
+        </p>
+        <ul>
+          <li>
+            <strong data-i18n="li_net_syntax">構文:</strong>
+            <code>&lt;type:name:weight&gt;</code>
+          </li>
+          <li>
+            <strong data-i18n="li_net_ex">例:</strong>
+            <code>&lt;lora:fashion_style:0.7&gt;</code>
+          </li>
+        </ul>
+      </div>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_control">5. 制御キーワード (BREAK / AND)</h2>
+        <p data-i18n="p_control">計算の区切りや合成を制御します。</p>
+        <ul>
+          <li>
+            <strong>BREAK</strong>:
+            <span data-i18n="li_break"
+              >トークンの区切りを強制終了し、次のチャンクへ移動させます。プロンプトが長い場合の減衰防止に有効です。</span
+            >
+          </li>
+          <li>
+            <strong>AND</strong>:
+            <span data-i18n="li_and">複数のプロンプトを合成します。</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="syntax-section">
+        <h2 data-i18n="h2_comment">6. コメント (#)</h2>
+        <p data-i18n="p_comment">
+          <code>#</code>
+          以降の文字列は無視されます。エディタ上では緑色の枠で表示されます。
+        </p>
+        <ul>
+          <li>
+            <strong data-i18n="li_com_ex">例:</strong>
+            <code>1girl, solo, # wearing a hat</code>
+          </li>
+        </ul>
+      </div>
+
+      <a href="../index.html" class="back-link" data-i18n="back"
+        >↩️ ツールに戻る</a
+      >
+    </div>
+
+    <script>
+      // ダークモード自動判定
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        document.body.classList.add("dark-mode");
+      }
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (event) => {
+          if (event.matches) document.body.classList.add("dark-mode");
+          else document.body.classList.remove("dark-mode");
+        });
+
+      const i18n = {
+        ja: {
+          title: "Stable Diffusion 構文ガイド",
+          h2_emphasis: "1. 強調・重み付け (Emphasis)",
+          p_emphasis:
+            "特定の単語の影響力を調整します。カッコを重ねることで効果を累積させることができます。",
+          th_syntax: "構文",
+          th_effect: "効果",
+          th_example: "例",
+          td_em_1: "重みを 1.1 倍に増加",
+          td_em_2: "重みを 1.21 倍に増加",
+          td_em_3: "重みを 0.9 倍に減少",
+          td_em_4: "重みを数値で直接指定",
+          h2_scheduling: "2. プロンプト編集 (Scheduling)",
+          p_scheduling:
+            "生成ステップの途中で単語を切り替えたり、特定のタイミングから追加したりします。",
+          td_sch_1: "途中で A から B に切り替え",
+          td_sch_2: "指定ステップから B を追加",
+          td_sch_3: "指定ステップで A を削除",
+          note_step:
+            "※stepが1未満なら「割合」、1以上なら「ステップ数」を指定します。",
+          h2_alternating: "3. 単語の交互指定 (Alternating)",
+          p_alternating:
+            "ステップごとに単語を交互に使用します。混ざり合ったような表現が可能です。",
+          li_alt_syntax: "構文:",
+          li_alt_ex: "例:",
+          h2_network: "4. LoRA / ネットワークタグ",
+          p_network:
+            "外部モデルを適用します。エディタ上ではピンク色の枠で強調されます。",
+          li_net_syntax: "構文:",
+          li_net_ex: "例:",
+          h2_control: "5. 制御キーワード (BREAK / AND)",
+          p_control: "計算の区切りや合成を制御します。",
+          li_break:
+            "トークンの区切りを強制終了し、次のチャンクへ移動させます。プロンプトが長い場合の減衰防止に有効です。",
+          li_and: "複数のプロンプトを合成します。",
+          h2_comment: "6. コメント (#)",
+          p_comment:
+            "# 以降の文字列は無視されます。エディタ上では緑色の枠で表示されます。",
+          li_com_ex: "例:",
+          back: "↩️ ツールに戻る",
+        },
+        en: {
+          title: "Stable Diffusion Syntax Guide",
+          h2_emphasis: "1. Emphasis / Weighting",
+          p_emphasis:
+            "Adjust the influence of specific words. Effects accumulate with nested parentheses.",
+          th_syntax: "Syntax",
+          th_effect: "Effect",
+          th_example: "Example",
+          td_em_1: "Increase weight by 1.1x",
+          td_em_2: "Increase weight by 1.21x",
+          td_em_3: "Decrease weight by 0.9x",
+          td_em_4: "Specify weight numerically",
+          h2_scheduling: "2. Prompt Editing (Scheduling)",
+          p_scheduling:
+            "Switch words mid-generation or add them at a specific step.",
+          td_sch_1: "Switch from A to B",
+          td_sch_2: "Add B at specified step",
+          td_sch_3: "Remove A at specified step",
+          note_step:
+            "*If step < 1, it represents a percentage. If >= 1, it represents a step count.",
+          h2_alternating: "3. Alternating Words",
+          p_alternating:
+            "Use words alternately every step to create mixed expressions.",
+          li_alt_syntax: "Syntax:",
+          li_alt_ex: "Example:",
+          h2_network: "4. LoRA / Network Tags",
+          p_network:
+            "Apply external models. Highlighted with pink borders in the editor.",
+          li_net_syntax: "Syntax:",
+          li_net_ex: "Example:",
+          h2_control: "5. Control Keywords (BREAK / AND)",
+          p_control: "Control computation boundaries or composition.",
+          li_break:
+            "Forces a chunk end and moves to the next. Effective for long prompts to prevent fading effects.",
+          li_and: "Composites multiple prompts.",
+          h2_comment: "6. Comments (#)",
+          p_comment:
+            "Strings after # are ignored. Displayed with green borders in the editor.",
+          li_com_ex: "Example:",
+          back: "↩️ Back to Tool",
+        },
+      };
+
+      let currentLang = localStorage.getItem("lang") || "ja";
+      function toggleLanguage() {
+        currentLang = currentLang === "ja" ? "en" : "ja";
+        localStorage.setItem("lang", currentLang);
+        applyLanguage();
+      }
+      function applyLanguage() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (i18n[currentLang][key]) el.innerHTML = i18n[currentLang][key];
+        });
+        document.title = i18n[currentLang].title;
+      }
+      window.onload = applyLanguage;
+    </script>
+  </body>
+</html>
